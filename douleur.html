@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banque Partiel — Douleur</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
+#home{max-width:600px;margin:40px auto;padding:24px;text-align:center}
+.home-card{background:#16213e;border-radius:16px;padding:32px;border:1px solid #2d2d50}
+.home-card h2{color:#e74c3c;font-size:1.4rem;margin-bottom:12px}
+.home-card p{color:#aaa;font-size:.9rem;line-height:1.6;margin-bottom:20px}
+.home-actions{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px}
+.module-tabs{display:flex;gap:8px;justify-content:center;margin:8px 0 16px;flex-wrap:wrap}
+.module-tab{border:1px solid #2d2d50;background:#0f3460;color:#cfd7e6;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.82rem}
+.module-tab.active{background:#c0392b;color:#fff;border-color:#e74c3c}
+.module-panel{display:none;background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px;text-align:left}
+.module-panel.active{display:block}
+.module-panel label{display:block;color:#ccd;margin-bottom:8px;font-size:.84rem}
+.module-panel select,.module-panel input{width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff}
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.module-hint{font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px}
+.stat-grid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.stat{background:#0f3460;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#aac}
+.stat span{display:block;font-size:1.4rem;font-weight:800;color:#e74c3c}
+.btn-start,.restart-btn{border:none;cursor:pointer;font-weight:800}
+.btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;font-size:1rem;letter-spacing:.5px}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,57,43,.4)}
+.home-btn{padding:7px 10px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:9px;cursor:pointer;font-size:.8rem;font-weight:700;margin-left:8px}
+.home-btn:hover{background:rgba(0,0,0,.35)}
+.toggle-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #2d2d50;border-radius:8px;background:#0f3460;color:#dbe4f5}
+.toggle-row input{width:16px;height:16px}
+#header{background:linear-gradient(135deg,#c0392b,#922b21);padding:14px 22px;display:none;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.5);gap:10px;flex-wrap:wrap}
+#header h1{font-size:.9rem;font-weight:700;letter-spacing:.5px;line-height:1.3}
+#timer{font-size:1.25rem;font-weight:800;background:rgba(0,0,0,.3);padding:6px 14px;border-radius:20px;min-width:76px;text-align:center;transition:color .3s,background .3s;flex-shrink:0}
+#timer.warn{color:#f39c12;background:rgba(243,156,18,.2)}
+#timer.danger{color:#e74c3c;background:rgba(231,76,60,.3);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+#progress-bar{display:none;background:#16213e;height:4px}
+#progress-fill{height:4px;background:linear-gradient(90deg,#c0392b,#e74c3c);transition:width .3s}
+#nav-pills{display:none;background:#16213e;padding:10px 18px;display:flex;flex-wrap:wrap;gap:5px;border-bottom:1px solid #2d2d50}
+.pill{width:30px;height:30px;border-radius:50%;border:2px solid #2d2d50;background:transparent;color:#aaa;cursor:pointer;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.pill:hover{border-color:#c0392b;color:#fff}
+.pill.answered{background:#27ae60;border-color:#27ae60;color:#fff}
+.pill.current{border-color:#e74c3c;color:#e74c3c;transform:scale(1.15)}
+.pill.answered.current{background:#c0392b;border-color:#c0392b;color:#fff}
+#main{display:none;max-width:820px;margin:0 auto;padding:18px}
+.qcard{display:none;background:#16213e;border-radius:12px;padding:22px;margin-bottom:14px;border:1px solid #2d2d50}
+.qcard.active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.qtag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:800;letter-spacing:1px;margin-bottom:8px}
+.tag-neuro{background:rgba(192,57,43,.25);color:#e74c3c;border:1px solid rgba(192,57,43,.4)}
+.tag-clinique{background:rgba(52,152,219,.2);color:#3498db;border:1px solid rgba(52,152,219,.4)}
+.tag-physio{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
+.tag-psycho{background:rgba(241,196,15,.18);color:#f1c40f;border:1px solid rgba(241,196,15,.35)}
+.chapitre-tag{font-size:.62rem;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.qtext{font-size:.97rem;line-height:1.6;font-weight:500;margin-bottom:18px;color:#dde}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{background:#0f3460;border:2px solid #2d2d50;border-radius:8px;padding:11px 15px;cursor:pointer;font-size:.88rem;color:#ccd;transition:all .2s;text-align:left}
+.opt:hover{border-color:#c0392b;background:#1a1a2e;color:#fff}
+.opt.selected{border-color:#3498db;background:rgba(52,152,219,.15);color:#fff}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.83rem;font-weight:700;transition:all .2s}
+.btn-prev{background:#2d2d50;color:#aaa}.btn-prev:hover{background:#3d3d70;color:#fff}
+.btn-prev:disabled{opacity:.3;cursor:default}
+.btn-skip{background:transparent;border:2px solid #555;color:#999}.btn-skip:hover{border-color:#aaa;color:#ccc}
+.btn-next{background:#c0392b;color:#fff}.btn-next:hover{background:#e74c3c}
+.btn-submit{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;padding:12px 30px;font-size:.95rem}
+#submit-zone{text-align:center;padding:22px;background:#16213e;border-radius:12px;border:1px solid #2d2d50;margin-top:6px}
+#submit-zone p{color:#aaa;margin-bottom:14px;font-size:.88rem}
+#results{display:none;max-width:820px;margin:0 auto;padding:18px}
+.score-card{background:linear-gradient(135deg,#0f3460,#16213e);border-radius:16px;padding:28px;text-align:center;margin-bottom:20px;border:1px solid #2d2d50}
+.score-num{font-size:3.2rem;font-weight:900;margin-bottom:4px}
+.score-detail{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.sc-box{background:rgba(255,255,255,.05);border-radius:8px;padding:7px 12px;font-size:.8rem}
+.corr-item{background:#16213e;border-radius:10px;padding:14px 18px;margin-bottom:9px;border-left:4px solid #27ae60}
+.corr-item.wrong{border-left-color:#e74c3c}.corr-item.skipped{border-left-color:#f39c12}
+.corr-q{font-size:.81rem;font-weight:600;margin-bottom:5px;color:#dde}
+.corr-ans{font-size:.8rem;margin-bottom:3px}
+.corr-ok{color:#2ecc71;font-weight:400}.corr-ko{color:#e74c3c;font-weight:400}
+.corr-expl{font-size:.74rem;color:#99a;line-height:1.5;margin-top:5px;padding-top:5px;border-top:1px solid #2d2d50}
+#qc-section{background:#16213e;border-radius:12px;padding:22px;margin-top:6px;border:1px solid #2d2d50}
+#qc-section h2{color:#e74c3c;margin-bottom:14px;font-size:.95rem}
+.qc-item{margin-bottom:16px}
+.qc-q{font-weight:600;margin-bottom:5px;font-size:.86rem;color:#dde}
+.qc-r{background:#0f3460;border-radius:6px;padding:10px;font-size:.79rem;color:#aac;line-height:1.5;display:none}
+.show-r-btn{margin-top:5px;background:transparent;border:1px solid #3498db;color:#3498db;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.73rem}
+.restart-btn{background:#c0392b;color:#fff;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-top:14px}
+.ch-badge{display:inline-block;background:rgba(192,57,43,.15);color:#e74c3c;border-radius:4px;padding:2px 7px;font-size:.68rem;font-weight:700;margin-bottom:6px}
+.account-shell{margin-top:14px;background:linear-gradient(180deg,#152d24,#11251e);border:1px solid #2f5c4d;border-radius:14px;padding:14px}
+.account-shell h3{font-size:.95rem;color:#73d5a7;margin-bottom:8px}
+.account-shell p{color:#b2c8c0;font-size:.82rem;line-height:1.45;margin-bottom:10px}
+.account-actions{display:flex;gap:8px;flex-wrap:wrap}
+.account-btn{padding:8px 12px;border-radius:9px;border:1px solid #3f6b5c;background:#17342a;color:#d2f5e7;cursor:pointer;font-weight:700;font-size:.82rem}
+.account-btn:hover{filter:brightness(1.08)}
+.account-badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#1d4435;color:#8ef0be;font-size:.78rem;font-weight:700;margin-bottom:10px}
+.history-list{margin-top:10px;max-height:170px;overflow:auto;border-top:1px solid #2b5144;padding-top:8px}
+.history-item{font-size:.78rem;color:#cde2da;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+@media (max-width: 640px){
+  .module-grid{grid-template-columns:1fr}
+  .qnav{justify-content:center}
+}
+</style>
+</head>
+<body>
+<div id="home">
+  <div class="home-card">
+    <div class="home-actions">
+      <button class="home-btn" type="button" onclick="history.back()">Retour</button>
+      <button class="home-btn" type="button" onclick="window.location.href='index.html'">Menu</button>
+    </div>
+    <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
+    <h2>Banque Partiel — Douleur</h2>
+    <p>Banque locale au format Patho avec modules, partiel et chapitres.<br>
+    Les partiels tirent un sous-ensemble de questions et affichent un timer 45 min si activé.</p>
+    <div class="module-tabs">
+      <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
+      <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
+      <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
+    </div>
+    <div class="module-panel active" id="module-sandbox">
+      <label for="exam-size">Nombre de QCM</label>
+      <select id="exam-size">
+        <option value="10">10 QCM</option>
+        <option value="15">15 QCM</option>
+        <option value="20" selected>20 QCM</option>
+        <option value="25">25 QCM</option>
+      </select>
+      <label style="margin-top:10px">Chapitre</label>
+      <select id="chapter-filter">
+        <option value="all">Tous les chapitres</option>
+      </select>
+      <div class="module-hint">Choisis un chapitre pour filtrer le bac à sable.</div>
+    </div>
+    <div class="module-panel" id="module-partiel">
+      <div class="module-grid">
+        <div>
+          <label for="partiel-size">Nombre de QCM</label>
+          <select id="partiel-size">
+            <option value="15">15 QCM</option>
+            <option value="20">20 QCM</option>
+            <option value="25" selected>25 QCM</option>
+            <option value="30">30 QCM</option>
+          </select>
+        </div>
+        <div>
+          <label for="partiel-timer">Durée personnalisée (min)</label>
+          <input id="partiel-timer" type="number" min="1" step="1" value="45">
+        </div>
+        <div>
+          <label for="partiel-grading">Barème</label>
+          <select id="partiel-grading">
+            <option value="bac" selected>Bac (+0,25 / -0,083)</option>
+            <option value="simple">Simple (+1 / 0)</option>
+            <option value="custom">Personnalisé</option>
+          </select>
+        </div>
+        <div>
+          <label>Minuteur</label>
+          <div class="toggle-row">Activé automatiquement</div>
+        </div>
+      </div>
+      <div id="partiel-custom-box" class="module-panel" style="display:none;margin-top:10px">
+        <div class="module-grid">
+          <div>
+            <label for="custom-good">Bonne réponse</label>
+            <input id="custom-good" type="number" step="0.01" value="0.25">
+          </div>
+          <div>
+            <label for="custom-bad">Mauvaise réponse</label>
+            <input id="custom-bad" type="number" step="0.01" value="0.083">
+          </div>
+        </div>
+      </div>
+      <div class="module-hint">Mode partiel: tirage homogène sur tous les chapitres, différent à chaque essai.</div>
+    </div>
+    <div class="module-panel" id="module-chapitres">
+      <div id="chapter-quick-list"></div>
+      <div class="module-hint">Clique un chapitre pour filtrer puis lancer le quiz.</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><span id="sc1">4</span>Chapitres</div>
+      <div class="stat"><span>20</span>QCM / partiel</div>
+      <div class="stat"><span>45'</span>Timer</div>
+      <div class="stat"><span>∞</span>Partiels possibles</div>
+    </div>
+    <div id="account-zone" class="account-shell">
+      <h3>Compte local</h3>
+      <p>Connecte-toi pour enregistrer l'historique de tes scores sur cet appareil.</p>
+      <div id="account-content"></div>
+    </div>
+    <button class="btn-start" onclick="startExam()">🚀 Lancer un partiel</button>
+  </div>
+</div>
+
+<div id="header">
+  <h1>📋 PARTIEL BLANC — Douleur (tirage aléatoire)</h1>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <div id="timer">45:00</div>
+    <button class="home-btn" type="button" onclick="goBack()">Retour</button>
+    <button class="home-btn" type="button" onclick="goHome()">Menu</button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+<div id="nav-pills"></div>
+<div id="main">
+  <div id="questions-zone"></div>
+  <div id="submit-zone" style="display:none">
+    <p>Répondues : <span id="answered-count">0</span>/20 — Questions non répondues = 0 point</p>
+    <button class="btn btn-submit" onclick="submitExam()">✅ Terminer l'examen</button>
+  </div>
+</div>
+<div id="results"></div>
+<script src="remote-config.js"></script>
+<script src="remote-sync.js"></script>
+<script>
+const BANK = [
+  {ch:"Neurophysiologie",label:"Douleur centrale",type:"direct",q:"Le potentiel de repos d'un neurone typique est de :",opts:["−70 mV","−55 mV","+40 mV"],a:0,e:"−70 mV = repos. −55 mV = seuil du PA."},
+  {ch:"Neurophysiologie",label:"Douleur centrale",type:"fausse",q:"Laquelle de ces affirmations est FAUSSE concernant TRPV1 ?",opts:["Il est activé par la capsaïcine","Il est activé par une chaleur > 42°C","Il est spécifique de la douleur mécanique"],a:2,e:"TRPV1 répond à la chaleur et à la capsaïcine, pas aux stimuli mécaniques."},
+  {ch:"Clinique",label:"Médicaments",type:"direct",q:"Le tramadol est contre-indiqué en cas de :",opts:["Épilepsie non contrôlée","Hypertension artérielle","Myopie"],a:0,e:"Le tramadol peut abaisser le seuil épileptogène."},
+  {ch:"Clinique",label:"Médicaments",type:"direct",q:"La morphine est contre-indiquée en cas de :",opts:["Dépression respiratoire","Douleur neuropathique","Fièvre légère"],a:0,e:"La morphine peut aggraver une dépression respiratoire."},
+  {ch:"Clinique",label:"Médicaments",type:"direct",q:"La douleur chronique se définit comme :",opts:["Une douleur persistant plus de 3 à 6 mois","Une douleur d'intensité > 7/10","Une douleur causée par une lésion nerveuse"],a:0,e:"La définition est temporelle, pas seulement mécanistique."},
+  {ch:"Clinique",label:"Neuromodulation",type:"direct",q:"La tDCS en mode anode produit :",opts:["Une augmentation de l'excitabilité neuronale","Une diminution de l'excitabilité","Aucune modification"],a:0,e:"L'anode augmente l'excitabilité corticale."},
+  {ch:"Clinique",label:"Neuromodulation",type:"direct",q:"La rTMS haute fréquence est appliquée sur :",opts:["Le cortex moteur primaire controlatéral","Le tronc cérébral","Le cervelet"],a:0,e:"En douleur, elle cible souvent M1 controlatéral."},
+  {ch:"Psychosociaux",label:"Catastrophisme",type:"direct",q:"Le catastrophisme comporte 3 composantes :",opts:["Rumination, impuissance, magnification","Anxiété, dépression, douleur","Évitement, fatigue, insomnie"],a:0,e:"PCS = rumination + impuissance + magnification."},
+  {ch:"Psychosociaux",label:"Peur-évitement",type:"direct",q:"Le modèle peur-évitement mène à :",opts:["Évitement, hypervigilance et handicap","Rétablissement rapide","Absence d'impact fonctionnel"],a:0,e:"Le catastrophisme entretient l'évitement."},
+  {ch:"Psychosociaux",label:"TCC",type:"direct",q:"L'auto-efficacité est :",opts:["La croyance en sa capacité à gérer la douleur","L'intensité de la douleur","La présence d'une lésion"],a:0,e:"L'auto-efficacité prédit l'adaptation fonctionnelle."},
+  {ch:"Classification",label:"Douleur nociplastique",type:"direct",q:"La douleur nociplastique se caractérise par :",opts:["Diffuse et disproportionnée","Localisée et mécanique","Toujours neuropathique"],a:0,e:"Elle est souvent diffuse et disproportionnée."},
+  {ch:"Classification",label:"Allodynie",type:"direct",q:"L'allodynie est :",opts:["Une douleur provoquée par un stimulus normalement non douloureux","Une douleur provoquée uniquement par un stimulus douloureux","Une absence de douleur"],a:0,e:"Stimulus non douloureux qui devient douloureux."}
+];
+
+const QC_BANK = [
+  {q:"Définissez la sensibilisation centrale.",r:"Augmentation de la réactivité des neurones nociceptifs du système nerveux central, qui amplifie les signaux douloureux."},
+  {q:"Différence entre hyperalgésie primaire et secondaire.",r:"Primaire : sur le site de la lésion. Secondaire : en dehors du site, signe de sensibilisation centrale."},
+  {q:"Rôle du CPFdl dans la douleur chronique.",r:"Il participe à la modulation descendante et à l'aspect cognitif de la douleur. Son volume peut diminuer dans la douleur chronique."},
+  {q:"Pourquoi l'exercice peut réduire la douleur ?",r:"Il augmente les endorphines, les endocannabinoïdes, la sérotonine et la noradrénaline, favorisant la modulation descendante inhibitrice."}
+];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const QUESTIONS = shuffle(BANK.map((raw, idx) => {
+  const opts = shuffle(raw.opts);
+  return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
+}));
+
+let currentSession = [];
+let currentQC = [];
+let answers = [];
+let shuffledOpts = [];
+let shuffledCorrects = [];
+let currentQ = 0;
+let remainingSeconds = 45 * 60;
+let timerInterval = null;
+let examFinished = false;
+let activeModule = 'sandbox';
+let examDurationMinutes = 45;
+let timerEnabled = true;
+let gradingMode = 'bac';
+let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+let lastPartielSignature = '';
+const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
+const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
+let currentUser = null;
+
+function loadLeaderboard(){
+  try {
+    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    if(!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveLeaderboard(entries){
+  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
+}
+
+function recordLeaderboardResult(result){
+  const entries = loadLeaderboard();
+  entries.unshift(result);
+  saveLeaderboard(entries.slice(0, 100));
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
+    window.QCM_REMOTE.pushResult(result).catch(() => {});
+  }
+}
+
+function loadAccounts(){
+  try {
+    const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+    if(!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveAccounts(accounts){
+  localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+}
+
+function getSignedUser(){
+  const name = localStorage.getItem('qcm_signed_user') || '';
+  return name.trim();
+}
+
+function setSignedUser(name){
+  if(!name){
+    localStorage.removeItem('qcm_signed_user');
+    currentUser = null;
+    return;
+  }
+  localStorage.setItem('qcm_signed_user', name);
+  currentUser = name;
+}
+
+function normalizeUsername(value){
+  return (value || '').trim().toLowerCase().slice(0, 30);
+}
+
+function validatePin(pin){
+  return /^\d{4,8}$/.test(pin || '');
+}
+
+function renderAccountPanel(){
+  const content = document.getElementById('account-content');
+  if(!content) return;
+
+  const accounts = loadAccounts();
+  const signed = getSignedUser();
+  if(signed && accounts[signed]) currentUser = signed;
+
+  if(!currentUser || !accounts[currentUser]){
+    content.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr;gap:10px">
+        <label style="color:#d8e5f8;font-size:.86rem">Nom d'utilisateur
+          <input id="account-username" type="text" maxlength="30" placeholder="ex: sara" style="width:100%;margin-top:5px;padding:9px 10px;border-radius:10px;border:1px solid #3f5f84;background:#0a1e38;color:#ecf4ff">
+        </label>
+        <label style="color:#d8e5f8;font-size:.86rem">Code PIN (4 à 8 chiffres)
+          <input id="account-pin" type="password" maxlength="8" placeholder="ex: 1234" style="width:100%;margin-top:5px;padding:9px 10px;border-radius:10px;border:1px solid #3f5f84;background:#0a1e38;color:#ecf4ff">
+        </label>
+      </div>
+      <div class="account-actions" style="margin-top:10px">
+        <button class="account-btn" id="create-account-btn" type="button">Créer le compte</button>
+        <button class="account-btn" id="login-account-btn" type="button">Se connecter</button>
+      </div>
+    `;
+    const createBtn = document.getElementById('create-account-btn');
+    const loginBtn = document.getElementById('login-account-btn');
+    if(createBtn) createBtn.addEventListener('click', createLocalAccount);
+    if(loginBtn) loginBtn.addEventListener('click', loginLocalAccount);
+    return;
+  }
+
+  const history = Array.isArray(accounts[currentUser].history) ? accounts[currentUser].history : [];
+  content.innerHTML = `
+    <div class="account-badge">Connecté: ${currentUser}</div>
+    <div class="account-actions"><button class="account-btn" id="logout-account-btn" type="button">Se déconnecter</button></div>
+    <div class="history-list">
+      ${history.length ? history.map(item => `<div class="history-item">${item.date} • ${item.subject} • ${item.score}/${item.max} (${item.pct}%)</div>`).join('') : '<div class="history-item">Aucun score enregistré pour le moment.</div>'}
+    </div>
+  `;
+  const logoutBtn = document.getElementById('logout-account-btn');
+  if(logoutBtn) logoutBtn.addEventListener('click', logoutLocalAccount);
+}
+
+function createLocalAccount(){
+  const username = normalizeUsername(document.getElementById('account-username')?.value || '');
+  const pin = (document.getElementById('account-pin')?.value || '').trim();
+  if(!username){
+    alert('Choisis un nom d\'utilisateur.');
+    return;
+  }
+  if(!validatePin(pin)){
+    alert('Le code PIN doit contenir 4 à 8 chiffres.');
+    return;
+  }
+  const accounts = loadAccounts();
+  if(accounts[username]){
+    alert('Ce compte existe déjà. Utilise Se connecter.');
+    return;
+  }
+  accounts[username] = { pin, history: [] };
+  saveAccounts(accounts);
+  setSignedUser(username);
+  renderAccountPanel();
+}
+
+function loginLocalAccount(){
+  const username = normalizeUsername(document.getElementById('account-username')?.value || '');
+  const pin = (document.getElementById('account-pin')?.value || '').trim();
+  const accounts = loadAccounts();
+  if(!accounts[username]){
+    alert('Compte introuvable.');
+    return;
+  }
+  if(accounts[username].pin !== pin){
+    alert('PIN incorrect.');
+    return;
+  }
+  setSignedUser(username);
+  renderAccountPanel();
+}
+
+function logoutLocalAccount(){
+  setSignedUser('');
+  renderAccountPanel();
+}
+
+function saveResultForCurrentUser(result){
+  if(!currentUser) return;
+  const accounts = loadAccounts();
+  if(!accounts[currentUser]) return;
+  const history = Array.isArray(accounts[currentUser].history) ? accounts[currentUser].history : [];
+  history.unshift(result);
+  accounts[currentUser].history = history.slice(0, 30);
+  saveAccounts(accounts);
+}
+
+document.getElementById('sc1').textContent = new Set(BANK.map(q=>q.ch)).size;
+initHomeModules();
+
+function getChapters(){
+  return Array.from(new Set(BANK.map(q => q.ch))).sort((a,b) => a.localeCompare(b, 'fr'));
+}
+function selectedValues(selectEl){
+  return selectEl ? Array.from(selectEl.selectedOptions).map(o => o.value) : [];
+}
+function populateChapterSelect(){
+  const select=document.getElementById('chapter-filter');
+  if(!select) return;
+  const current=select.value || 'all';
+  const chapters=getChapters();
+  select.innerHTML='<option value="all">Tous les chapitres</option>';
+  chapters.forEach(ch=>{
+    const opt=document.createElement('option');
+    opt.value=ch;
+    opt.textContent=ch;
+    if(ch===current) opt.selected=true;
+    select.appendChild(opt);
+  });
+}
+function initPartielOptions(){
+  const grading=document.getElementById('partiel-grading');
+  const customBox=document.getElementById('partiel-custom-box');
+  if(!grading || !customBox) return;
+  const refresh=()=>customBox.classList.toggle('active', grading.value === 'custom');
+  grading.addEventListener('change', refresh);
+  refresh();
+}
+function initHomeModules(){
+  populateChapterSelect();
+  refreshExamSizeChoices();
+  const chapterFilter = document.getElementById('chapter-filter');
+  if (chapterFilter) {
+    chapterFilter.addEventListener('change', refreshExamSizeChoices);
+  }
+  initPartielOptions();
+  renderAccountPanel();
+  const quickList=document.getElementById('chapter-quick-list');
+  if(quickList){
+    quickList.innerHTML='';
+    getChapters().forEach(ch=>{
+      const chip=document.createElement('button');
+      chip.type='button';
+      chip.className='chapter-chip';
+      chip.textContent=ch;
+      chip.onclick=()=>{
+        const select=document.getElementById('chapter-filter');
+        if(select){
+          select.value=ch;
+          refreshExamSizeChoices();
+        }
+        switchModule('sandbox');
+      };
+      quickList.appendChild(chip);
+    });
+  }
+}
+function switchModule(moduleId){
+  activeModule = moduleId;
+  ['sandbox','partiel','chapitres'].forEach(id => {
+    const tab = document.getElementById(`tab-${id}`);
+    const panel = document.getElementById(`module-${id}`);
+    if(tab) tab.classList.toggle('active', id === moduleId);
+    if(panel) panel.classList.toggle('active', id === moduleId);
+  });
+}
+function applyPoolFilters(pool, chapterValues){
+  if (!chapterValues.length || chapterValues.includes('all')) return pool;
+  return pool.filter(q => chapterValues.includes(q.ch));
+}
+
+function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault){
+  const select = document.getElementById(selectId);
+  if(!select) return;
+
+  if(!Number.isFinite(maxCount) || maxCount <= 0){
+    select.innerHTML = '<option value="0">0 QCM disponible</option>';
+    select.value = '0';
+    select.disabled = true;
+    return;
+  }
+
+  const previous = parseInt(select.value, 10);
+  const candidate = Number.isFinite(previous) && previous > 0 ? previous : preferredDefault;
+  const values = Array.from(new Set((presetValues || []).filter(v => Number.isFinite(v) && v > 0 && v <= maxCount)));
+  if(!values.includes(maxCount)) values.push(maxCount);
+  values.sort((a,b)=>a-b);
+
+  select.disabled = false;
+  select.innerHTML = '';
+  values.forEach(v => {
+    const option = document.createElement('option');
+    option.value = String(v);
+    option.textContent = `${v} QCM`;
+    select.appendChild(option);
+  });
+
+  const fallback = values.includes(preferredDefault) ? preferredDefault : values[values.length - 1];
+  const nextValue = values.includes(candidate) ? candidate : fallback;
+  select.value = String(nextValue);
+}
+
+function refreshExamSizeChoices(){
+  const selectedChapters = selectedValues(document.getElementById('chapter-filter'));
+  const sandboxPool = applyPoolFilters(BANK, selectedChapters);
+  syncExamSizeSelect('exam-size', sandboxPool.length, [10, 15, 20, 25], 20);
+  syncExamSizeSelect('partiel-size', BANK.length, [15, 20, 25, 30], 25);
+}
+
+function pickBalancedQuestions(totalCount){
+  const byChapter=new Map();
+  BANK.forEach(q=>{
+    if(!byChapter.has(q.ch)) byChapter.set(q.ch, []);
+    byChapter.get(q.ch).push(q);
+  });
+  const chapters=shuffle(Array.from(byChapter.keys()));
+  const base=Math.floor(totalCount / chapters.length);
+  const extra=totalCount % chapters.length;
+  const chosen=[];
+  chapters.forEach((ch, idx)=>{
+    const chapterQs=shuffle(byChapter.get(ch));
+    const target=base + (idx < extra ? 1 : 0);
+    chosen.push(...chapterQs.slice(0, Math.min(target, chapterQs.length)));
+  });
+  if(chosen.length < totalCount){
+    const already=new Set(chosen.map(q => `${q.ch}||${q.q}`));
+    const rest=shuffle(BANK.filter(q => !already.has(`${q.ch}||${q.q}`)));
+    chosen.push(...rest.slice(0, totalCount - chosen.length));
+  }
+  return shuffle(chosen).slice(0, totalCount);
+}
+
+function examSignature(draw){
+  return draw.map(q => `${q.ch}::${q.q}`).sort().join('||');
+}
+
+function overlapWithLastDraw(draw){
+  if(!lastPartielSignature) return 0;
+  const previous = new Set(lastPartielSignature.split('||').filter(Boolean));
+  let overlap = 0;
+  draw.forEach(q => {
+    if(previous.has(`${q.ch}::${q.q}`)) overlap += 1;
+  });
+  return overlap;
+}
+
+function getPartielDraw(examSize){
+  const maxCount = Math.min(examSize, BANK.length);
+  const tries = 12;
+  let bestDraw = [];
+  let bestSignature = '';
+  let bestOverlap = Number.POSITIVE_INFINITY;
+
+  for(let i = 0; i < tries; i++){
+    const draw = pickBalancedQuestions(maxCount);
+    const sig = examSignature(draw);
+    const overlap = overlapWithLastDraw(draw);
+
+    if(overlap < bestOverlap){
+      bestDraw = draw;
+      bestSignature = sig;
+      bestOverlap = overlap;
+    }
+
+    if(sig !== lastPartielSignature || BANK.length <= examSize){
+      lastPartielSignature = sig;
+      return draw;
+    }
+  }
+
+  lastPartielSignature = bestSignature || examSignature(bestDraw);
+  return bestDraw.length ? bestDraw : pickBalancedQuestions(maxCount);
+}
+function startExam(){
+  stopTimer();
+  let pool=BANK;
+  let examSize=20;
+  examDurationMinutes=45;
+  timerEnabled=true;
+  gradingMode='bac';
+  gradingConfig={ good:0.25, bad:0.083, label:'Bac (+0,25 / -0,083)' };
+
+  if(activeModule === 'sandbox' || activeModule === 'chapitres'){
+    const sizeEl=document.getElementById('exam-size');
+    const chapterFilter=document.getElementById('chapter-filter');
+    examSize=sizeEl ? parseInt(sizeEl.value, 10) : 20;
+    if(!Number.isFinite(examSize) || examSize < 1) examSize = 20;
+    const selectedChapters = selectedValues(chapterFilter);
+    pool = applyPoolFilters(BANK, selectedChapters);
+  } else if(activeModule === 'partiel'){
+    const partielSize=document.getElementById('partiel-size');
+    const partielTimer=document.getElementById('partiel-timer');
+    const partielGrading=document.getElementById('partiel-grading');
+    const customGood=document.getElementById('custom-good');
+    const customBad=document.getElementById('custom-bad');
+    examSize = partielSize ? parseInt(partielSize.value, 10) : 20;
+    if(!Number.isFinite(examSize) || examSize < 1) examSize = 20;
+    timerEnabled = true;
+    examDurationMinutes = partielTimer ? parseInt(partielTimer.value, 10) : 45;
+    if(!Number.isFinite(examDurationMinutes) || examDurationMinutes < 1) examDurationMinutes = 45;
+    gradingMode = partielGrading ? partielGrading.value : 'bac';
+    if(gradingMode === 'simple') gradingConfig = { good:1, bad:0, label:'Simple (+1 / 0)' };
+    else if(gradingMode === 'custom'){
+      const good = customGood ? parseFloat(customGood.value) : 0.25;
+      const bad = customBad ? parseFloat(customBad.value) : 0.083;
+      gradingConfig = { good, bad, label:`Personnalisé (+${good} / -${bad})` };
+    }
+    currentSession = getPartielDraw(examSize);
+  }
+
+  if(activeModule !== 'partiel' && pool.length === 0){
+    alert('Aucune question disponible pour la sélection actuelle.');
+    return;
+  }
+  if(activeModule !== 'partiel'){
+    const shuffled = shuffle([...Array(pool.length).keys()]);
+    currentSession = shuffled.slice(0, Math.min(examSize, pool.length)).map(i => pool[i]);
+  }
+
+  const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
+  currentQC = shuffledQC.slice(0, 4).map(i => QC_BANK[i]);
+  answers = new Array(currentSession.length).fill(null);
+  shuffledOpts = [];
+  shuffledCorrects = [];
+  currentSession.forEach(q => {
+    const correctText = q.opts[q.ans];
+    const sh = shuffle(q.opts);
+    shuffledOpts.push(sh);
+    shuffledCorrects.push(sh.indexOf(correctText));
+  });
+  currentQ = 0;
+  remainingSeconds = timerEnabled ? examDurationMinutes * 60 : 0;
+  examFinished = false;
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('header').style.display = 'flex';
+  document.getElementById('progress-bar').style.display = 'block';
+  document.getElementById('nav-pills').style.display = 'flex';
+  document.getElementById('main').style.display = 'block';
+  updateTimerDisplay();
+  buildUI();
+  if(timerEnabled) startTimer();
+}
+function buildUI(){
+  document.getElementById('questions-zone').innerHTML='';
+  document.getElementById('nav-pills').innerHTML='';
+  currentSession.forEach((q, i) => {
+    const p=document.createElement('button');
+    p.className='pill' + (i === 0 ? ' current' : '');
+    p.textContent=i+1;
+    p.id='pill-'+i;
+    p.onclick=()=>goTo(i);
+    document.getElementById('nav-pills').appendChild(p);
+    const tc=q.type === 'fausse' ? 'tag-neuro' : q.type === 'vraie' ? 'tag-physio' : q.ch === 'Psychosociaux' ? 'tag-psycho' : 'tag-clinique';
+    const tt=q.type === 'fausse' ? '❌ LAQUELLE EST FAUSSE ?' : q.type === 'vraie' ? '✅ LAQUELLE EST VRAIE ?' : '❓ QUESTION DIRECTE';
+    const card=document.createElement('div');
+    card.className='qcard' + (i === 0 ? ' active' : '');
+    card.id='qcard-'+i;
+    card.innerHTML=`
+      <div class="chapitre-tag">${q.ch} — ${q.label}</div>
+      <div class="qtag ${tc}">${tt}</div>
+      <div class="qtext">Q${i + 1}. ${q.q}</div>
+      <div class="opts" id="opts-${i}">
+        ${shuffledOpts[i].map((o, oi) => `<button class="opt" id="opt-${i}-${oi}" onclick="selectOpt(${i},${oi})">${String.fromCharCode(65 + oi)}. ${o}</button>`).join('')}
+      </div>
+      <div class="qnav">
+        <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
+        <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
+        ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
+      </div>`;
+    document.getElementById('questions-zone').appendChild(card);
+  });
+  document.getElementById('submit-zone').style.display='block';
+  document.getElementById('submit-zone').querySelector('p').textContent = `Répondues : 0/${currentSession.length} — Questions non répondues = 0 point`;
+  updateProgress();
+}
+function selectOpt(qi, oi){
+  if(examFinished) return;
+  answers[qi] = oi;
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach((b, i) => b.classList.toggle('selected', i === oi));
+  document.getElementById('pill-' + qi).classList.add('answered');
+  updateProgress();
+}
+function goTo(idx){
+  if(idx < 0 || idx >= currentSession.length) return;
+  document.getElementById('qcard-' + currentQ).classList.remove('active');
+  document.getElementById('pill-' + currentQ).classList.remove('current');
+  currentQ = idx;
+  document.getElementById('qcard-' + idx).classList.add('active');
+  document.getElementById('pill-' + idx).classList.add('current');
+  window.scrollTo(0, 0);
+}
+function updateProgress(){
+  const done = answers.filter(a => a !== null).length;
+  const total = currentSession.length;
+  const answeredCount = document.getElementById('answered-count');
+  const submitText = document.getElementById('submit-zone') ? document.getElementById('submit-zone').querySelector('p') : null;
+  const progressFill = document.getElementById('progress-fill');
+  if (answeredCount) answeredCount.textContent = done;
+  if (submitText) submitText.textContent = `Répondues : ${done}/${total} — Questions non répondues = 0 point`;
+  if (progressFill) progressFill.style.width = total ? (done / total * 100) + '%' : '0%';
+}
+function updateTimerDisplay(){
+  const t=document.getElementById('timer');
+  if(!t) return;
+  const m=Math.floor(remainingSeconds / 60);
+  const s=remainingSeconds % 60;
+  t.textContent=`${m}:${String(s).padStart(2, '0')}`;
+  t.classList.remove('warn', 'danger');
+  if(remainingSeconds <= 30) t.classList.add('danger');
+  else if(remainingSeconds <= 120) t.classList.add('warn');
+}
+function startTimer(){
+  stopTimer();
+  if(!timerEnabled) return;
+  if(remainingSeconds <= 0) remainingSeconds = examDurationMinutes * 60;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    remainingSeconds -= 1;
+    updateTimerDisplay();
+    if(remainingSeconds <= 0){
+      stopTimer();
+      submitExam();
+    }
+  }, 1000);
+}
+function stopTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+function submitExam(){
+  if(examFinished) return;
+  examFinished = true;
+  stopTimer();
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('nav-pills').style.display = 'none';
+  showResults();
+}
+function showResults(){
+  let correct = 0, wrong = 0, skipped = 0;
+  const timeUsed = timerEnabled ? (examDurationMinutes * 60 - remainingSeconds) : 0;
+  const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
+  let corrHTML = '';
+  currentSession.forEach((q, i) => {
+    const ua = answers[i], ca = shuffledCorrects[i];
+    let cls;
+    if (ua === null) { cls = 'skipped'; skipped++; }
+    else if (ua === ca) { correct++; }
+    else { cls = 'wrong'; wrong++; }
+    const ut = ua !== null ? shuffledOpts[i][ua] : '—';
+    const ct = shuffledOpts[i][ca];
+    corrHTML += `<div class="corr-item ${cls}">
+      <div class="ch-badge">${q.ch}</div>
+      <div class="corr-q">${q.q}</div>
+      <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${ut}</span></div>
+      <div class="corr-ans">Bonne réponse : <span class="corr-ok">${ct}</span></div>
+      <div class="corr-expl">💡 ${q.e}</div>
+    </div>`;
+  });
+  const raw = Math.max(0, (correct * gradingConfig.good - wrong * gradingConfig.bad));
+  const score = raw.toFixed(2);
+  const pct = Math.round(currentSession.length ? correct / currentSession.length * 100 : 0);
+  const maxScore = (currentSession.length * gradingConfig.good).toFixed(2);
+  const emoji = score >= 5.5 ? '🏆' : score >= 4 ? '👍' : score >= 3 ? '📖' : '💪';
+  const dateLabel = new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+
+  recordLeaderboardResult({
+    date: dateLabel,
+    subject: 'Douleur',
+    user: currentUser || 'Invité',
+    score,
+    max: maxScore,
+    pct
+  });
+
+  saveResultForCurrentUser({
+    date: dateLabel,
+    subject: 'Douleur',
+    score,
+    max: maxScore,
+    pct
+  });
+
+  const qcHTML = currentQC.map((qc, i) => `
+    <div class="qc-item">
+      <div class="qc-q">Q${i + 1}. ${qc.q}</div>
+      <button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button>
+      <div class="qc-r" id="qcr-${i}">${qc.r}</div>
+    </div>`).join('');
+  document.getElementById('results').innerHTML = `
+    <div class="score-card">
+      <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
+      <div class="score-num" style="color:${score >= 4.5 ? '#2ecc71' : score >= 3 ? '#f39c12' : '#e74c3c'}">${score}<span style="font-size:1.4rem">/${maxScore}</span></div>
+      <div style="color:#aaa;font-size:.82rem;margin-top:4px">Score sur ${currentSession.length} QCM (${gradingConfig.label}) — ${pct}% de bonnes réponses</div>
+      <div class="score-detail">
+        <div class="sc-box" style="color:#2ecc71">✅ ${correct} correctes</div>
+        <div class="sc-box" style="color:#e74c3c">❌ ${wrong} incorrectes</div>
+        <div class="sc-box" style="color:#f39c12">⏭ ${skipped} passées</div>
+        <div class="sc-box">⏱ ${mu}min ${String(su).padStart(2, '0')}s</div>
+      </div>
+    </div>
+    <div id="qc-section">
+      <h2>📝 QUESTIONS COURTES — Rédige d'abord, puis dévoile</h2>
+      ${qcHTML}
+    </div>
+    <div style="margin-top:14px">
+      <h3 style="color:#e74c3c;margin-bottom:10px;font-size:.92rem">📋 CORRECTIONS DÉTAILLÉES</h3>
+      ${corrHTML}
+    </div>
+    <div style="text-align:center;padding:20px">
+      <div style="color:#aaa;font-size:.82rem;margin-bottom:10px">Banque : ${BANK.length} questions • ${QC_BANK.length} questions courtes</div>
+      <div style="color:#8fb3a8;font-size:.78rem;margin-bottom:10px">${currentUser ? `Résultat enregistré sur le compte: ${currentUser}` : 'Connecte-toi avec un compte local pour sauvegarder tes résultats.'}</div>
+      <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
+      <button class="restart-btn" style="margin-left:8px;background:#2d2d50" onclick="goHome()">🏠 Retour menu</button>
+    </div>`;
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function toggleR(i){
+  const el = document.getElementById('qcr-' + i);
+  const btn = document.getElementById('sbtn-' + i);
+  const hidden = el.style.display === 'none' || el.style.display === '';
+  el.style.display = hidden ? 'block' : 'none';
+  btn.textContent = hidden ? 'Masquer' : 'Voir la réponse';
+}
+function newExam(){
+  goHome();
+}
+function goBack(){
+  if(!examFinished && document.getElementById('main').style.display === 'block'){
+    if(currentQ > 0){
+      goTo(currentQ - 1);
+      return;
+    }
+  }
+  goHome();
+}
+function goHome(){
+  if(!examFinished && document.getElementById('main').style.display === 'block'){
+    const ok = confirm('Quitter l\'examen en cours et revenir à l\'accueil ?');
+    if(!ok) return;
+  }
+  stopTimer();
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('header').style.display = 'none';
+  document.getElementById('progress-bar').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('nav-pills').style.display = 'none';
+  document.getElementById('timer').className = '';
+  document.getElementById('home').style.display = 'block';
+  examFinished = false;
+}
+</script>
+</body>
+</html>
