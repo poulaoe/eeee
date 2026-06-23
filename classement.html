@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classement local</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:
+  radial-gradient(circle at top left, rgba(231,76,60,.18), transparent 30%),
+  radial-gradient(circle at top right, rgba(15,52,96,.35), transparent 28%),
+  linear-gradient(180deg,#0f1726,#111829 55%,#0d1320);color:#e8e8f0;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 18px 40px}
+.hero{background:linear-gradient(135deg,#16213e,#0f3460);border:1px solid #2d2d50;border-radius:24px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:#8eb7ff;margin-bottom:10px}
+h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.05;margin-bottom:10px;color:#fff}
+.lead{color:#b7c7e6;max-width:720px;line-height:1.7}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:12px;padding:11px 16px;font-weight:800;text-decoration:none;cursor:pointer;transition:transform .2s,filter .2s,background .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff}
+.btn-secondary{background:#20304f;color:#dbe8ff;border:1px solid #33517b}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
+.stat{background:rgba(15,52,96,.55);border:1px solid #2d2d50;border-radius:18px;padding:16px}
+.stat span{display:block;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}
+.panel{background:#16213e;border:1px solid #2d2d50;border-radius:22px;padding:20px;box-shadow:0 16px 40px rgba(0,0,0,.16)}
+.panel h2{font-size:1.05rem;color:#ffd8d4;margin-bottom:14px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px;padding:9px 12px;min-width:180px}
+.filters .clear-btn{background:transparent;color:#dbe8ff;border:1px solid #33517b;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer}
+.filters .clear-btn:hover{background:#20304f}
+.list{display:flex;flex-direction:column;gap:10px}
+.entry{background:linear-gradient(180deg,#0f3460,#10284b);border:1px solid #2d2d50;border-radius:16px;padding:14px 15px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.rank{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:900;background:rgba(231,76,60,.18);color:#ffb4ac;border:1px solid rgba(231,76,60,.35)}
+.subject{font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:#8eb7ff;margin-bottom:4px}
+.name{font-size:1rem;font-weight:800;color:#fff}
+.meta{font-size:.86rem;color:#c7d5ef;line-height:1.45}
+.score{font-size:1.2rem;font-weight:900;color:#fff;text-align:right}
+.empty{padding:24px;border:1px dashed #3c5479;border-radius:16px;color:#b9c8e2;background:rgba(15,52,96,.2);line-height:1.6}
+.side-list{display:flex;flex-direction:column;gap:10px}
+.mini{background:#0f3460;border:1px solid #2d2d50;border-radius:16px;padding:14px}
+.mini h3{font-size:.92rem;color:#fff;margin-bottom:6px}
+.mini p{font-size:.84rem;color:#b7c7e6;line-height:1.5}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:.74rem;color:#dbe8ff}
+@media (max-width: 860px){.grid{grid-template-columns:1fr}.entry{grid-template-columns:auto 1fr}.score{text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Classement</div>
+        <h1>Les meilleurs scores enregistrés</h1>
+        <p class="lead">Cette page lit les résultats sauvegardés en local et, si activé, en ligne puis trie les meilleures performances par score, pourcentage et date.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="index.html">Retour menu</a>
+        <button class="btn btn-primary" type="button" onclick="refreshBoard()">Rafraîchir</button>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Top résultats</h2>
+      <div class="filters">
+        <select id="subject-filter"></select>
+        <select id="user-filter"></select>
+        <select id="sort-filter">
+          <option value="score">Trier par score</option>
+          <option value="pct">Trier par pourcentage</option>
+          <option value="date">Trier par date</option>
+        </select>
+        <button class="clear-btn" type="button" onclick="resetFilters()">Réinitialiser</button>
+      </div>
+      <div class="list" id="leaderboard-list"></div>
+    </section>
+
+    <aside class="panel">
+      <h2>Repères</h2>
+      <div class="side-list" id="summary-list"></div>
+      <div class="mini" style="margin-top:12px">
+        <h3>Astuce</h3>
+        <p>Sans configuration cloud, le classement reste local à cet appareil. Avec Supabase activé, les résultats sont partagés en ligne.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="remote-config.js"></script>
+<script src="remote-sync.js"></script>
+<script>
+const STORAGE_KEY = 'qcm_leaderboard_v1';
+
+function loadLeaderboard() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function formatDateLabel(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('fr-FR');
+}
+
+function normalizeEntry(item) {
+  return {
+    date: String(item?.date || ''),
+    subject: String(item?.subject || 'Inconnu'),
+    user: String(item?.user || 'Résultat local'),
+    score: String(item?.score || '0'),
+    max: String(item?.max || '0'),
+    pct: Number.isFinite(Number(item?.pct)) ? Number(item.pct) : 0
+  };
+}
+
+function dedupeEntries(entries) {
+  const seen = new Set();
+  const out = [];
+  entries.forEach(item => {
+    const n = normalizeEntry(item);
+    const key = [n.date, n.subject, n.user, n.score, n.max, n.pct].join('|');
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(n);
+  });
+  return out;
+}
+
+async function loadCombinedLeaderboard() {
+  const localEntries = loadLeaderboard();
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchResults !== 'function') {
+    return localEntries;
+  }
+  const remoteEntries = await window.QCM_REMOTE.fetchResults();
+  return dedupeEntries([...(Array.isArray(remoteEntries) ? remoteEntries : []), ...localEntries]);
+}
+
+function buildFilters(entries) {
+  const select = document.getElementById('subject-filter');
+  const userSelect = document.getElementById('user-filter');
+  const subjects = Array.from(new Set(entries.map(item => item.subject || 'Inconnu'))).sort((a, b) => a.localeCompare(b, 'fr'));
+  const users = Array.from(new Set(entries.map(item => item.user || 'Résultat local'))).sort((a, b) => a.localeCompare(b, 'fr'));
+  select.innerHTML = '<option value="all">Toutes les matières</option>' + subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+  userSelect.innerHTML = '<option value="all">Tous les utilisateurs</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
+}
+
+function summarize(entries) {
+  const stats = document.getElementById('stats');
+  const summary = document.getElementById('summary-list');
+  const bySubject = new Map();
+  const byUser = new Map();
+  entries.forEach(item => {
+    const subject = item.subject || 'Inconnu';
+    const user = item.user || 'Résultat local';
+    const bucket = bySubject.get(subject) || { count: 0, best: null, avg: 0 };
+    bucket.count += 1;
+    bucket.avg += parseFloat(item.pct || 0);
+    const score = parseFloat(item.score || 0);
+    if (!bucket.best || score > parseFloat(bucket.best.score || 0)) bucket.best = item;
+    bySubject.set(subject, bucket);
+
+    const userBucket = byUser.get(user) || { count: 0, best: null, avg: 0 };
+    userBucket.count += 1;
+    userBucket.avg += parseFloat(item.pct || 0);
+    if (!userBucket.best || score > parseFloat(userBucket.best.score || 0)) userBucket.best = item;
+    byUser.set(user, userBucket);
+  });
+  const allBest = entries[0] || null;
+  stats.innerHTML = [
+    { v: entries.length, l: 'Résultats' },
+    { v: bySubject.size, l: 'Matières' },
+    { v: byUser.size, l: 'Utilisateurs' },
+    { v: allBest ? `${allBest.score}/${allBest.max}` : '0/0', l: 'Meilleur score' },
+    { v: allBest ? `${allBest.pct}%` : '0%', l: 'Meilleur taux' }
+  ].map(item => `<div class="stat"><span>${item.v}</span>${item.l}</div>`).join('');
+
+  summary.innerHTML = bySubject.size
+    ? Array.from(bySubject.entries()).sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([subject, data]) => {
+        const avg = data.count ? Math.round((data.avg / data.count) * 10) / 10 : 0;
+        return `<div class="mini"><h3>${subject}</h3><p>${data.count} tentative(s)<br>Moyenne: ${avg}%<br>Meilleur: ${data.best ? `${data.best.score}/${data.best.max}` : '—'}</p></div>`;
+      }).join('')
+    : '<div class="mini"><h3>Aucun résultat</h3><p>Fais un partiel pour remplir le classement.</p></div>';
+
+  const userSummary = document.createElement('div');
+  userSummary.className = 'mini';
+  userSummary.style.marginTop = '10px';
+  userSummary.innerHTML = byUser.size
+    ? `<h3>Utilisateurs</h3><div class="tag-row">${Array.from(byUser.entries()).sort((a, b) => a[0].localeCompare(b[0], 'fr')).slice(0, 8).map(([user, data]) => `<span class="tag">${user} • ${data.count}</span>`).join('')}</div>`
+    : '<h3>Utilisateurs</h3><p>Aucun compte local identifié.</p>';
+  if (!summary.querySelector('.mini[data-user-summary]')) {
+    userSummary.setAttribute('data-user-summary', '1');
+    summary.appendChild(userSummary);
+  } else {
+    const existing = summary.querySelector('.mini[data-user-summary]');
+    existing.replaceWith(userSummary);
+  }
+}
+
+async function renderBoard() {
+  const entries = (await loadCombinedLeaderboard()).slice().sort((a, b) => {
+    const scoreDiff = parseFloat(b.score || 0) - parseFloat(a.score || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+    const pctDiff = parseFloat(b.pct || 0) - parseFloat(a.pct || 0);
+    if (pctDiff !== 0) return pctDiff;
+    return new Date(b.date || 0) - new Date(a.date || 0);
+  });
+
+  buildFilters(entries);
+  summarize(entries);
+
+  const subjectFilter = document.getElementById('subject-filter').value || 'all';
+  const userFilter = document.getElementById('user-filter').value || 'all';
+  const sortFilter = document.getElementById('sort-filter').value || 'score';
+  let filtered = entries.filter(item => (subjectFilter === 'all' || (item.subject || 'Inconnu') === subjectFilter) && (userFilter === 'all' || (item.user || 'Résultat local') === userFilter));
+  filtered = filtered.slice().sort((a, b) => {
+    if (sortFilter === 'pct') return parseFloat(b.pct || 0) - parseFloat(a.pct || 0);
+    if (sortFilter === 'date') return new Date(b.date || 0) - new Date(a.date || 0);
+    return parseFloat(b.score || 0) - parseFloat(a.score || 0);
+  });
+
+  const list = document.getElementById('leaderboard-list');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">Aucun résultat enregistré pour le moment. Lance un partiel ou un bac à sable pour alimenter ce classement.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.slice(0, 50).map((item, index) => {
+    return `<div class="entry">
+      <div class="rank">${index + 1}</div>
+      <div>
+        <div class="subject">${item.subject || 'Inconnu'}</div>
+        <div class="name">${item.user || 'Résultat local'}</div>
+        <div class="meta">${formatDateLabel(item.date)}<br>${item.max ? `Sur ${item.max}` : ''}</div>
+      </div>
+      <div class="score">${item.score || '0'}/${item.max || '0'}<br><span style="font-size:.9rem;color:#b7c7e6">${item.pct || 0}%</span></div>
+    </div>`;
+  }).join('');
+}
+
+function refreshBoard() {
+  renderBoard();
+}
+
+function resetFilters() {
+  document.getElementById('subject-filter').value = 'all';
+  document.getElementById('user-filter').value = 'all';
+  document.getElementById('sort-filter').value = 'score';
+  renderBoard();
+}
+
+document.getElementById('subject-filter').addEventListener('change', renderBoard);
+document.getElementById('user-filter').addEventListener('change', renderBoard);
+document.getElementById('sort-filter').addEventListener('change', renderBoard);
+renderBoard();
+</script>
+</body>
+</html>

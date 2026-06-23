@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu des matières — Banque Partiel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#111829;color:#e8e8f0;min-height:100vh}
+.container{max-width:980px;margin:0 auto;padding:30px 20px}
+.card{background:#16213e;border:1px solid #2d2d50;border-radius:18px;padding:32px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.card h1{font-size:2rem;color:#e74c3c;margin-bottom:12px}
+.card p{color:#aaa;font-size:1rem;line-height:1.7;margin-bottom:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.tile{background:#0f3460;border:1px solid #2d2d50;border-radius:16px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;transition:all .25s;cursor:pointer;text-align:left;color:#dde}
+.tile:hover{transform:translateY(-4px);border-color:#c0392b;box-shadow:0 16px 30px rgba(0,0,0,.25)}
+.tile.primary{background:linear-gradient(135deg,#1e436f,#0f3460);border-color:#e74c3c}
+.tile h2{font-size:1.2rem;margin-bottom:10px;color:#fff}
+.tile p{font-size:.92rem;color:#aac;line-height:1.5;}
+.tile small{display:block;margin-top:18px;color:#8ea1bf;font-size:.82rem}
+.footer{margin-top:30px;color:#8992b0;font-size:.9rem;line-height:1.6}
+a.button-link{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:12px;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;text-decoration:none;font-weight:700;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>Menu des matières</h1>
+    <p>Choisis ta matière pour démarrer le QCM. Le classement est disponible directement depuis ce menu :</p>
+    <div class="grid">
+      <a class="tile primary" href="classement.html">
+        <div>
+          <h2>Classement</h2>
+          <p>Consulte les meilleurs scores enregistrés sur cet appareil.</p>
+        </div>
+        <small>Voir le classement local</small>
+      </a>
+      <a class="tile" href="patho.html">
+        <div>
+          <h2>Pathologie</h2>
+          <p>QCM Pathologie avec banque de questions existante.</p>
+        </div>
+        <small>Ouvrir la matière Pathologie</small>
+      </a>
+      <a class="tile" href="anat.html">
+        <div>
+          <h2>Anatomie</h2>
+          <p>Page en attente du fichier de questions d'anatomie.</p>
+        </div>
+        <small>Ajouter `anat.html` bientôt</small>
+      </a>
+      <a class="tile" href="proced.html">
+        <div>
+          <h2>Procédure</h2>
+          <p>Page en attente du fichier de questions sur les procédures.</p>
+        </div>
+        <small>Ajouter `proced.html` bientôt</small>
+      </a>
+      <a class="tile" href="douleur.html">
+        <div>
+          <h2>Douleur</h2>
+          <p>Page en attente du fichier de questions sur la douleur.</p>
+        </div>
+        <small>Ajouter `douleur.html` bientôt</small>
+      </a>
+    </div>
+    <div class="footer">
+      <p>Tu peux remplacer ces fichiers plus tard par d'autres contenus pour chaque matière.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
