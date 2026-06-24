@@ -208,11 +208,11 @@ window.SUBJECT_DESC = 'Banque Biomécanique au même format que Pathologie et Do
 window.BANK = window.BIOMEC_BANK || [];
 window.QC_BANK = window.QC_BANK || [];
 
-if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
+if (!Array.isArray(window.BIOMEC_BANK) || window.BIOMEC_BANK.length === 0) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
-    desc.textContent = 'La banque Anat ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
+    desc.textContent = 'La banque Biomec ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
   }
   if (msg) {
     msg.style.color = '#ffb3a8';
