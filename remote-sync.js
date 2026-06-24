@@ -143,11 +143,28 @@
       });
   }
 
+  function fetchFeedback() {
+    if (!hasRemote()) return Promise.resolve([]);
+
+    return request('/rest/v1/feedback?order=date.desc&limit=500', {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (response) {
+        if (!response || !response.ok) return [];
+        return response.json ? response.json() : [];
+      })
+      .catch(function () {
+        return [];
+      });
+  }
+
   window.QCM_REMOTE = {
     isConfigured: hasRemote,
     pushResult: pushResult,
     fetchResults: fetchResults,
     normalizeEntry: normalizeEntry,
-    pushFeedback: pushFeedback
+    pushFeedback: pushFeedback,
+    fetchFeedback: fetchFeedback
   };
 })();

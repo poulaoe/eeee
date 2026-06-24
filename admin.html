@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Signalements QCM</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .header h1 {
+      color: #2a5298;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+    
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .control-group label {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.85rem;
+    }
+    
+    .control-group select,
+    .control-group input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .control-group select:focus,
+    .control-group input:focus {
+      outline: none;
+      border-color: #2a5298;
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    
+    button {
+      padding: 8px 16px;
+      background: #2a5298;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: #1e3c72;
+    }
+    
+    button.secondary {
+      background: #666;
+    }
+    
+    button.secondary:hover {
+      background: #555;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .status-badge.report {
+      background: #ffe6e6;
+      color: #c00;
+    }
+    
+    .status-badge.contact {
+      background: #e6f3ff;
+      color: #0066cc;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2a5298;
+      margin-bottom: 5px;
+    }
+    
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .feedback-list {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .feedback-item {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-left: 4px solid #2a5298;
+    }
+    
+    .feedback-item.contact {
+      border-left-color: #0066cc;
+    }
+    
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    
+    .feedback-date {
+      font-size: 0.85rem;
+      color: #999;
+    }
+    
+    .feedback-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #666;
+    }
+    
+    .meta-item strong {
+      color: #333;
+    }
+    
+    .feedback-content {
+      margin-bottom: 12px;
+    }
+    
+    .feedback-content h4 {
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .feedback-content p {
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    
+    .feedback-description {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 8px;
+      font-style: italic;
+      color: #555;
+      font-size: 0.9rem;
+      border-left: 3px solid #ffa500;
+    }
+    
+    .empty-state {
+      background: white;
+      padding: 40px;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: #999;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: white;
+      font-size: 1.1rem;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c00;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #c00;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .pagination button {
+      padding: 8px 12px;
+      min-width: 40px;
+    }
+    
+    .pagination button.active {
+      background: #1e3c72;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 Admin - Signalements QCM</h1>
+      <p>Consultez et gérez tous les signalements et messages de vos étudiants</p>
+    </div>
+    
+    <div id="error-zone"></div>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label for="filter-type">Type</label>
+        <select id="filter-type">
+          <option value="">Tous</option>
+          <option value="report">Signalements (🚩)</option>
+          <option value="contact">Messages (💬)</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="filter-subject">Matière</label>
+        <select id="filter-subject">
+          <option value="">Toutes</option>
+          <option value="Patho">Patho</option>
+          <option value="Douleur">Douleur</option>
+          <option value="Anat">Anat</option>
+          <option value="Proced">Proced</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="filter-user">Utilisateur</label>
+        <input id="filter-user" type="text" placeholder="Filtrer par nom...">
+      </div>
+      
+      <div class="button-group">
+        <button onclick="loadFeedback()">🔄 Rafraîchir</button>
+        <button class="secondary" onclick="exportData()">📥 Exporter</button>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="number" id="stat-total">0</div>
+        <div class="label">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="stat-reports">0</div>
+        <div class="label">Signalements</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="stat-messages">0</div>
+        <div class="label">Messages</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="stat-subjects">0</div>
+        <div class="label">Matières</div>
+      </div>
+    </div>
+    
+    <div id="loading" class="loading" style="display:none">
+      ⏳ Chargement des données...
+    </div>
+    
+    <div class="feedback-list" id="feedback-list">
+      <div class="empty-state">Aucune donnée. Cliquez sur "Rafraîchir" pour charger.</div>
+    </div>
+  </div>
+  
+  <script src="remote-config.js"></script>
+  <script src="remote-sync.js"></script>
+  
+  <script>
+    let allFeedback = [];
+    
+    async function loadFeedback() {
+      const loading = document.getElementById('loading');
+      const errorZone = document.getElementById('error-zone');
+      const list = document.getElementById('feedback-list');
+      
+      loading.style.display = 'block';
+      errorZone.innerHTML = '';
+      
+      try {
+        if (!window.QCM_REMOTE || !window.QCM_REMOTE.fetchFeedback) {
+          throw new Error('❌ Supabase non configuré');
+        }
+        
+        const result = await window.QCM_REMOTE.fetchFeedback();
+        allFeedback = result || [];
+        
+        updateStats();
+        renderFeedback();
+        
+      } catch (error) {
+        errorZone.innerHTML = `<div class="error">⚠️ Erreur: ${error.message}</div>`;
+        list.innerHTML = '<div class="empty-state">Erreur lors du chargement.</div>';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+    
+    function updateStats() {
+      const total = allFeedback.length;
+      const reports = allFeedback.filter(f => f.type === 'report').length;
+      const messages = allFeedback.filter(f => f.type === 'contact').length;
+      const subjects = new Set(allFeedback.map(f => f.subject)).size;
+      
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-reports').textContent = reports;
+      document.getElementById('stat-messages').textContent = messages;
+      document.getElementById('stat-subjects').textContent = subjects;
+    }
+    
+    function getFilteredFeedback() {
+      const type = document.getElementById('filter-type').value;
+      const subject = document.getElementById('filter-subject').value;
+      const user = document.getElementById('filter-user').value.toLowerCase();
+      
+      return allFeedback.filter(f => {
+        if (type && f.type !== type) return false;
+        if (subject && f.subject !== subject) return false;
+        if (user && !f.user.toLowerCase().includes(user)) return false;
+        return true;
+      });
+    }
+    
+    function renderFeedback() {
+      const filtered = getFilteredFeedback();
+      const list = document.getElementById('feedback-list');
+      
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state">Aucun signalement correspondant aux filtres.</div>';
+        return;
+      }
+      
+      list.innerHTML = filtered
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 50)
+        .map(f => `
+          <div class="feedback-item ${f.type}">
+            <div class="feedback-header">
+              <span class="status-badge ${f.type}">
+                ${f.type === 'report' ? '🚩 Signalement' : '💬 Message'}
+              </span>
+              <span class="feedback-date">${new Date(f.date).toLocaleString('fr-FR')}</span>
+            </div>
+            
+            <div class="feedback-meta">
+              <div class="meta-item">
+                <strong>📚 Matière:</strong> ${escapeHtml(f.subject)}
+              </div>
+              <div class="meta-item">
+                <strong>👤 Utilisateur:</strong> ${escapeHtml(f.user)}
+              </div>
+              ${f.chapter ? `<div class="meta-item"><strong>📖 Chapitre:</strong> ${escapeHtml(f.chapter)}</div>` : ''}
+            </div>
+            
+            <div class="feedback-content">
+              ${f.question ? `<h4>Question signalée:</h4><p>"${escapeHtml(f.question.substring(0, 150))}"</p>` : ''}
+              ${f.description ? `<div class="feedback-description"><strong>Problème:</strong> ${escapeHtml(f.description)}</div>` : ''}
+              ${f.message ? `<div class="feedback-description"><strong>Message:</strong> ${escapeHtml(f.message)}</div>` : ''}
+            </div>
+          </div>
+        `).join('');
+    }
+    
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+    
+    function exportData() {
+      const filtered = getFilteredFeedback();
+      const csv = [
+        ['Date', 'Type', 'Matière', 'Utilisateur', 'Chapitre', 'Question', 'Description/Message'].join(',')
+      ].concat(
+        filtered.map(f => [
+          new Date(f.date).toLocaleString('fr-FR'),
+          f.type,
+          f.subject,
+          f.user,
+          f.chapter || '',
+          f.question ? `"${f.question}"` : '',
+          f.description ? `"${f.description}"` : (f.message ? `"${f.message}"` : '')
+        ].join(','))
+      ).join('\n');
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `feedback-${new Date().toISOString().split('T')[0]}.csv`);
+      link.click();
+    }
+    
+    // Filtres en temps réel
+    document.getElementById('filter-type').addEventListener('change', renderFeedback);
+    document.getElementById('filter-subject').addEventListener('change', renderFeedback);
+    document.getElementById('filter-user').addEventListener('change', renderFeedback);
+    
+    // Charger au démarrage
+    loadFeedback();
+    setInterval(loadFeedback, 30000); // Rafraîchir toutes les 30 secondes
+  </script>
+</body>
+</html>
