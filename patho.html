@@ -1156,6 +1156,15 @@ function shuffle(arr) {
   return a;
 }
 
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function loadLeaderboard() {
   try {
     const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
