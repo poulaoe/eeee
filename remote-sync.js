@@ -28,9 +28,18 @@
 
   function normalizeEntry(item) {
     var raw = item || {};
+    var normalizeSubject = function (value) {
+      var subject = String(value || 'Inconnu').trim().toLowerCase();
+      if (subject === 'patho' || subject === 'pathologie') return 'Pathologie';
+      if (subject === 'anat' || subject === 'anatomie') return 'Anat';
+      if (subject === 'douleur') return 'Douleur';
+      if (subject === 'proced' || subject === 'procédure' || subject === 'procedure') return 'Procédure';
+      if (subject === 'general' || subject === 'général') return 'Général';
+      return String(value || 'Inconnu').slice(0, 120);
+    };
     return {
       date: toIsoDate(raw.date),
-      subject: String(raw.subject || 'Inconnu').slice(0, 120),
+      subject: normalizeSubject(raw.subject),
       user: String(raw.user || 'Invite').slice(0, 120),
       score: toNumber(raw.score, 0),
       max: toNumber(raw.max, 0),
@@ -122,15 +131,7 @@
       })
       .then(function (rows) {
         if (!Array.isArray(rows)) return [];
-        
-        // Filtre pour garder seulement les données des 7 derniers jours
-        var now = new Date();
-        var sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        
-        return rows.filter(function(row) {
-          var rowDate = new Date(row.date);
-          return rowDate >= sevenDaysAgo;
-        }).map(normalizeEntry);
+        return rows.map(normalizeEntry);
       })
       .catch(function () {
         return [];
