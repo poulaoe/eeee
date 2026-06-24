@@ -598,7 +598,10 @@ function renderChatPanel() {
   loadQuizChatMessages();
   
   // Auto-refresh
-  setInterval(loadQuizChatMessages, 5000);
+  if (window.__qcmQuizChatInterval) {
+    clearInterval(window.__qcmQuizChatInterval);
+  }
+  window.__qcmQuizChatInterval = setInterval(loadQuizChatMessages, 5000);
 }
 
 async function loadQuizChatMessages() {
@@ -607,11 +610,14 @@ async function loadQuizChatMessages() {
 
   try {
     const subject = SUBJECT_NAME || 'General';
+    const status = document.getElementById('quiz-chat-status');
     if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchChatMessages !== 'function') {
+      if (status) status.textContent = 'Supabase non configure';
       return;
     }
 
     const messages = await window.QCM_REMOTE.fetchChatMessages(subject, 50);
+    if (status) status.textContent = '';
     if (!Array.isArray(messages)) {
       container.innerHTML = '<div style="color:#666">Erreur chargement messages</div>';
       return;
@@ -639,6 +645,8 @@ async function loadQuizChatMessages() {
     container.scrollTop = container.scrollHeight;
   } catch (error) {
     console.error('Erreur chat:', error);
+    const status = document.getElementById('quiz-chat-status');
+    if (status) status.textContent = 'Erreur chat: ' + (error && error.message ? error.message : 'reseau');
   }
 }
 
@@ -669,7 +677,7 @@ async function sendQuizChatMessage() {
     await loadQuizChatMessages();
   } catch (error) {
     console.error('Erreur envoi:', error);
-    document.getElementById('quiz-chat-status').textContent = '✗ Erreur';
+    document.getElementById('quiz-chat-status').textContent = '✗ ' + (error && error.message ? error.message : 'Erreur');
   }
 }
 
@@ -1351,66 +1359,92 @@ function submitExam() {
 }
 
 function showResults() {
-  let correct = 0, wrong = 0, skipped = 0;
-  const elapsedMs = Date.now() - startTime;
-  const timeUsed = Math.max(0, Math.floor(elapsedMs / 1000));
-  const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
-  let corrHTML = '';
+  let resultsEl = document.getElementById('results');
+  if (!resultsEl) {
+    resultsEl = document.createElement('div');
+    resultsEl.id = 'results';
+    document.body.appendChild(resultsEl);
+  }
+  resultsEl.style.display = 'block';
 
-  currentSession.forEach((q, i) => {
-    const ua = answers[i], ca = shuffledCorrects[i];
-    let cls;
-    if (ua === null) { cls = 'skipped'; skipped++; }
-    else if (ua === ca) { correct++; }
-    else { cls = 'wrong'; wrong++; }
-    const ut = ua !== null ? shuffledOpts[i][ua] : '—';
-    const ct = shuffledOpts[i][ca];
-    corrHTML += `<div class="corr-item ${cls}">
-      <div class="ch-badge">${escapeHtml(q.ch)}</div>
-      <div class="corr-q">${escapeHtml(q.q)}</div>
-      <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${escapeHtml(ut)}</span></div>
-      <div class="corr-ans">Bonne réponse : <span class="corr-ok">${escapeHtml(ct)}</span></div>
-      <div class="corr-expl">💡 ${escapeHtml(q.e)}</div>
-      <div style="margin-top:8px"><button onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:.7rem;font-weight:700">🚩 Signaler cette question</button></div>
-    </div>`;
-  });
+  try {
+    let correct = 0, wrong = 0, skipped = 0;
+    const elapsedMs = Date.now() - startTime;
+    const timeUsed = Math.max(0, Math.floor(elapsedMs / 1000));
+    const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
+    let corrHTML = '';
 
-  const raw = Math.max(0, (correct * correctPoints - wrong * wrongPoints));
-  const score = raw.toFixed(2);
-  const pct = Math.round(currentSession.length ? correct / currentSession.length * 100 : 0);
-  const maxScore = (currentSession.length * correctPoints).toFixed(2);
-  const emoji = score >= 5.5 ? '🏆' : score >= 4 ? '👍' : score >= 3 ? '📖' : '💪';
-  const resultDate = buildResultTimestamp();
+    (Array.isArray(currentSession) ? currentSession : []).forEach((q, i) => {
+      const item = q || {};
+      const opts = Array.isArray(shuffledOpts[i]) ? shuffledOpts[i] : [];
+      const ua = answers[i], ca = shuffledCorrects[i];
+      let cls;
+      if (ua === null || ua === undefined) { cls = 'skipped'; skipped++; }
+      else if (ua === ca) { correct++; }
+      else { cls = 'wrong'; wrong++; }
+      const ut = ua !== null && ua !== undefined && ua >= 0 && ua < opts.length ? opts[ua] : '—';
+      const ct = ca >= 0 && ca < opts.length ? opts[ca] : '—';
+      corrHTML += `<div class="corr-item ${cls}">
+        <div class="ch-badge">${escapeHtml(item.ch || 'Chapitre')}</div>
+        <div class="corr-q">${escapeHtml(item.q || 'Question')}</div>
+        <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${escapeHtml(ut)}</span></div>
+        <div class="corr-ans">Bonne réponse : <span class="corr-ok">${escapeHtml(ct)}</span></div>
+        <div class="corr-expl">💡 ${escapeHtml(item.e || 'Explication indisponible')}</div>
+        <div style="margin-top:8px"><button onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:.7rem;font-weight:700">🚩 Signaler cette question</button></div>
+      </div>`;
+    });
 
-  recordLeaderboardResult({
-    date: resultDate,
-    subject: SUBJECT_NAME,
-    user: currentUser || 'Invité',
-    score,
-    max: maxScore,
-    pct
-  });
+    const sessionSize = Math.max(1, Array.isArray(currentSession) ? currentSession.length : 1);
+    const raw = Math.max(0, (correct * correctPoints - wrong * wrongPoints));
+    const rawScore = raw.toFixed(2);
+    const pct = Math.round(correct / sessionSize * 100);
+    const maxScoreValue = sessionSize * correctPoints;
+    const maxScore = maxScoreValue.toFixed(2);
+    const finalNoteValue = maxScoreValue > 0 ? (raw / maxScoreValue) * 20 : 0;
+    const finalNote = finalNoteValue.toFixed(2);
+    const emoji = finalNoteValue >= 14 ? '🏆' : finalNoteValue >= 10 ? '👍' : finalNoteValue >= 8 ? '📖' : '💪';
+    const resultDate = buildResultTimestamp();
 
-  saveResultForCurrentUser({
-    date: resultDate,
-    subject: SUBJECT_NAME,
-    score,
-    max: maxScore,
-    pct
-  });
+    try {
+      recordLeaderboardResult({
+        date: resultDate,
+        subject: SUBJECT_NAME,
+        user: currentUser || 'Invité',
+        score: finalNote,
+        max: 20,
+        pct
+      });
+    } catch (persistError) {
+      console.warn('Enregistrement classement impossible', persistError);
+    }
 
-  const qcHTML = currentQC.map((qc, i) => `
-    <div class="qc-item">
-      <div class="qc-q">Q${i + 1}. ${qc.q}</div>
-      <button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button>
-      <div class="qc-r" id="qcr-${i}">${qc.r}</div>
-    </div>`).join('');
+    try {
+      saveResultForCurrentUser({
+        date: resultDate,
+        subject: SUBJECT_NAME,
+        score: finalNote,
+        max: 20,
+        pct
+      });
+    } catch (persistError) {
+      console.warn('Enregistrement historique utilisateur impossible', persistError);
+    }
 
-  document.getElementById('results').innerHTML = `
+    const qcHTML = (Array.isArray(currentQC) ? currentQC : []).map((qc, i) => {
+      const item = qc || {};
+      return `
+      <div class="qc-item">
+        <div class="qc-q">Q${i + 1}. ${escapeHtml(item.q || 'Question courte')}</div>
+        <button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button>
+        <div class="qc-r" id="qcr-${i}">${escapeHtml(item.r || 'Réponse indisponible')}</div>
+      </div>`;
+    }).join('');
+
+    resultsEl.innerHTML = `
     <div class="score-card">
       <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
-      <div class="score-num" style="color:${score >= 4.5 ? '#2ecc71' : score >= 3 ? '#f39c12' : '#e74c3c'}">${score}<span style="font-size:1.4rem">/${maxScore}</span></div>
-      <div style="color:#aaa;font-size:.82rem;margin-top:4px">Score sur ${currentSession.length} QCM (${correctPoints} / −${wrongPoints}) — ${pct}% de bonnes réponses</div>
+      <div class="score-num" style="color:${finalNoteValue >= 10 ? '#2ecc71' : finalNoteValue >= 8 ? '#f39c12' : '#e74c3c'}">${finalNote}<span style="font-size:1.4rem">/20</span></div>
+      <div style="color:#aaa;font-size:.82rem;margin-top:4px">Note finale sur 20 • Score brut : ${rawScore}/${maxScore} • ${pct}% de bonnes réponses</div>
       <div class="score-detail">
         <div class="sc-box" style="color:#2ecc71">✅ ${correct} correctes</div>
         <div class="sc-box" style="color:#e74c3c">❌ ${wrong} incorrectes</div>
@@ -1424,15 +1458,28 @@ function showResults() {
     </div>
     <div style="margin-top:14px">
       <h3 style="color:#e74c3c;margin-bottom:10px;font-size:.92rem">📋 CORRECTIONS DÉTAILLÉES</h3>
-      ${corrHTML}
+      ${corrHTML || '<div class="corr-item skipped">Aucune correction disponible.</div>'}
     </div>
     <div style="text-align:center;padding:20px">
       <div style="color:#aaa;font-size:.82rem;margin-bottom:10px">Banque : ${BANK.length} questions • ${QC_BANK.length} questions courtes • Barème : ${correctPoints} / −${wrongPoints}</div>
       <div style="color:#8fb3a8;font-size:.78rem;margin-bottom:10px">${currentUser ? `Résultat enregistré sur le compte: ${currentUser}` : 'Connecte-toi avec un compte local pour sauvegarder tes résultats.'}</div>
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
     </div>`;
-  document.getElementById('results').style.display = 'block';
-  window.scrollTo(0, 0);
+    resultsEl.style.display = 'block';
+    window.scrollTo(0, 0);
+  } catch (error) {
+    console.error('showResults sandbox failed', error);
+    resultsEl.innerHTML = `
+      <div class="score-card">
+        <div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div>
+        <div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement. Réessaie un nouveau partiel.</div>
+      </div>
+      <div style="text-align:center;padding:20px">
+        <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button>
+      </div>`;
+    resultsEl.style.display = 'block';
+    window.scrollTo(0, 0);
+  }
 }
 
 function toggleR(i) {

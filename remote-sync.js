@@ -55,6 +55,31 @@
     return fetch(cfg.url + path, Object.assign({}, init || {}, { headers: headers }));
   }
 
+  function parseErrorResponse(response) {
+    if (!response) return Promise.resolve({ status: 0, message: 'Aucune reponse reseau' });
+    return response
+      .json()
+      .then(function (payload) {
+        var message = payload && (payload.message || payload.error || payload.hint)
+          ? String(payload.message || payload.error || payload.hint)
+          : ('HTTP ' + response.status);
+        return { status: response.status, message: message };
+      })
+      .catch(function () {
+        return { status: response.status, message: 'HTTP ' + response.status };
+      });
+  }
+
+  function normalizeChatSubject(value) {
+    var subject = String(value || 'General').trim().toLowerCase();
+    if (subject === 'patho' || subject === 'pathologie') return 'Pathologie';
+    if (subject === 'anat' || subject === 'anatomie') return 'Anat';
+    if (subject === 'proced' || subject === 'procedures' || subject === 'procédures') return 'Proced';
+    if (subject === 'douleur') return 'Douleur';
+    if (subject === 'general' || subject === 'général') return 'General';
+    return String(value || 'General').slice(0, 120);
+  }
+
   function pushResult(entry) {
     if (!hasRemote()) return Promise.resolve({ ok: false, reason: 'missing-config' });
 
@@ -151,15 +176,76 @@
       headers: { 'Accept': 'application/json' }
     })
       .then(function (response) {
-        if (!response || !response.ok) return [];
+        if (!response || !response.ok) {
+          return parseErrorResponse(response).then(function (err) {
+            throw new Error('fetchFeedback failed (' + err.status + '): ' + err.message);
+          });
+        }
         if (!response.json) return [];
         return response.json();
       })
       .then(function (data) {
         return Array.isArray(data) ? data : [];
       })
-      .catch(function () {
-        return [];
+      .catch(function (error) {
+        throw error;
+      });
+  }
+
+  function pushChatMessage(message) {
+    if (!hasRemote()) return Promise.resolve({ ok: false, reason: 'missing-config' });
+
+    var payload = {
+      user: String(message.user || 'Invité').slice(0, 120),
+      subject: normalizeChatSubject(message.subject),
+      message: String(message.message || '').slice(0, 2000)
+    };
+
+    return request('/rest/v1/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(function (response) {
+        if (!response || !response.ok) {
+          return parseErrorResponse(response).then(function (err) {
+            throw new Error('pushChatMessage failed (' + err.status + '): ' + err.message);
+          });
+        }
+        return { ok: true, status: response.status };
+      })
+      .catch(function (error) {
+        throw error;
+      });
+  }
+
+  function fetchChatMessages(subject, limit) {
+    if (!hasRemote()) return Promise.resolve([]);
+
+    var subj = encodeURIComponent(normalizeChatSubject(subject));
+    var lim = Math.min(Number(limit) || 100, 500);
+
+    return request('/rest/v1/chat?subject=eq.' + subj + '&order=created_at.desc&limit=' + lim, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (response) {
+        if (!response || !response.ok) {
+          return parseErrorResponse(response).then(function (err) {
+            throw new Error('fetchChatMessages failed (' + err.status + '): ' + err.message);
+          });
+        }
+        if (!response.json) return [];
+        return response.json();
+      })
+      .then(function (data) {
+        return Array.isArray(data) ? data.reverse() : [];
+      })
+      .catch(function (error) {
+        throw error;
       });
   }
 
@@ -169,6 +255,8 @@
     fetchResults: fetchResults,
     normalizeEntry: normalizeEntry,
     pushFeedback: pushFeedback,
-    fetchFeedback: fetchFeedback
+    fetchFeedback: fetchFeedback,
+    pushChatMessage: pushChatMessage,
+    fetchChatMessages: fetchChatMessages
   };
 })();

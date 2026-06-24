@@ -161,6 +161,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     <div class="module-panel" id="module-feedback">
       <!-- Feedback content loaded by renderFeedbackPanel() -->
     </div>
+    <div class="module-panel" id="module-chat">
+      <!-- Chat content loaded by renderChatPanel() -->
+    </div>
     <div class="stat-grid">
       <div class="stat"><span id="sc1">0</span>Chapitres</div>
       <div class="stat"><span id="question-count">25</span>QCM / partiel</div>
@@ -226,18 +229,18 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"vraie",
  q:"Laquelle de ces affirmations sur le maintien de la conscience est VRAIE ?",
- opts:["Il dépend uniquement de l'intégrité du cortex pariétal","Il nécessite l'intégrité du SRAA (tronc cérébral) pour le niveau de vigilance ET des deux hémisphères pour le contenu","Il est assuré exclusivement par le lobe frontal gauche","Il ne peut être évalué que par IRM fonctionnelle"],
+ opts:["Il dépend uniquement de l'intégrité du cortex pariétal","Il nécessite l'intégrité du sraa (tronc cérébral) pour le niveau de vigilance et des deux hémisphères pour le contenu","Il est assuré exclusivement par le lobe frontal gauche","Il ne peut être évalué que par irm fonctionnelle"],
  a:1,e:"La conscience nécessite 2 composantes : le NIVEAU DE VIGILANCE (SRAA, tronc cérébral) et le CONTENU (deux hémisphères). Une lésion du tronc peut abolir la vigilance même avec des hémisphères intacts."},
 
 // ===== CH4 — TONUS =====
 {ch:"Ch.4",label:"Tonus & Mouvement",type:"fausse",
  q:"Concernant le PREMIER motoneurone, laquelle est FAUSSE ?",
- opts:["Il provoque une paralysie spasmodique","Le signe de Babinski est positif (RCP extenseur)","Les réflexes myotatiques profonds sont exaltés","Il entraîne fasciculations et amyotrophie marquée"],
+ opts:["Il provoque une paralysie spasmodique","Le signe de babinski est positif (rcp extenseur)","Les réflexes myotatiques profonds sont exaltés","Il entraîne fasciculations et amyotrophie marquée"],
  a:3,e:"Fasciculations + amyotrophie MARQUÉE = syndrome du 2e MN (inférieur). Le 1er MN donne une amyotrophie LÉGÈRE par désuétude, sans fasciculations. Retenir : 1er MN = 'tout est trop' ; 2e MN = 'tout est absent'."},
 
 {ch:"Ch.4",label:"Tonus & Mouvement",type:"vraie",
  q:"Laquelle de ces affirmations sur la spasticité est VRAIE ?",
- opts:["Elle est due à une lésion du 2e MN et donne un signe de la roue dentée","Elle est une hypertonie avec signe de la lame de canif, due à une lésion du système pyramidal","Elle touche principalement les muscles fléchisseurs des membres inférieurs","Elle est associée à une arréflexie et une paralysie flasque"],
+ opts:["Elle est due à une lésion du 2e mn et donne un signe de la roue dentée","Elle est une hypertonie avec signe de la lame de canif, due à une lésion du système pyramidal","Elle touche principalement les muscles fléchisseurs des membres inférieurs","Elle est associée à une arréflexie et une paralysie flasque"],
  a:1,e:"Spasticité = hypertonie PYRAMIDALE (1er MN), signe de la lame de canif (résistance initiale → relâchement). Plus intense dans les extenseurs au MI et les fléchisseurs au MS. La roue dentée = extrapiramidal."},
 
 {ch:"Ch.4",label:"Tonus & Mouvement",type:"direct",
@@ -253,7 +256,7 @@ window.BANK = window.BANK || [
 // ===== CH5 — DYSKINÉSIES =====
 {ch:"Ch.5",label:"Dyskinésies",type:"direct",
  q:"Dans le système extrapyramidal, quel neurotransmetteur INHIBE le noyau strié et réduit l'activation corticale ?",
- opts:["Acétylcholine (ACh)","GABA","Dopamine (DA)","Glutamate"],
+ opts:["Acétylcholine (ach)","Gaba","Dopamine (da)","Glutamate"],
  a:2,e:"Dopamine = INHIBE le noyau strié (↓ activation corticale). Acétylcholine = ACTIVE l'intensification des mouvements corticaux. Déséquilibre DA/ACh → troubles extrapyramidaux. Dans Parkinson : ↓ DA → hyperactivité ACh relative."},
 
 {ch:"Ch.5",label:"Dyskinésies",type:"fausse",
@@ -263,28 +266,28 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.5",label:"Dyskinésies",type:"vraie",
  q:"Laquelle de ces affirmations sur la chorée est VRAIE ?",
- opts:["Elle est due à un excès d'inhibition du noyau strié par la dopamine","Elle est un trouble hypokinétique du système extrapyramidal","C'est un trouble hyperkinétique dû à une inhibition moindre du noyau strié par l'ACh ou un excès de DA","Elle se manifeste exclusivement par des mouvements rythmiques des extrémités"],
+ opts:["Elle est due à un excès d'inhibition du noyau strié par la dopamine","Elle est un trouble hypokinétique du système extrapyramidal","C'est un trouble hyperkinétique dû à une inhibition moindre du noyau strié par l'ach ou un excès de da","Elle se manifeste exclusivement par des mouvements rythmiques des extrémités"],
  a:2,e:"Chorée = trouble HYPERKINÉTIQUE : mouvements anormaux rapides, involontaires, irréguliers, due à inhibition moindre ACh du strié OU excès DA. Peut toucher n'importe quel segment. Exemples : Huntington, chorée de Sydenham."},
 
 {ch:"Ch.5",label:"Dyskinésies",type:"direct",
  q:"Les dyskinésies TARDIVES sont caractérisées par :",
- opts:["Des épisodes brefs de mouvements chorée-dystoniques paroxystiques","Des mouvements répétitifs (mâcher, tirer la langue, gesticuler) liés à l'utilisation prolongée de neuroleptiques","Une rigidité extrapiramdale progressive dans les deux hémicorps","Un tremblement au repos disparaissant lors du mouvement"],
+ opts:["Des épisodes brefs de mouvements chorée-dystoniques paroxystiques","Des mouvements répétitifs liés à l'utilisation prolongée de neuroleptiques","Une rigidité extrapiramdale progressive dans les deux hémicorps","Un tremblement au repos disparaissant lors du mouvement"],
  a:1,e:"Dyskinésies tardives = mouvements RÉPÉTITIFS stéréotypés (mâcher, tirer la langue, cligner des yeux, mouvements rapides des extrémités) liés à l'utilisation prolongée de NEUROLEPTIQUES ou métoclopramide."},
 
 // ===== CH6 — PARKINSON =====
 {ch:"Ch.6",label:"Maladie de Parkinson",type:"fausse",
  q:"Laquelle de ces affirmations sur la maladie de Parkinson est FAUSSE ?",
- opts:["C'est la 2e maladie neurodégénérative la plus fréquente après Alzheimer","Le tremblement au repos disparaît pendant le mouvement et le sommeil","Elle est plus fréquente chez les femmes que les hommes","Elle débute typiquement entre 50 et 60 ans"],
+ opts:["C'est la 2e maladie neurodégénérative la plus fréquente après alzheimer","Le tremblement au repos disparaît pendant le mouvement et le sommeil","Elle est plus fréquente chez les femmes que les hommes","Elle débute typiquement entre 50 et 60 ans"],
  a:2,e:"Parkinson est plus fréquente chez les HOMMES. L'étiologie est une mort des cellules dopaminergiques de la substance noire (pars compacta) avec dépôts d'alpha-synucléine (corps de Lewy). Cause primaire inconnue."},
 
 {ch:"Ch.6",label:"Maladie de Parkinson",type:"direct",
  q:"Le tremblement parkinsonien se distingue du tremblement cérébelleux car :",
- opts:["Le tremblement parkinsonien est un tremblement d'intention, aggravé lors des mouvements fins","Le tremblement parkinsonien est un tremblement AU REPOS qui disparaît pendant le mouvement et le sommeil","Les deux sont identiques en fréquence et en topographie initiale","Le tremblement parkinsonien est toujours bilatéral et symétrique dès le début"],
+ opts:["Le tremblement parkinsonien est un tremblement d'intention, aggravé lors des mouvements fins","Le tremblement parkinsonien est un tremblement au repos qui disparaît pendant le mouvement et le sommeil","Les deux sont identiques en fréquence et en topographie initiale","Le tremblement parkinsonien est toujours bilatéral et symétrique dès le début"],
  a:1,e:"Tremblement parkinsonien = AU REPOS (disparaît au mouvement et au sommeil), asymétrique au début (distale, 'compter des pièces'). Tremblement cérébelleux = D'INTENTION (aggravé lors du mouvement précis, comme le test doigt-nez)."},
 
 {ch:"Ch.6",label:"Maladie de Parkinson",type:"vraie",
  q:"Parmi les symptômes NON MOTEURS de Parkinson, lequel est VRAI ?",
- opts:["Hyperolfaction (odeurs perçues plus intensément)","Hypertension artérielle orthostatique systématique","Anosmie, hypomotilité intestinale (constipation), troubles du sommeil et dépression","Hyperactivité intestinale et diarrhée chronique"],
+ opts:["Hyperolfaction","Hypertension artérielle orthostatique systématique","Anosmie, hypomotilité intestinale (constipation), troubles du sommeil et dépression","Hyperactivité intestinale et diarrhée chronique"],
  a:2,e:"Symptômes non moteurs de Parkinson : ANOSMIE (perte de l'odorat souvent précoce), constipation (hypomotilité intestinale), HYPOTENSION orthostatique (pas hypertension), troubles du sommeil, dépression, troubles cognitifs tardifs."},
 
 // ===== CH7 — LÉSION MÉDULLAIRE =====
@@ -295,7 +298,7 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.7",label:"Lésion Médullaire",type:"direct",
  q:"L'IRM est l'examen de référence pour la lésion médullaire, SAUF quand :",
- opts:["Le patient présente une fracture vertébrale instable","Le patient est claustrophobe (dans ce cas TDM suffit)","Le patient porte un stimulateur cardiaque (dans ce cas myélographie par scanner)","Le patient présente une paraplégie complète"],
+ opts:["Le patient présente une fracture vertébrale instable","Le patient est claustrophobe (dans ce cas tdm suffit)","Le patient porte un stimulateur cardiaque","Le patient présente une paraplégie complète"],
  a:2,e:"L'IRM est contre-indiquée en présence d'un STIMULATEUR CARDIAQUE (et de certains implants métalliques). Dans ce cas, on utilise la myélographie par scanner (produit de contraste dans l'espace péri-médullaire). La claustrophobie peut se gérer avec sédation légère."},
 
 {ch:"Ch.7",label:"Lésion Médullaire",type:"vraie",
@@ -306,7 +309,7 @@ window.BANK = window.BANK || [
 // ===== T8 — EXPLORATION NEURO =====
 {ch:"T.8",label:"Exploration Neurologique",type:"fausse",
  q:"Concernant les nerfs crâniens, laquelle est FAUSSE ?",
- opts:["NC VII (facial) : goût des 2/3 antérieurs de la langue et mimique faciale","NC VIII (acoustique) : audition et équilibre","NC V (trijumeau) : sensibilité face et motricité masticatrice","NC XI (accessoire spinal) : mouvements oculaires latéraux"],
+ opts:["Nc vii (facial)","Nc viii (acoustique) : audition et équilibre","Nc v (trijumeau) : sensibilité face et motricité masticatrice","Nc xi (accessoire spinal) : mouvements oculaires latéraux"],
  a:3,e:"NC XI (accessoire spinal) = muscles TRAPÈZE et STERNO-CLÉIDO-MASTOÏDIEN (élévation épaule, rotation tête). Les mouvements oculaires LATÉRAUX = NC VI (abducens). Confusion fréquente NC VI/XI à l'examen."},
 
 {ch:"T.8",label:"Exploration Neurologique",type:"direct",
@@ -316,18 +319,18 @@ window.BANK = window.BANK || [
 
 {ch:"T.8",label:"Exploration Neurologique",type:"fausse",
  q:"Concernant le réflexe cornéen (arc V-VII), laquelle est FAUSSE ?",
- opts:["Il est provoqué par la stimulation de la cornée","Il provoque un clignement bilatéral des paupières","La réponse est uniquement ipsilatérale (côté stimulé)","Il sert à évaluer l'intégrité des NC V et VII"],
+ opts:["Il est provoqué par la stimulation de la cornée","Il provoque un clignement bilatéral des paupières","La réponse est uniquement ipsilatérale (côté stimulé)","Il sert à évaluer l'intégrité des nc v et vii"],
  a:2,e:"Le réflexe cornéen provoque un clignement BILATÉRAL (réponse DIRECTE + CONSENSUELLE = œil opposé). C'est son caractère bilatéral qui permet de tester séparément la voie afférente (V) et efférente (VII)."},
 
 {ch:"T.8",label:"Exploration Neurologique",type:"vraie",
  q:"Le réflexe cutané abdominal est pathologique quand :",
- opts:["Le nombril se déplace vers la zone caressée","Le nombril ne se déplace PAS vers la zone caressée (réponse absente ou inversée)","La réponse est bilatérale et symétrique","Il est présent uniquement en décubitus dorsal"],
+ opts:["Le nombril se déplace vers la zone caressée","Le nombril ne se déplace pas vers la zone caressée","La réponse est bilatérale et symétrique","Il est présent uniquement en décubitus dorsal"],
  a:1,e:"Réflexe cutané abdominal NORMAL = le nombril se déplace VERS la zone stimulée (contraction muscles abdominaux). Il est PATHOLOGIQUE s'il est ABSENT ou anormal. Son abolition peut signer une lésion pyramidale."},
 
 // ===== CH9 — SENSORIEL =====
 {ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"direct",
  q:"Les cordons postérieurs de la moelle épinière transmettent :",
- opts:["La douleur et la température via fibres C non myélinisées","La proprioception et les vibrations via fibres A myélinisées","Le toucher superficiel uniquement, via fibres B","La sensibilité thermique croisée contralatérale"],
+ opts:["La douleur et la température via fibres c non myélinisées","La proprioception et les vibrations via fibres a myélinisées","Le toucher superficiel uniquement, via fibres b","La sensibilité thermique croisée contralatérale"],
  a:1,e:"Cordons postérieurs = PROPRIOCEPTION (batistésie) + VIBRATIONS (palesthésie) via fibres A MYÉLINISÉES. La douleur et la température = faisceau SPINOTHALAMIQUE antéro-latéral, croisé. Tester proprioception = yeux fermés, distal→proximal."},
 
 {ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"fausse",
@@ -348,13 +351,13 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.10",label:"Patient Oncologique",type:"fausse",
  q:"Parmi les facteurs exogènes cancérigènes chimiques, lequel N'est PAS classiquement cité ?",
- opts:["Amiante","Benzène","Arsenic","Lumière visible (spectre visible 400-700nm)"],
+ opts:["Amiante","Benzène","Arsenic","Lumière visible"],
  a:3,e:"La lumière visible (400-700nm) n'est pas cancérigène. Les UV (en dehors du spectre visible) le sont (mélanome). Les facteurs chimiques classiques : amiante, benzène, arsenic, tabac, androgènes, agents alkylants."},
 
 // ===== CH12 — GUILLAIN-BARRÉ =====
 {ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"direct",
  q:"La forme AIDP du SGB se caractérise par :",
- opts:["Atteinte axonale grave, peu fréquente en Europe","La forme la plus courante en Europe, avec atteinte démyélinisante","Triade ataxie + aréflexie + ophtalmoplégie","Atteinte axonale motrice et sensorielle combinée"],
+ opts:["Atteinte axonale grave, peu fréquente en europe","La forme la plus courante en europe, avec atteinte démyélinisante","Triade ataxie + aréflexie + ophtalmoplégie","Atteinte axonale motrice et sensorielle combinée"],
  a:1,e:"AIDP (polyneuropathie inflammatoire démyélinisante aiguë) = + FRÉQUENTE en Europe, atteinte MYÉLINE. AMAN = axonale motrice. AMSAN = axonale motrice+sensorielle. Miller-Fisher = ataxie+aréflexie+ophtalmoplégie (rare)."},
 
 {ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"fausse",
@@ -364,7 +367,7 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"vraie",
  q:"La triade clinique orientant vers un SGB est :",
- opts:["Rigidité, tremblement au repos et bradykinésie","Faiblesse progressive ascendante, aréflexie généralisée et progression rapide","Spasticité, Babinski positif et hyperréflexie","Ataxie cérébelleuse, nystagmus et dysarthrie"],
+ opts:["Rigidité, tremblement au repos et bradykinésie","Faiblesse progressive ascendante, aréflexie généralisée et progression rapide","Spasticité, babinski positif et hyperréflexie","Ataxie cérébelleuse, nystagmus et dysarthrie"],
  a:1,e:"SGB = FAIBLESSE PROGRESSIVE ASCENDANTE (commence aux jambes, remonte) + ARÉFLEXIE GÉNÉRALISÉE + PROGRESSION RAPIDE. À différencier de la myélite transverse, SEP, myasthénie grave. Diagnostic essentiellement clinique."},
 
 // ===== CH13 — GÉRIATRIE =====
@@ -375,7 +378,7 @@ window.BANK = window.BANK || [
 
 {ch:"Ch.13",label:"Patient Gériatrique",type:"direct",
  q:"Le vieillissement du SNC se caractérise notamment par :",
- opts:["Une augmentation de la synthèse d'acétylcholine (ACh) compensatrice","Une perte de 30 à 40% des neurones corticaux avec diminution de la synthèse d'ACh","Une hypertrophie compensatrice des neurones restants sans perte de fonction","Une augmentation de la plasticité synaptique après 65 ans"],
+ opts:["Une augmentation de la synthèse d'acétylcholine (ach) compensatrice","Une perte de 30 à 40% des neurones corticaux avec diminution de la synthèse d'ach","Une hypertrophie compensatrice des neurones restants sans perte de fonction","Une augmentation de la plasticité synaptique après 65 ans"],
  a:1,e:"Vieillissement SNC : perte de 30-40% des neurones corticaux + ↓ synthèse ACh (d'où prudence avec les anticholinergiques chez la personne âgée). Le sommeil se fragmente, les réflexes ralentissent, la marche se modifie."},
 
 {ch:"Ch.13",label:"Patient Gériatrique",type:"fausse",
@@ -386,12 +389,12 @@ window.BANK = window.BANK || [
 // ===== CH14 — ALZHEIMER =====
 {ch:"Ch.14",label:"Démences & Alzheimer",type:"vraie",
  q:"Laquelle de ces affirmations sur la DCL (détérioration cognitive légère) est VRAIE ?",
- opts:["Elle remplit tous les critères diagnostiques d'une démence avérée","Elle se définit par une perte de mémoire avec cognition générale et AVQ préservées","Elle est toujours et sans exception précurseur d'Alzheimer","Elle ne nécessite aucun suivi car réversible dans tous les cas"],
+ opts:["Elle remplit tous les critères diagnostiques d'une démence avérée","Elle se définit par une perte de mémoire avec cognition générale et avq préservées","Elle est toujours et sans exception précurseur d'alzheimer","Elle ne nécessite aucun suivi car réversible dans tous les cas"],
  a:1,e:"DCL = perte mémoire + capacité mémorielle <1,5 ET + COGNITION NORMALE + AVQ NORMALES + PAS de démence. Évolution incertaine : règle des tiers (1/3 évolue vers démence, 1/3 stable, 1/3 s'améliore). Nécessite un suivi."},
 
 {ch:"Ch.14",label:"Démences & Alzheimer",type:"fausse",
  q:"Concernant le diagnostic de démence, laquelle est FAUSSE ?",
- opts:["Le MMSE est un test cognitif utilisé : un score <24/30 indique une détérioration cognitive","Le diagnostic est essentiellement clinique, avec examen neurocognitif","Il faut toujours inclure la famille dans l'entretien pour recouper les informations","Un MMSE normal exclut formellement tout diagnostic de démence"],
+ opts:["Le mmse est un test cognitif utilisé : un score <24/30 indique une détérioration cognitive","Le diagnostic est essentiellement clinique, avec examen neurocognitif","Il faut toujours inclure la famille dans l'entretien pour recouper les informations","Un mmse normal exclut formellement tout diagnostic de démence"],
  a:3,e:"Un MMSE NORMAL n'exclut pas la démence légère ou les démences non-amnésiques. Le MMSE est sensible mais peu spécifique pour les démences débutantes. On peut avoir une démence frontale avec MMSE normal."},
 
 // ===== CH15 — PHYSIO PÉDIATRIQUE =====
@@ -413,23 +416,23 @@ window.BANK = window.BANK || [
 // ===== T11 — SEP =====
 {ch:"T.11",label:"Sclérose en Plaques",type:"fausse",
  q:"Concernant l'épidémiologie de la SEP, laquelle est FAUSSE ?",
- opts:["Elle touche préférentiellement les jeunes adultes entre 20 et 30 ans","Le ratio femmes/hommes est d'environ 3:1","Elle est plus fréquente dans les pays à CLIMAT CHAUD, proches de l'équateur","C'est la 2e cause d'invalidité neurologique chez les jeunes après les traumatismes"],
+ opts:["Elle touche préférentiellement les jeunes adultes entre 20 et 30 ans","Le ratio femmes/hommes est d'environ 3:1","Elle est plus fréquente dans les pays à climat chaud, proches de l'équateur","C'est la 2e cause d'invalidité neurologique chez les jeunes après les traumatismes"],
  a:2,e:"SEP = plus fréquente dans les pays FROIDS, LOIN de l'équateur (distribution inversée). Carence en vitamine D (↓ immunorégulation) et niveau socio-économique élevé sont des facteurs. Race blanche, nord de l'Europe."},
 
 {ch:"T.11",label:"Sclérose en Plaques",type:"direct",
  q:"La névrite optique rétrobulbaire dans la SEP se caractérise par :",
- opts:["Une perte visuelle bilatérale symétrique et indolore","Une perte visuelle UNILATÉRALE subaiguë avec douleur lors des mouvements oculaires","Une perte visuelle permanente et totale dès la première poussée","Une atteinte exclusivement du champ visuel périphérique"],
+ opts:["Une perte visuelle bilatérale symétrique et indolore","Une perte visuelle unilatérale subaiguë avec douleur lors des mouvements oculaires","Une perte visuelle permanente et totale dès la première poussée","Une atteinte exclusivement du champ visuel périphérique"],
  a:1,e:"Névrite optique SEP = perte visuelle UNILATÉRALE subaiguë + DOULEUR lors des mouvements oculaires + scotome central. Représente 36% des premières manifestations. Récupération partielle/totale en quelques semaines, mais peut précéder la SEP."},
 
 {ch:"T.11",label:"Sclérose en Plaques",type:"vraie",
  q:"L'activité de la SEP est définie par :",
- opts:["Uniquement par le score EDSS et la durée de la maladie","Par les POUSSÉES cliniques ET l'activité observée à l'IRM","Par le nombre de plaques visibles uniquement à l'IRM-T1","Par la vitesse de progression du handicap moteur"],
+ opts:["Uniquement par le score edss et la durée de la maladie","Par les poussées cliniques et l'activité observée à l'irm","Par le nombre de plaques visibles uniquement à l'irm-t1","Par la vitesse de progression du handicap moteur"],
  a:1,e:"Depuis 2015, l'activité SEP = POUSSÉES + activité IRM (lésions prenant le contraste à la gadolinium). C'est un facteur déterminant pour les décisions thérapeutiques. Progression et aggravation sont des concepts distincts de l'activité."},
 
 // ===== T16 — PCI I =====
 {ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"direct",
  q:"Les facteurs PÉRINATAUX de la PCI incluent :",
- opts:["Infections congénitales (toxoplasmose, CMV)","Méningite néonatale et traumatisme crânien postnatal","Hypoxie pendant l'accouchement, prématurité et traumatisme obstétrique","Malformations congénitales et troubles génétiques"],
+ opts:["Infections congénitales (toxoplasmose, cmv)","Méningite néonatale et traumatisme crânien postnatal","Hypoxie pendant l'accouchement, prématurité et traumatisme obstétrique","Malformations congénitales et troubles génétiques"],
  a:2,e:"PÉRINATAUX = autour de la naissance : hypoxie per-partum, prématurité, traumatisme obstétrique. PRÉNATAUX = avant : infections congénitales (toxoplasmose, rubéole, CMV), malformations, génétique. POSTNATAUX = après : méningite, traumatisme crânien, AVC néonatal."},
 
 {ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"vraie",
@@ -440,7 +443,7 @@ window.BANK = window.BANK || [
 // ===== T17 — PCI II / PRÉMATURITÉ =====
 {ch:"Ch.17",label:"PCI & Prématurité",type:"vraie",
  q:"Parmi les complications neurologiques du prématuré grave, laquelle est la plus courante ?",
- opts:["Les malformations cardiaques congénitales","Les hémorragies sévères et les lésions kystiques de la substance blanche","Les maladies auto-immunes du SNP","Les troubles métaboliques thyroïdiens néonataux"],
+ opts:["Les malformations cardiaques congénitales","Les hémorragies sévères et les lésions kystiques de la substance blanche","Les maladies auto-immunes du snp","Les troubles métaboliques thyroïdiens néonataux"],
  a:1,e:"Prématuré grave : hémorragies sévères + lésions kystiques substance blanche (leucomalacie périventriculaire) + crises convulsives + encéphalopathie hypoxique-ischémique. Ces 4 complications affectent développement moteur, sensoriel, cognitif."},
 
 {ch:"Ch.17",label:"PCI & Prématurité",type:"fausse",
@@ -451,12 +454,12 @@ window.BANK = window.BANK || [
 // ===== T18 — TSA / TDAH =====
 {ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"fausse",
  q:"Laquelle de ces affirmations sur le TSA est FAUSSE ?",
- opts:["Les enfants TSA peuvent présenter une hyper ou hyposensibilité aux stimuli","L'hypotonie et les difficultés motrices fines et globales sont fréquentes","La marche sur la pointe des pieds est classiquement associée au TSA","Le TSA est principalement causé par un déficit en dopamine identique à Parkinson"],
+ opts:["Les enfants tsa peuvent présenter une hyper ou hyposensibilité aux stimuli","L'hypotonie et les difficultés motrices fines et globales sont fréquentes","La marche sur la pointe des pieds est classiquement associée au tsa","Le tsa est principalement causé par un déficit en dopamine identique à parkinson"],
  a:3,e:"Le TSA n'est PAS causé par un déficit dopaminergique. C'est un trouble NEURODÉVELOPPEMENTAL complexe multifactoriel (génétique + environnemental). Le lier au manque de dopamine comme Parkinson est une confusion erronée."},
 
 {ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"direct",
  q:"Le TDAH est un trouble neurobiologique caractérisé par la triade :",
- opts:["Hypotonie, fasciculations et faiblesse musculaire progressive","Hyperactivité, impulsivité et difficultés d'attention","Dyslexie, dyscalculie et dysgraphie combinées","Spasticité, Babinski et hyperréflexie"],
+ opts:["Hypotonie, fasciculations et faiblesse musculaire progressive","Hyperactivité, impulsivité et difficultés d'attention","Dyslexie, dyscalculie et dysgraphie combinées","Spasticité, babinski et hyperréflexie"],
  a:1,e:"TDAH = trouble NEUROBIOLOGIQUE et NEURODÉVELOPPEMENTAL : HYPERACTIVITÉ + IMPULSIVITÉ + DIFFICULTÉS D'ATTENTION. Diagnostiqué généralement pendant l'enfance mais peut persister à l'âge adulte. Triade à connaître absolument."},
 
 {ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"vraie",
@@ -477,7 +480,7 @@ window.BANK = window.BANK || [
 
 {ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"vraie",
  q:"La myopathie de Duchenne est caractérisée par :",
- opts:["Une atteinte auto-immune de la jonction neuromusculaire","Une atteinte des neurones moteurs périphériques avec fasciculations","Une dystrophie musculaire progressive liée au chromosome X touchant principalement les garçons","Une polyneuropathie symétrique avec atteinte sensitive prédominante"],
+ opts:["Une atteinte auto-immune de la jonction neuromusculaire","Une atteinte des neurones moteurs périphériques avec fasciculations","Une dystrophie musculaire progressive liée au chromosome x touchant principalement les garçons","Une polyneuropathie symétrique avec atteinte sensitive prédominante"],
  a:2,e:"Duchenne = DYSTROPHIE MUSCULAIRE liée au chromosome X (gène de la DYSTROPHINE), touche quasi-exclusivement les GARÇONS. Faiblesse progressive proximale, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire évolutive."},
 
 // ===== T20 — MYÉLOMÉNINGOCÈLE =====
@@ -510,7 +513,7 @@ window.BANK = window.BANK || [
 
 {ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"fausse",
  q:"Laquelle de ces affirmations sur la pharmacodynamique est FAUSSE ?",
- opts:["Un agoniste se fixe sur un récepteur et produit un effet biologique","Un antagoniste bloque un récepteur sans produire d'effet propre","Plus la constante Kd est faible, plus l'affinité du médicament pour son récepteur est élevée","Un médicament antagoniste produit toujours un effet plus puissant qu'un agoniste"],
+ opts:["Un agoniste se fixe sur un récepteur et produit un effet biologique","Un antagoniste bloque un récepteur sans produire d'effet propre","Plus la constante kd est faible, plus l'affinité du médicament pour son récepteur est élevée","Un médicament antagoniste produit toujours un effet plus puissant qu'un agoniste"],
  a:3,e:"Un antagoniste BLOQUE le récepteur SANS effet propre (il ne produit pas d'effet plus puissant). L'effet d'un antagoniste dépend de la concentration d'agoniste présent. Plus le Kd est FAIBLE, plus l'affinité est ÉLEVÉE (concentration plus faible nécessaire)."},
 
 {ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"vraie",

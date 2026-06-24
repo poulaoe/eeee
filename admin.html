@@ -349,6 +349,20 @@
   
   <script>
     let allFeedback = [];
+
+    function normalizeFeedbackEntry(entry) {
+      const raw = entry || {};
+      return {
+        date: raw.date || new Date().toISOString(),
+        type: raw.type === 'contact' ? 'contact' : 'report',
+        subject: String(raw.subject || 'Inconnu'),
+        user: String(raw.user || 'Invité'),
+        chapter: String(raw.chapter || ''),
+        question: String(raw.question || ''),
+        description: String(raw.description || ''),
+        message: String(raw.message || '')
+      };
+    }
     
     async function loadFeedback() {
       const loading = document.getElementById('loading');
@@ -360,11 +374,15 @@
       
       try {
         if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchFeedback !== 'function') {
-          throw new Error('❌ Supabase non configuré ou fetchFeedback indisponible');
+          throw new Error('Supabase non configuré ou module remote-sync indisponible');
+        }
+
+        if (typeof window.QCM_REMOTE.isConfigured === 'function' && !window.QCM_REMOTE.isConfigured()) {
+          throw new Error('Configuration distante manquante. Vérifiez remote-config.js (url + anon key).');
         }
         
         const result = await window.QCM_REMOTE.fetchFeedback();
-        allFeedback = result || [];
+        allFeedback = Array.isArray(result) ? result.map(normalizeFeedbackEntry) : [];
         
         updateStats();
         renderFeedback();
@@ -397,7 +415,7 @@
       return allFeedback.filter(f => {
         if (type && f.type !== type) return false;
         if (subject && f.subject !== subject) return false;
-        if (user && !f.user.toLowerCase().includes(user)) return false;
+        if (user && !String(f.user || '').toLowerCase().includes(user)) return false;
         return true;
       });
     }
@@ -480,7 +498,7 @@
     // Filtres en temps réel
     document.getElementById('filter-type').addEventListener('change', renderFeedback);
     document.getElementById('filter-subject').addEventListener('change', renderFeedback);
-    document.getElementById('filter-user').addEventListener('change', renderFeedback);
+    document.getElementById('filter-user').addEventListener('input', renderFeedback);
     
     // Charger au démarrage
     loadFeedback();
