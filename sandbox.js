@@ -17,6 +17,8 @@ let correctPoints = 0.25;
 let wrongPoints = 0.083;
 let currentUser = null;
 let lastSessionSignature = '';
+let activeModule = 'sandbox';
+let selectedChapterQuick = null;
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
@@ -127,11 +129,12 @@ function saveLeaderboard(entries) {
 }
 
 function recordLeaderboardResult(result) {
+  const normalized = normalizeStoredResult(result);
   const entries = loadLeaderboard();
-  entries.unshift(result);
+  entries.unshift(normalized);
   saveLeaderboard(entries.slice(0, 100));
   if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-    window.QCM_REMOTE.pushResult(result);
+    window.QCM_REMOTE.pushResult(normalized);
   }
 }
 
@@ -158,6 +161,77 @@ function validatePin(pin) {
   return /^\d{4,8}$/.test(pin || '');
 }
 
+function parseStoredDate(value) {
+  if (!value) return null;
+
+  const direct = new Date(value);
+  if (!Number.isNaN(direct.getTime())) return direct;
+
+  const match = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2}))?$/);
+  if (!match) return null;
+
+  const day = Number(match[1]);
+  const month = Number(match[2]) - 1;
+  const year = Number(match[3].length === 2 ? `20${match[3]}` : match[3]);
+  const hour = Number(match[4] || 0);
+  const minute = Number(match[5] || 0);
+  const parsed = new Date(year, month, day, hour, minute);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function buildResultTimestamp() {
+  return new Date().toISOString();
+}
+
+function formatStoredDateForDisplay(value) {
+  const parsed = parseStoredDate(value);
+  return parsed ? parsed.toLocaleString('fr-FR') : String(value || '');
+}
+
+function normalizeStoredResult(result) {
+  const raw = result || {};
+  const parsedDate = parseStoredDate(raw.date);
+  return {
+    date: parsedDate ? parsedDate.toISOString() : buildResultTimestamp(),
+    subject: String(raw.subject || SUBJECT_NAME || 'Inconnu'),
+    user: String(raw.user || 'Invité'),
+    score: Number(raw.score),
+    max: Number(raw.max),
+    pct: Number(raw.pct)
+  };
+}
+
+function getSelectedQuickChapter() {
+  return selectedChapterQuick ? [selectedChapterQuick] : [];
+}
+
+function syncChapterFilterSelection(chapters) {
+  const filter = document.getElementById('chapter-filter');
+  if (!filter) return;
+
+  const wanted = new Set(chapters || []);
+  Array.from(filter.options).forEach(option => {
+    option.selected = option.value === 'all' ? wanted.size === 0 : wanted.has(option.value);
+  });
+}
+
+function getCurrentGradingConfig() {
+  const gradingMode = document.getElementById('partiel-grading')?.value || 'bac';
+  if (gradingMode === 'simple') {
+    return { good: 1, bad: 0, label: 'Simple (+1 / 0)' };
+  }
+  if (gradingMode === 'custom') {
+    const good = parseFloat(document.getElementById('custom-good')?.value || '0.25');
+    const bad = parseFloat(document.getElementById('custom-bad')?.value || '0.083');
+    return {
+      good: Number.isFinite(good) ? good : 0.25,
+      bad: Number.isFinite(bad) ? bad : 0.083,
+      label: 'Personnalisé'
+    };
+  }
+  return { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+}
+
 function styleOptionsPanel() {
   if (document.getElementById('sandbox-enhanced-style')) return;
   const style = document.createElement('style');
@@ -182,8 +256,8 @@ function styleOptionsPanel() {
   `;
   document.head.appendChild(style);
 
-  const sandboxOptions = document.getElementById('sandbox-options');
-  const commonOptions = document.getElementById('common-options');
+  const sandboxOptions = document.getElementById('sandbox-options') || document.getElementById('module-sandbox');
+  const commonOptions = document.getElementById('common-options') || document.getElementById('module-partiel');
   if (sandboxOptions) {
     sandboxOptions.classList.add('options-shell');
     if (!sandboxOptions.querySelector('.option-heading')) {
@@ -236,7 +310,7 @@ function ensureHeaderControls() {
     homeBtn.id = 'header-home-btn';
     homeBtn.type = 'button';
     homeBtn.className = 'home-btn';
-    homeBtn.textContent = 'Menu';
+    homeBtn.textContent = 'Accueil';
     homeBtn.onclick = goHome;
     controls.appendChild(homeBtn);
   }
@@ -304,7 +378,7 @@ function renderAccountPanel() {
       <button class="account-btn" id="logout-account-btn" type="button">Se déconnecter</button>
     </div>
     <div class="history-list" id="account-history">
-      ${history.length ? history.map(item => `<div class="history-item">${item.date} • ${item.subject} • ${item.score}/${item.max} (${item.pct}%)</div>`).join('') : '<div class="history-item">Aucun résultat enregistré pour le moment.</div>'}
+      ${history.length ? history.map(item => `<div class="history-item">${formatStoredDateForDisplay(item.date)} • ${item.subject} • ${item.score}/${item.max} (${item.pct}%)</div>`).join('') : '<div class="history-item">Aucun résultat enregistré pour le moment.</div>'}
     </div>
   `;
 
@@ -376,7 +450,49 @@ function saveResultForCurrentUser(result) {
   renderAccountPanel();
 }
 
+function removeDuplicateIds(scope, id) {
+  const nodes = scope.querySelectorAll(`#${safeCssEscape(id)}`);
+  if (nodes.length <= 1) return;
+  nodes.forEach((node, idx) => {
+    if (idx < nodes.length - 1) node.remove();
+  });
+}
+
+function cleanupDuplicateHomeUI() {
+  const home = document.getElementById('home');
+  if (!home) return;
+
+  // Keep only the first canonical block when stale DOM/bfcache duplicates are present.
+  [
+    'tab-sandbox',
+    'tab-partiel',
+    'tab-chapitres',
+    'module-sandbox',
+    'module-partiel',
+    'module-chapitres',
+    'chapter-filter',
+    'exam-size',
+    'partiel-size',
+    'partiel-timer',
+    'partiel-grading',
+    'custom-good',
+    'custom-bad',
+    'chapter-quick-list',
+    'question-count',
+    'sc1'
+  ].forEach((id) => removeDuplicateIds(home, id));
+
+  const duplicateRows = home.querySelectorAll('.module-tabs');
+  if (duplicateRows.length > 1) {
+    duplicateRows.forEach((row, idx) => {
+      if (idx < duplicateRows.length - 1) row.remove();
+    });
+  }
+}
+
 function initSandboxPage() {
+  cleanupDuplicateHomeUI();
+
   SUBJECT_NAME = window.SUBJECT_NAME || SUBJECT_NAME;
   SUBJECT_DESC = window.SUBJECT_DESC || SUBJECT_DESC;
   BANK = window.BANK || BANK;
@@ -386,8 +502,22 @@ function initSandboxPage() {
   const homeDesc = document.getElementById('home-desc');
   const chapterCount = document.getElementById('sc1');
   const questionCount = document.getElementById('question-count');
-  const messageZone = document.getElementById('message-zone');
   const examSize = document.getElementById('exam-size');
+  let messageZone = document.getElementById('message-zone');
+
+  if (!messageZone) {
+    const homeCard = document.querySelector('.home-card');
+    const accountZone = document.getElementById('account-zone');
+    messageZone = document.createElement('div');
+    messageZone.id = 'message-zone';
+    messageZone.style.color = '#9fb0c8';
+    messageZone.style.fontSize = '.86rem';
+    messageZone.style.lineHeight = '1.45';
+    messageZone.style.margin = '0 0 10px';
+    if (homeCard) {
+      homeCard.insertBefore(messageZone, accountZone || homeCard.querySelector('.btn-start') || null);
+    }
+  }
 
   if (!homeTitle || !homeDesc || !chapterCount || !questionCount || !messageZone || !examSize) {
     console.error('❌ Éléments manquants:');
@@ -421,23 +551,28 @@ function initSandboxPage() {
   injectAccountPanel();
   renderAccountPanel();
   renderChapterList();
-  injectExamOptions();
-  createSubjectTabs();
   refreshExamSizeFromFilters();
   examSize.addEventListener('change', function() {
     questionCount.textContent = this.value;
   });
   const chapterFilter = document.getElementById('chapter-filter');
-  if (chapterFilter) chapterFilter.addEventListener('change', refreshExamSizeFromFilters);
-  const gradingSelect = document.getElementById('grading-scheme');
-  const gradingCustom = document.getElementById('custom-grading-fields');
-  if (gradingSelect && gradingCustom) {
-    gradingSelect.addEventListener('change', () => {
-      gradingCustom.style.display = gradingSelect.value === 'custom' ? 'block' : 'none';
+  if (chapterFilter) {
+    chapterFilter.addEventListener('change', () => {
+      selectedChapterQuick = null;
+      refreshExamSizeFromFilters();
     });
-    gradingCustom.style.display = gradingSelect.value === 'custom' ? 'block' : 'none';
+  }
+  const gradingSelect = document.getElementById('partiel-grading');
+  const gradingCustom = document.getElementById('partiel-custom-box');
+  if (gradingSelect && gradingCustom) {
+    const refreshGradingVisibility = () => {
+      gradingCustom.style.display = gradingSelect.value === 'custom' ? 'block' : 'none';
+    };
+    gradingSelect.addEventListener('change', refreshGradingVisibility);
+    refreshGradingVisibility();
   }
   defaultChapterFilter();
+  switchModule('sandbox');
 }
 
 function populateChapterOptions() {
@@ -458,46 +593,55 @@ function populateChapterOptions() {
 }
 
 function renderChapterList() {
-  const container = document.createElement('div');
-  container.id = 'chapters-panel';
-  container.style.display = 'none';
-  container.style.marginTop = '18px';
-  const title = document.createElement('h3');
-  title.textContent = 'Chapitres et aperçu des questions';
-  title.style.color = '#e74c3c';
-  title.style.fontSize = '1rem';
-  title.style.marginBottom = '8px';
-  container.appendChild(title);
+  const modulePanel = document.getElementById('module-chapitres');
+  const quickList = document.getElementById('chapter-quick-list');
+  if (!modulePanel || !quickList) return;
+
+  quickList.innerHTML = '';
+
+  let preview = document.getElementById('chapter-preview-list');
+  if (!preview) {
+    preview = document.createElement('div');
+    preview.id = 'chapter-preview-list';
+    preview.style.marginTop = '12px';
+    modulePanel.insertBefore(preview, modulePanel.querySelector('.module-hint'));
+  }
+  preview.innerHTML = '';
 
   const chapters = Array.from(new Set(BANK.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
   if (chapters.length === 0) {
-    const p = document.createElement('div');
-    p.style.color = '#aaa';
-    p.style.fontSize = '.9rem';
-    p.textContent = 'Pas de chapitres disponibles.';
-    container.appendChild(p);
+    preview.innerHTML = '<div style="color:#aaa;font-size:.9rem">Pas de chapitres disponibles.</div>';
+    return;
   }
 
   chapters.forEach(ch => {
-    const header = document.createElement('button');
-    header.className = 'pill';
-    header.style.width = 'auto';
-    header.style.padding = '6px 10px';
-    header.style.marginRight = '8px';
-    header.textContent = ch;
-    header.onclick = () => {
-      const list = container.querySelector(`[data-ch="${safeCssEscape(ch)}"]`);
-      if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    const chip = document.createElement('button');
+    chip.className = 'chapter-chip';
+    chip.type = 'button';
+    chip.textContent = ch;
+    chip.onclick = () => {
+      selectedChapterQuick = selectedChapterQuick === ch ? null : ch;
+      syncChapterFilterSelection(getSelectedQuickChapter());
+      refreshExamSizeFromFilters();
+      quickList.querySelectorAll('.chapter-chip').forEach(el => {
+        el.classList.toggle('active', el.textContent === selectedChapterQuick);
+      });
+      preview.querySelectorAll('[data-preview-chapter]').forEach(block => {
+        block.style.display = !selectedChapterQuick || block.getAttribute('data-preview-chapter') === selectedChapterQuick ? 'block' : 'none';
+      });
     };
-    container.appendChild(header);
+    quickList.appendChild(chip);
 
     const list = document.createElement('div');
-    list.setAttribute('data-ch', ch);
-    list.style.display = 'none';
+    list.setAttribute('data-preview-chapter', ch);
+    list.style.display = 'block';
     list.style.marginTop = '8px';
     list.style.marginBottom = '12px';
+    list.style.borderTop = '1px solid #2d2d50';
+    list.style.paddingTop = '8px';
+    list.innerHTML = `<div style="color:#e6eefc;font-weight:700;margin-bottom:8px">${escapeHtml(ch)}</div>`;
     const items = BANK.filter(q => q.ch === ch).slice(0, 6);
-    items.forEach((q, i) => {
+    items.forEach(q => {
       const qi = document.createElement('div');
       qi.style.padding = '8px';
       qi.style.border = '1px solid #2d2d50';
@@ -507,76 +651,35 @@ function renderChapterList() {
       qi.innerHTML = `<strong>Q</strong> ${q.q.length>140?q.q.slice(0,140)+'…':q.q}`;
       list.appendChild(qi);
     });
-    container.appendChild(list);
+    preview.appendChild(list);
   });
-
-  const homeCard = document.querySelector('.home-card');
-  if (homeCard) homeCard.appendChild(container);
 }
 
 function injectExamOptions(){
-  // Check if partiel-options already exists; if not, create a placeholder
-  if (document.getElementById('partiel-options')) return;
-  const homeCard = document.querySelector('.home-card');
-  if (!homeCard) return;
-  const wrapper = document.createElement('div');
-  wrapper.id = 'partiel-options';
-  wrapper.style.display = 'none';
-  wrapper.style.marginTop = '12px';
-  wrapper.innerHTML = `<div style="color:#aaa;font-size:.86rem;padding:12px;background:#0f3460;border-radius:8px;border-left:3px solid #c0392b">📋 Mode Partiel : Utilisez les options ci-dessus (minuterie, barème, chapitres) pour configurer votre examen.</div>`;
-  homeCard.appendChild(wrapper);
+  return;
 }
 
 function createSubjectTabs(){
-  const homeCard = document.querySelector('.home-card');
-  if (!homeCard) return;
-  const tabs = document.createElement('div');
-  tabs.style.display = 'flex';
-  tabs.style.gap = '8px';
-  tabs.style.marginBottom = '12px';
-
-  const firstTabLabel = window.SANDBOX_TAB_LABEL || (SUBJECT_NAME === 'Pathologie' ? 'Pathologie' : 'Bac à sable');
-  const names = [{id:'tab-sandbox',label:firstTabLabel},{id:'tab-partiel',label:'Partiel'},{id:'tab-chap',label:'Chapitres'}];
-  names.forEach(n=>{
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.id = n.id;
-    b.className = 'btn';
-    b.textContent = n.label;
-    b.style.background = 'transparent';
-    b.style.border = '1px solid #2d2d50';
-    b.style.color = '#ddd';
-    b.style.padding = '8px 12px';
-    b.style.borderRadius = '8px';
-    b.addEventListener('click', ()=>switchTab(n.id));
-    tabs.appendChild(b);
-  });
-  homeCard.insertBefore(tabs, homeCard.firstChild);
-  // default
-  switchTab('tab-sandbox');
+  return;
 }
 
 function switchTab(id){
-  const sandbox = document.getElementById('home');
-  const sandboxOpts = document.getElementById('sandbox-options');
-  const partiel = document.getElementById('partiel-options');
-  const chap = document.getElementById('chapters-panel');
-  const common = document.getElementById('common-options');
-  
-  if (sandbox) sandbox.style.display = 'block';
-  if (sandboxOpts) sandboxOpts.style.display = 'block';
-  if (partiel) partiel.style.display = id === 'tab-partiel' ? 'block' : 'none';
-  if (chap) chap.style.display = id === 'tab-chap' ? 'block' : 'none';
-  if (common) common.style.display = 'block';
-  
-  // highlight
-  ['tab-sandbox','tab-partiel','tab-chap'].forEach(tid=>{
-    const btn = document.getElementById(tid);
-    if (btn) {
-      btn.style.background = tid === id ? '#c0392b' : 'transparent';
-      btn.style.color = tid === id ? '#fff' : '#ddd';
-    }
+  const nextModule = id === 'tab-chap' ? 'chapitres' : id.replace('tab-', '');
+  switchModule(nextModule);
+}
+
+function switchModule(moduleId) {
+  activeModule = moduleId;
+  ['sandbox', 'partiel', 'chapitres'].forEach(id => {
+    const panel = document.getElementById(`module-${id}`);
+    const tab = document.getElementById(`tab-${id}`);
+    if (panel) panel.classList.toggle('active', id === moduleId);
+    if (tab) tab.classList.toggle('active', id === moduleId);
   });
+
+  if (moduleId !== 'chapitres' && selectedChapterQuick) {
+    syncChapterFilterSelection(getSelectedQuickChapter());
+  }
 }
 
 function defaultChapterFilter() {
@@ -654,7 +757,7 @@ function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault) 
 
 function refreshExamSizeFromFilters() {
   const filter = document.getElementById('chapter-filter');
-  const selectedChapters = getSelectedChapters(filter);
+  const selectedChapters = selectedChapterQuick ? getSelectedQuickChapter() : getSelectedChapters(filter);
   const pool = selectedChapters.length ? BANK.filter(q => selectedChapters.includes(q.ch)) : BANK;
   syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
   const questionCount = document.getElementById('question-count');
@@ -720,41 +823,38 @@ function startExam() {
     alert('Aucune question disponible pour cette matière.');
     return;
   }
-  // read options
-  const grading = document.getElementById('grading-scheme') ? document.getElementById('grading-scheme').value : 'classic';
-  if (grading === 'classic') {
+  const filter = document.getElementById('chapter-filter');
+  const sandboxSelectedChapters = selectedChapterQuick ? getSelectedQuickChapter() : getSelectedChapters(filter);
+  const sandboxPool = sandboxSelectedChapters.length === 0 ? BANK : BANK.filter(q => sandboxSelectedChapters.includes(q.ch));
+
+  let pool = sandboxPool;
+  let requestedCount = parseInt(document.getElementById('exam-size')?.value || '25', 10);
+  let timerMins = 0;
+
+  if (activeModule === 'partiel') {
+    const gradingConfig = getCurrentGradingConfig();
+    correctPoints = gradingConfig.good;
+    wrongPoints = gradingConfig.bad;
+    requestedCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
+    timerMins = Math.max(1, parseInt(document.getElementById('partiel-timer')?.value || '45', 10));
+    pool = BANK;
+  } else {
     correctPoints = 0.25;
     wrongPoints = 0.083;
-  } else if (grading === 'simple') {
-    correctPoints = 1;
-    wrongPoints = 0;
-  } else {
-    const customCorrect = parseFloat(document.getElementById('custom-correct')?.value);
-    const customWrong = parseFloat(document.getElementById('custom-wrong')?.value);
-    correctPoints = isNaN(customCorrect) ? 0.25 : customCorrect;
-    wrongPoints = isNaN(customWrong) ? 0.083 : customWrong;
   }
 
-  const timerEnabled = document.getElementById('enable-timer') ? document.getElementById('enable-timer').checked : false;
-  const timerMins = document.getElementById('timer-minutes') ? parseInt(document.getElementById('timer-minutes').value,10) : 0;
+  if (activeModule === 'chapitres') {
+    pool = sandboxPool;
+  }
 
-  const size = parseInt(document.getElementById('exam-size').value, 10);
-  
-  // get selected chapters (multi-select)
-  const filter = document.getElementById('chapter-filter');
-  let selectedChapters = getSelectedChapters(filter);
-  
-  // build pool: if no chapters selected or 'all' selected, use all; otherwise use selected chapters
-  const pool = selectedChapters.length === 0 ? BANK : BANK.filter(q => selectedChapters.includes(q.ch));
-  
   if (pool.length === 0) {
     alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.');
     return;
   }
 
-  const selectedCount = Math.min(size, pool.length);
+  const selectedCount = Math.min(requestedCount, pool.length);
   currentSession = getVariedBalancedDraw(pool, selectedCount);
-  if (pool.length < size) {
+  if (pool.length < requestedCount) {
     alert(`Les chapitres choisis contiennent seulement ${pool.length} questions. Le quiz utilisera toutes les questions disponibles.`);
   }
 
@@ -774,11 +874,15 @@ function startExam() {
   currentQ = 0;
   examFinished = false;
   startTime = Date.now();
-  // start timer if requested
-  if (timerEnabled && timerMins > 0) {
+  if (timerMins > 0) {
     remainingSeconds = timerMins * 60;
     attachTimerToHeader();
     startTimer();
+  } else {
+    remainingSeconds = 0;
+    stopTimer();
+    const timer = document.getElementById('timer');
+    if (timer) timer.style.display = 'none';
   }
 
   document.getElementById('home').style.display = 'none';
@@ -945,12 +1049,11 @@ function showResults() {
   const score = raw.toFixed(2);
   const pct = Math.round(currentSession.length ? correct / currentSession.length * 100 : 0);
   const maxScore = (currentSession.length * correctPoints).toFixed(2);
-  const wrongLabel = wrongPoints >= 0 ? `+${wrongPoints}` : wrongPoints;
   const emoji = score >= 5.5 ? '🏆' : score >= 4 ? '👍' : score >= 3 ? '📖' : '💪';
-  const dateLabel = new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  const resultDate = buildResultTimestamp();
 
   recordLeaderboardResult({
-    date: dateLabel,
+    date: resultDate,
     subject: SUBJECT_NAME,
     user: currentUser || 'Invité',
     score,
@@ -959,7 +1062,7 @@ function showResults() {
   });
 
   saveResultForCurrentUser({
-    date: dateLabel,
+    date: resultDate,
     subject: SUBJECT_NAME,
     score,
     max: maxScore,
