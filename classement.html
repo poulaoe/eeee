@@ -53,9 +53,9 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
   <section class="hero">
     <div class="hero-top">
       <div>
-        <div class="eyebrow">Classement</div>
+        <div class="eyebrow">Classement local</div>
         <h1>Les meilleurs scores enregistrés</h1>
-        <p class="lead">Cette page lit les résultats sauvegardés en local et, si activé, en ligne puis trie les meilleures performances par score, pourcentage et date.</p>
+        <p class="lead">Cette page lit les résultats sauvegardés sur l’appareil et trie les meilleures performances par score, puis par pourcentage et date.</p>
       </div>
       <div class="actions">
         <a class="btn btn-secondary" href="index.html">Retour menu</a>
@@ -86,7 +86,7 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
       <div class="side-list" id="summary-list"></div>
       <div class="mini" style="margin-top:12px">
         <h3>Astuce</h3>
-        <p>Sans configuration cloud, le classement reste local à cet appareil. Avec Supabase activé, les résultats sont partagés en ligne.</p>
+        <p>Le classement reste local à cet appareil. Pour avoir plus d’entrées, lance des partiels dans Patho, Douleur ou les matières du bac à sable.</p>
       </div>
     </aside>
   </div>
@@ -96,6 +96,7 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
 <script src="remote-sync.js"></script>
 <script>
 const STORAGE_KEY = 'qcm_leaderboard_v1';
+let cachedEntries = [];
 
 function loadLeaderboard() {
   try {
@@ -108,43 +109,60 @@ function loadLeaderboard() {
   }
 }
 
+function normalizeEntry(item) {
+  const raw = item || {};
+  const toNumber = (value, fallback) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const toIsoDate = (value) => {
+    if (!value) return new Date().toISOString();
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+  };
+  return {
+    date: toIsoDate(raw.date),
+    subject: String(raw.subject || 'Inconnu'),
+    user: String(raw.user || 'Résultat local'),
+    score: toNumber(raw.score, 0),
+    max: toNumber(raw.max, 0),
+    pct: toNumber(raw.pct, 0)
+  };
+}
+
+function dedupeKey(item) {
+  return [item.date, item.subject, item.user, item.score, item.max, item.pct].join('|');
+}
+
+function mergeEntries(localEntries, remoteEntries) {
+  const merged = [];
+  const seen = new Set();
+  const all = ([]).concat(localEntries || [], remoteEntries || []);
+  all.forEach((entry) => {
+    const normalized = normalizeEntry(entry);
+    const key = dedupeKey(normalized);
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(normalized);
+  });
+  return merged;
+}
+
+async function loadRemoteLeaderboard() {
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchResults !== 'function') return [];
+  if (typeof window.QCM_REMOTE.isConfigured === 'function' && !window.QCM_REMOTE.isConfigured()) return [];
+  try {
+    const rows = await window.QCM_REMOTE.fetchResults({ limit: 300 });
+    return Array.isArray(rows) ? rows : [];
+  } catch (e) {
+    return [];
+  }
+}
+
 function formatDateLabel(value) {
   if (!value) return '';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('fr-FR');
-}
-
-function normalizeEntry(item) {
-  return {
-    date: String(item?.date || ''),
-    subject: String(item?.subject || 'Inconnu'),
-    user: String(item?.user || 'Résultat local'),
-    score: String(item?.score || '0'),
-    max: String(item?.max || '0'),
-    pct: Number.isFinite(Number(item?.pct)) ? Number(item.pct) : 0
-  };
-}
-
-function dedupeEntries(entries) {
-  const seen = new Set();
-  const out = [];
-  entries.forEach(item => {
-    const n = normalizeEntry(item);
-    const key = [n.date, n.subject, n.user, n.score, n.max, n.pct].join('|');
-    if (seen.has(key)) return;
-    seen.add(key);
-    out.push(n);
-  });
-  return out;
-}
-
-async function loadCombinedLeaderboard() {
-  const localEntries = loadLeaderboard();
-  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchResults !== 'function') {
-    return localEntries;
-  }
-  const remoteEntries = await window.QCM_REMOTE.fetchResults();
-  return dedupeEntries([...(Array.isArray(remoteEntries) ? remoteEntries : []), ...localEntries]);
 }
 
 function buildFilters(entries) {
@@ -208,8 +226,9 @@ function summarize(entries) {
   }
 }
 
-async function renderBoard() {
-  const entries = (await loadCombinedLeaderboard()).slice().sort((a, b) => {
+function renderBoard() {
+  const source = cachedEntries.length ? cachedEntries : loadLeaderboard();
+  const entries = source.slice().sort((a, b) => {
     const scoreDiff = parseFloat(b.score || 0) - parseFloat(a.score || 0);
     if (scoreDiff !== 0) return scoreDiff;
     const pctDiff = parseFloat(b.pct || 0) - parseFloat(a.pct || 0);
@@ -249,7 +268,10 @@ async function renderBoard() {
   }).join('');
 }
 
-function refreshBoard() {
+async function refreshBoard() {
+  const localEntries = loadLeaderboard();
+  const remoteEntries = await loadRemoteLeaderboard();
+  cachedEntries = mergeEntries(localEntries, remoteEntries);
   renderBoard();
 }
 
@@ -263,7 +285,7 @@ function resetFilters() {
 document.getElementById('subject-filter').addEventListener('change', renderBoard);
 document.getElementById('user-filter').addEventListener('change', renderBoard);
 document.getElementById('sort-filter').addEventListener('change', renderBoard);
-renderBoard();
+refreshBoard();
 </script>
 </body>
 </html>

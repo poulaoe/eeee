@@ -1,83 +1,113 @@
 (function () {
+  var DEFAULT_TABLE = 'leaderboard';
+
   function getConfig() {
-    const cfg = window.QCM_REMOTE_CONFIG || {};
+    var cfg = window.QCM_SUPABASE || {};
+    var url = String(cfg.url || '').replace(/\/$/, '');
+    var key = String(cfg.anonKey || '').trim();
+    var table = String(cfg.table || DEFAULT_TABLE).trim() || DEFAULT_TABLE;
+    return { url: url, key: key, table: table };
+  }
+
+  function hasRemote() {
+    var cfg = getConfig();
+    return !!(cfg.url && cfg.key);
+  }
+
+  function toNumber(value, fallback) {
+    var n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function toIsoDate(value) {
+    if (!value) return new Date().toISOString();
+    var d = new Date(value);
+    if (Number.isNaN(d.getTime())) return new Date().toISOString();
+    return d.toISOString();
+  }
+
+  function normalizeEntry(item) {
+    var raw = item || {};
     return {
-      enabled: !!cfg.enabled,
-      supabaseUrl: String(cfg.supabaseUrl || '').trim().replace(/\/$/, ''),
-      supabaseAnonKey: String(cfg.supabaseAnonKey || '').trim(),
-      table: String(cfg.table || 'qcm_attempts').trim(),
-      maxFetch: Number.isFinite(cfg.maxFetch) ? cfg.maxFetch : 500
+      date: toIsoDate(raw.date),
+      subject: String(raw.subject || 'Inconnu').slice(0, 120),
+      user: String(raw.user || 'Invite').slice(0, 120),
+      score: toNumber(raw.score, 0),
+      max: toNumber(raw.max, 0),
+      pct: toNumber(raw.pct, 0)
     };
   }
 
-  function isConfigured() {
-    const cfg = getConfig();
-    return cfg.enabled && !!cfg.supabaseUrl && !!cfg.supabaseAnonKey;
-  }
-
-  function normalizeEntry(entry) {
-    return {
-      date: String(entry?.date || new Date().toISOString()),
-      subject: String(entry?.subject || 'Inconnu'),
-      user: String(entry?.user || 'Invite'),
-      score: String(entry?.score || '0'),
-      max: String(entry?.max || '0'),
-      pct: Number.isFinite(Number(entry?.pct)) ? Number(entry.pct) : 0
-    };
-  }
-
-  async function pushResult(entry) {
-    if (!isConfigured()) return false;
-    const cfg = getConfig();
-    const url = cfg.supabaseUrl + '/rest/v1/' + encodeURIComponent(cfg.table);
-    const payload = normalizeEntry(entry);
-
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          apikey: cfg.supabaseAnonKey,
-          Authorization: 'Bearer ' + cfg.supabaseAnonKey,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
-        },
-        body: JSON.stringify(payload)
-      });
-      return res.ok;
-    } catch (e) {
-      return false;
+  function request(path, init) {
+    var cfg = getConfig();
+    if (!cfg.url || !cfg.key) {
+      return Promise.resolve({ ok: false, reason: 'missing-config' });
     }
+
+    var headers = Object.assign(
+      {
+        apikey: cfg.key,
+        Authorization: 'Bearer ' + cfg.key
+      },
+      (init && init.headers) || {}
+    );
+
+    return fetch(cfg.url + path, Object.assign({}, init || {}, { headers: headers }));
   }
 
-  async function fetchResults() {
-    if (!isConfigured()) return [];
-    const cfg = getConfig();
-    const select = 'date,subject,user,score,max,pct';
-    const url = cfg.supabaseUrl + '/rest/v1/' + encodeURIComponent(cfg.table)
-      + '?select=' + encodeURIComponent(select)
-      + '&order=' + encodeURIComponent('date.desc')
-      + '&limit=' + encodeURIComponent(String(cfg.maxFetch));
+  function pushResult(entry) {
+    if (!hasRemote()) return Promise.resolve({ ok: false, reason: 'missing-config' });
 
-    try {
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          apikey: cfg.supabaseAnonKey,
-          Authorization: 'Bearer ' + cfg.supabaseAnonKey
-        }
+    var cfg = getConfig();
+    var payload = normalizeEntry(entry);
+
+    return request('/rest/v1/' + encodeURIComponent(cfg.table), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(function (response) {
+        return { ok: !!(response && response.ok), status: response ? response.status : 0 };
+      })
+      .catch(function () {
+        return { ok: false, reason: 'network-error' };
       });
-      if (!res.ok) return [];
-      const data = await res.json();
-      if (!Array.isArray(data)) return [];
-      return data.map(normalizeEntry);
-    } catch (e) {
-      return [];
-    }
+  }
+
+  function fetchResults(options) {
+    if (!hasRemote()) return Promise.resolve([]);
+
+    var cfg = getConfig();
+    var limit = toNumber(options && options.limit, 300);
+    if (!Number.isFinite(limit) || limit < 1) limit = 300;
+    if (limit > 1000) limit = 1000;
+
+    var query = '/rest/v1/' + encodeURIComponent(cfg.table)
+      + '?select=date,subject,user,score,max,pct'
+      + '&order=date.desc'
+      + '&limit=' + limit;
+
+    return request(query, { method: 'GET' })
+      .then(function (response) {
+        if (!response || !response.ok) return [];
+        return response.json().catch(function () { return []; });
+      })
+      .then(function (rows) {
+        if (!Array.isArray(rows)) return [];
+        return rows.map(normalizeEntry);
+      })
+      .catch(function () {
+        return [];
+      });
   }
 
   window.QCM_REMOTE = {
-    isConfigured,
-    pushResult,
-    fetchResults
+    isConfigured: hasRemote,
+    pushResult: pushResult,
+    fetchResults: fetchResults,
+    normalizeEntry: normalizeEntry
   };
 })();

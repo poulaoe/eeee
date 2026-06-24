@@ -236,9 +236,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <div id="results"></div>
+
 <script src="remote-config.js"></script>
 <script src="remote-sync.js"></script>
-
 <script>
 // ===================== BANQUE DE QUESTIONS =====================
 const BANK = [
@@ -1208,10 +1208,64 @@ let lastPartielSignature = '';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 let currentUser = null;
+const memoryStorageFallback = {};
+const windowNameStoragePrefix = 'QCM_STATE::';
+
+function readWindowNameStorage() {
+  if (typeof window.name !== 'string' || !window.name.startsWith(windowNameStoragePrefix)) {
+    return {};
+  }
+  try {
+    const parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function writeWindowNameStorage(store) {
+  try {
+    window.name = windowNameStoragePrefix + JSON.stringify(store);
+  } catch (e) {
+    return;
+  }
+}
+
+function safeGetItem(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    const persisted = readWindowNameStorage();
+    if (Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
+    return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+  }
+}
+
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    memoryStorageFallback[key] = String(value);
+    const persisted = readWindowNameStorage();
+    persisted[key] = String(value);
+    writeWindowNameStorage(persisted);
+  }
+}
+
+function safeRemoveItem(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    delete memoryStorageFallback[key];
+    const persisted = readWindowNameStorage();
+    delete persisted[key];
+    writeWindowNameStorage(persisted);
+  }
+}
 
 function loadLeaderboard() {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = safeGetItem(LEADERBOARD_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -1221,7 +1275,7 @@ function loadLeaderboard() {
 }
 
 function saveLeaderboard(entries) {
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
+  safeSetItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
 }
 
 function recordLeaderboardResult(result) {
@@ -1229,13 +1283,13 @@ function recordLeaderboardResult(result) {
   entries.unshift(result);
   saveLeaderboard(entries.slice(0, 100));
   if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-    window.QCM_REMOTE.pushResult(result).catch(() => {});
+    window.QCM_REMOTE.pushResult(result);
   }
 }
 
 function loadAccounts() {
   try {
-    const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+    const raw = safeGetItem(ACCOUNTS_STORAGE_KEY);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === 'object' ? parsed : {};
@@ -1245,21 +1299,21 @@ function loadAccounts() {
 }
 
 function saveAccounts(accounts) {
-  localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+  safeSetItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
 }
 
 function getSignedUser() {
-  const name = localStorage.getItem('qcm_signed_user') || '';
+  const name = safeGetItem('qcm_signed_user') || '';
   return name.trim();
 }
 
 function setSignedUser(name) {
   if (!name) {
-    localStorage.removeItem('qcm_signed_user');
+    safeRemoveItem('qcm_signed_user');
     currentUser = null;
     return;
   }
-  localStorage.setItem('qcm_signed_user', name);
+  safeSetItem('qcm_signed_user', name);
   currentUser = name;
 }
 
@@ -1366,9 +1420,47 @@ function saveResultForCurrentUser(result) {
   saveAccounts(accounts);
 }
 
-// Init count sur l'écran d'accueil
-document.getElementById('total-q-count').textContent = BANK.length;
-initHomeModules();
+function resetVisibleState() {
+  const nodes = {
+    home: document.getElementById('home'),
+    header: document.getElementById('header'),
+    progressBar: document.getElementById('progress-bar'),
+    main: document.getElementById('main'),
+    navPills: document.getElementById('nav-pills'),
+    results: document.getElementById('results'),
+  };
+  if (nodes.home) nodes.home.style.display = 'block';
+  if (nodes.header) nodes.header.style.display = 'none';
+  if (nodes.progressBar) nodes.progressBar.style.display = 'none';
+  if (nodes.main) nodes.main.style.display = 'none';
+  if (nodes.navPills) nodes.navPills.style.display = 'none';
+  if (nodes.results) {
+    nodes.results.style.display = 'none';
+    nodes.results.innerHTML = '';
+  }
+}
+
+function bootstrapPage() {
+  resetVisibleState();
+  const totalCount = document.getElementById('total-q-count');
+  if (totalCount) totalCount.textContent = BANK.length;
+  try {
+    initHomeModules();
+    renderAccountPanel();
+  } catch (error) {
+    console.error('Erreur au démarrage de Pathologie', error);
+    const accountContent = document.getElementById('account-content');
+    if (accountContent) {
+      accountContent.innerHTML = '<div class="history-item">La page a chargé, mais une erreur a bloqué l’initialisation du menu. Ouvre la console pour le détail.</div>';
+    }
+  }
+}
+
+window.addEventListener('pageshow', () => {
+  resetVisibleState();
+});
+
+bootstrapPage();
 
 function getChapters() {
   return Array.from(new Set(BANK.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));

@@ -269,10 +269,62 @@ let lastPartielSignature = '';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 let currentUser = null;
+const memoryStorageFallback = {};
+const windowNameStoragePrefix = 'QCM_STATE::';
+
+function readWindowNameStorage(){
+  if(typeof window.name !== 'string' || !window.name.startsWith(windowNameStoragePrefix)) return {};
+  try {
+    const parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function writeWindowNameStorage(store){
+  try {
+    window.name = windowNameStoragePrefix + JSON.stringify(store);
+  } catch (e) {
+    return;
+  }
+}
+
+function safeGetItem(key){
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    const persisted = readWindowNameStorage();
+    if(Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
+    return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+  }
+}
+
+function safeSetItem(key, value){
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    memoryStorageFallback[key] = String(value);
+    const persisted = readWindowNameStorage();
+    persisted[key] = String(value);
+    writeWindowNameStorage(persisted);
+  }
+}
+
+function safeRemoveItem(key){
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    delete memoryStorageFallback[key];
+    const persisted = readWindowNameStorage();
+    delete persisted[key];
+    writeWindowNameStorage(persisted);
+  }
+}
 
 function loadLeaderboard(){
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = safeGetItem(LEADERBOARD_STORAGE_KEY);
     if(!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -282,7 +334,7 @@ function loadLeaderboard(){
 }
 
 function saveLeaderboard(entries){
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
+  safeSetItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
 }
 
 function recordLeaderboardResult(result){
@@ -290,13 +342,13 @@ function recordLeaderboardResult(result){
   entries.unshift(result);
   saveLeaderboard(entries.slice(0, 100));
   if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-    window.QCM_REMOTE.pushResult(result).catch(() => {});
+    window.QCM_REMOTE.pushResult(result);
   }
 }
 
 function loadAccounts(){
   try {
-    const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+    const raw = safeGetItem(ACCOUNTS_STORAGE_KEY);
     if(!raw) return {};
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === 'object' ? parsed : {};
@@ -306,21 +358,21 @@ function loadAccounts(){
 }
 
 function saveAccounts(accounts){
-  localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+  safeSetItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
 }
 
 function getSignedUser(){
-  const name = localStorage.getItem('qcm_signed_user') || '';
+  const name = safeGetItem('qcm_signed_user') || '';
   return name.trim();
 }
 
 function setSignedUser(name){
   if(!name){
-    localStorage.removeItem('qcm_signed_user');
+    safeRemoveItem('qcm_signed_user');
     currentUser = null;
     return;
   }
-  localStorage.setItem('qcm_signed_user', name);
+  safeSetItem('qcm_signed_user', name);
   currentUser = name;
 }
 
@@ -427,8 +479,47 @@ function saveResultForCurrentUser(result){
   saveAccounts(accounts);
 }
 
-document.getElementById('sc1').textContent = new Set(BANK.map(q=>q.ch)).size;
-initHomeModules();
+function resetVisibleState(){
+  const nodes = {
+    home: document.getElementById('home'),
+    header: document.getElementById('header'),
+    progressBar: document.getElementById('progress-bar'),
+    main: document.getElementById('main'),
+    navPills: document.getElementById('nav-pills'),
+    results: document.getElementById('results'),
+  };
+  if(nodes.home) nodes.home.style.display = 'block';
+  if(nodes.header) nodes.header.style.display = 'none';
+  if(nodes.progressBar) nodes.progressBar.style.display = 'none';
+  if(nodes.main) nodes.main.style.display = 'none';
+  if(nodes.navPills) nodes.navPills.style.display = 'none';
+  if(nodes.results){
+    nodes.results.style.display = 'none';
+    nodes.results.innerHTML = '';
+  }
+}
+
+function bootstrapPage(){
+  resetVisibleState();
+  const totalCount = document.getElementById('sc1');
+  if(totalCount) totalCount.textContent = new Set(BANK.map(q=>q.ch)).size;
+  try {
+    initHomeModules();
+    renderAccountPanel();
+  } catch (error) {
+    console.error('Erreur au démarrage de Douleur', error);
+    const accountContent = document.getElementById('account-content');
+    if(accountContent){
+      accountContent.innerHTML = '<div class="history-item">La page a chargé, mais une erreur a bloqué l’initialisation du menu. Ouvre la console pour le détail.</div>';
+    }
+  }
+}
+
+window.addEventListener('pageshow', () => {
+  resetVisibleState();
+});
+
+bootstrapPage();
 
 function getChapters(){
   return Array.from(new Set(BANK.map(q => q.ch))).sort((a,b) => a.localeCompare(b, 'fr'));
@@ -535,8 +626,39 @@ function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault){
 function refreshExamSizeChoices(){
   const selectedChapters = selectedValues(document.getElementById('chapter-filter'));
   const sandboxPool = applyPoolFilters(BANK, selectedChapters);
-  syncExamSizeSelect('exam-size', sandboxPool.length, [10, 15, 20, 25], 20);
-  syncExamSizeSelect('partiel-size', BANK.length, [15, 20, 25, 30], 25);
+  const sandboxMax = sandboxPool.length === 0 ? 0 : Math.max(sandboxPool.length, 25);
+  const partielMax = BANK.length === 0 ? 0 : Math.max(BANK.length, 30);
+  syncExamSizeSelect('exam-size', sandboxMax, [10, 15, 20, 25], 20);
+  syncExamSizeSelect('partiel-size', partielMax, [15, 20, 25, 30], 25);
+}
+
+function fillToSizeWithRepeats(baseDraw, totalCount, pool){
+  const result = baseDraw.slice();
+  if (totalCount <= result.length) return result.slice(0, totalCount);
+  if (!Array.isArray(pool) || pool.length === 0) return result;
+
+  while (result.length < totalCount) {
+    const cycle = shuffle(pool.slice());
+    if (result.length && cycle.length > 1) {
+      const last = result[result.length - 1];
+      if (last && cycle[0] && cycle[0].q === last.q) {
+        cycle.push(cycle.shift());
+      }
+    }
+    for (let i = 0; i < cycle.length && result.length < totalCount; i++) {
+      result.push(cycle[i]);
+    }
+  }
+  return result;
+}
+
+function drawFromPool(pool, totalCount){
+  const source = Array.isArray(pool) ? pool : [];
+  if (!source.length) return [];
+  const uniqueCount = Math.min(totalCount, source.length);
+  const shuffled = shuffle([...Array(source.length).keys()]);
+  const uniqueDraw = shuffled.slice(0, uniqueCount).map(i => source[i]);
+  return fillToSizeWithRepeats(uniqueDraw, totalCount, source);
 }
 
 function pickBalancedQuestions(totalCount){
@@ -577,14 +699,14 @@ function overlapWithLastDraw(draw){
 }
 
 function getPartielDraw(examSize){
-  const maxCount = Math.min(examSize, BANK.length);
+  const uniqueCount = Math.min(examSize, BANK.length);
   const tries = 12;
   let bestDraw = [];
   let bestSignature = '';
   let bestOverlap = Number.POSITIVE_INFINITY;
 
   for(let i = 0; i < tries; i++){
-    const draw = pickBalancedQuestions(maxCount);
+    const draw = pickBalancedQuestions(uniqueCount);
     const sig = examSignature(draw);
     const overlap = overlapWithLastDraw(draw);
 
@@ -596,12 +718,13 @@ function getPartielDraw(examSize){
 
     if(sig !== lastPartielSignature || BANK.length <= examSize){
       lastPartielSignature = sig;
-      return draw;
+      return fillToSizeWithRepeats(draw, examSize, BANK);
     }
   }
 
   lastPartielSignature = bestSignature || examSignature(bestDraw);
-  return bestDraw.length ? bestDraw : pickBalancedQuestions(maxCount);
+  const fallback = bestDraw.length ? bestDraw : pickBalancedQuestions(uniqueCount);
+  return fillToSizeWithRepeats(fallback, examSize, BANK);
 }
 function startExam(){
   stopTimer();
@@ -645,8 +768,7 @@ function startExam(){
     return;
   }
   if(activeModule !== 'partiel'){
-    const shuffled = shuffle([...Array(pool.length).keys()]);
-    currentSession = shuffled.slice(0, Math.min(examSize, pool.length)).map(i => pool[i]);
+    currentSession = drawFromPool(pool, examSize);
   }
 
   const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);

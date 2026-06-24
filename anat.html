@@ -135,6 +135,18 @@ window.SUBJECT_NAME = 'Anatomie';
 window.SUBJECT_DESC = 'Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
 window.BANK = window.ANAT_BANK || [];
 window.QC_BANK = window.QC_BANK || [];
+
+if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
+  const desc = document.getElementById('home-desc');
+  const msg = document.getElementById('message-zone');
+  if (desc) {
+    desc.textContent = 'La banque Anatomie ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
+  }
+  if (msg) {
+    msg.style.color = '#ffb3a8';
+    msg.textContent = 'Erreur de chargement: anat-bank.js indisponible ou vide.';
+  }
+}
 </script>
 <script src="remote-config.js"></script>
 <script src="remote-sync.js"></script>

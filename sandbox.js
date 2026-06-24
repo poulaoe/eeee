@@ -20,6 +20,58 @@ let lastSessionSignature = '';
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
+const memoryStorageFallback = {};
+const windowNameStoragePrefix = 'QCM_STATE::';
+
+function readWindowNameStorage() {
+  if (typeof window.name !== 'string' || !window.name.startsWith(windowNameStoragePrefix)) return {};
+  try {
+    const parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function writeWindowNameStorage(store) {
+  try {
+    window.name = windowNameStoragePrefix + JSON.stringify(store);
+  } catch (e) {
+    return;
+  }
+}
+
+function safeGetItem(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    const persisted = readWindowNameStorage();
+    if (Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
+    return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+  }
+}
+
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    memoryStorageFallback[key] = String(value);
+    const persisted = readWindowNameStorage();
+    persisted[key] = String(value);
+    writeWindowNameStorage(persisted);
+  }
+}
+
+function safeRemoveItem(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    delete memoryStorageFallback[key];
+    const persisted = readWindowNameStorage();
+    delete persisted[key];
+    writeWindowNameStorage(persisted);
+  }
+}
 
 function safeCssEscape(value) {
   if (window.CSS && typeof window.CSS.escape === 'function') {
@@ -44,7 +96,7 @@ function showFatalInitError(error) {
 
 function loadAccounts() {
   try {
-    const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+    const raw = safeGetItem(ACCOUNTS_STORAGE_KEY);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === 'object') return parsed;
@@ -55,12 +107,12 @@ function loadAccounts() {
 }
 
 function saveAccounts(accounts) {
-  localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+  safeSetItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
 }
 
 function loadLeaderboard() {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = safeGetItem(LEADERBOARD_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -71,7 +123,7 @@ function loadLeaderboard() {
 }
 
 function saveLeaderboard(entries) {
-  localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
+  safeSetItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
 }
 
 function recordLeaderboardResult(result) {
@@ -79,22 +131,22 @@ function recordLeaderboardResult(result) {
   entries.unshift(result);
   saveLeaderboard(entries.slice(0, 100));
   if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-    window.QCM_REMOTE.pushResult(result).catch(() => {});
+    window.QCM_REMOTE.pushResult(result);
   }
 }
 
 function getSignedUser() {
-  const name = localStorage.getItem('qcm_signed_user') || '';
+  const name = safeGetItem('qcm_signed_user') || '';
   return name.trim();
 }
 
 function setSignedUser(name) {
   if (!name) {
-    localStorage.removeItem('qcm_signed_user');
+    safeRemoveItem('qcm_signed_user');
     currentUser = null;
     return;
   }
-  localStorage.setItem('qcm_signed_user', name);
+  safeSetItem('qcm_signed_user', name);
   currentUser = name;
 }
 
