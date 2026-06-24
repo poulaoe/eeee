@@ -573,6 +573,107 @@ function renderFeedbackPanel() {
   panel.innerHTML = html;
 }
 
+function renderChatPanel() {
+  const panel = document.getElementById('module-chat');
+  if (!panel) return;
+
+  let html = `
+    <div class="chat-section" style="display:flex;flex-direction:column;height:400px">
+      <h3>💬 Chat public</h3>
+      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Discute avec d'autres utilisateurs</p>
+      
+      <div id="quiz-chat-messages" style="flex:1;overflow-y:auto;background:#0f2847;border:1px solid #2d2d50;border-radius:8px;padding:10px;margin-bottom:10px;font-size:.8rem;display:flex;flex-direction:column;gap:8px">
+        <div style="color:#666;text-align:center;padding:20px">⏳ Chargement...</div>
+      </div>
+      
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <textarea id="quiz-chat-input" placeholder="Message rapide..." style="flex:1;background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:8px;color:#fff;min-height:40px;max-height:80px;font-family:inherit;font-size:.82rem;resize:vertical" maxlength="2000"></textarea>
+        <button onclick="sendQuizChatMessage()" style="background:#27ae60;color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.8rem;white-space:nowrap">Envoyer</button>
+      </div>
+      <div id="quiz-chat-status" style="margin-top:6px;font-size:.76rem;color:#777"></div>
+    </div>
+  `;
+  
+  panel.innerHTML = html;
+  loadQuizChatMessages();
+  
+  // Auto-refresh
+  setInterval(loadQuizChatMessages, 5000);
+}
+
+async function loadQuizChatMessages() {
+  const container = document.getElementById('quiz-chat-messages');
+  if (!container) return;
+
+  try {
+    const subject = SUBJECT_NAME || 'General';
+    if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchChatMessages !== 'function') {
+      return;
+    }
+
+    const messages = await window.QCM_REMOTE.fetchChatMessages(subject, 50);
+    if (!Array.isArray(messages)) {
+      container.innerHTML = '<div style="color:#666">Erreur chargement messages</div>';
+      return;
+    }
+
+    if (messages.length === 0) {
+      container.innerHTML = '<div style="color:#888;text-align:center;padding:20px">Aucun message. Sois le premier !</div>';
+      return;
+    }
+
+    container.innerHTML = messages.map(msg => {
+      const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : 'N/A';
+      const isOwn = msg.user === (currentUser || 'Invité');
+      return `
+        <div style="background:${isOwn ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.06)'};border-radius:6px;padding:8px;border-left:2px solid ${isOwn ? '#3498db' : '#27ae60'}">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-weight:700;color:#a8d8ff">${escapeHtml(msg.user)}</span>
+            <span style="color:#666;font-size:.75rem">${time}</span>
+          </div>
+          <div style="color:#d4e4f7">${escapeHtml(msg.message)}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.scrollTop = container.scrollHeight;
+  } catch (error) {
+    console.error('Erreur chat:', error);
+  }
+}
+
+async function sendQuizChatMessage() {
+  const input = document.getElementById('quiz-chat-input');
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.pushChatMessage !== 'function') {
+    alert('Supabase non configuré');
+    return;
+  }
+
+  try {
+    const status = document.getElementById('quiz-chat-status');
+    status.textContent = 'Envoi...';
+
+    await window.QCM_REMOTE.pushChatMessage({
+      user: currentUser || 'Invité',
+      subject: SUBJECT_NAME || 'General',
+      message: text
+    });
+
+    input.value = '';
+    status.textContent = '✓ Envoyé';
+    setTimeout(() => { status.textContent = ''; }, 2000);
+    await loadQuizChatMessages();
+  } catch (error) {
+    console.error('Erreur envoi:', error);
+    document.getElementById('quiz-chat-status').textContent = '✗ Erreur';
+  }
+}
+
+
 function sendContactMessage() {
   const msg = document.getElementById('contact-message')?.value.trim();
   if (!msg) {
@@ -748,6 +849,9 @@ function initSandboxPage() {
   // Initialiser le panel feedback
   renderFeedbackPanel();
   
+  // Initialiser le panel chat
+  renderChatPanel();
+  
   switchModule('sandbox');
 }
 
@@ -876,12 +980,19 @@ function switchTab(id){
 
 function switchModule(moduleId) {
   activeModule = moduleId;
-  ['sandbox', 'partiel', 'chapitres'].forEach(id => {
+  ['sandbox', 'partiel', 'chapitres', 'feedback', 'chat'].forEach(id => {
     const panel = document.getElementById(`module-${id}`);
     const tab = document.getElementById(`tab-${id}`);
     if (panel) panel.classList.toggle('active', id === moduleId);
     if (tab) tab.classList.toggle('active', id === moduleId);
   });
+
+  if (moduleId === 'feedback') {
+    renderFeedbackPanel();
+  }
+  if (moduleId === 'chat') {
+    renderChatPanel();
+  }
 
   if (moduleId !== 'chapitres' && getSelectedQuickChapter().length) {
     syncChapterFilterSelection(getSelectedQuickChapter());
