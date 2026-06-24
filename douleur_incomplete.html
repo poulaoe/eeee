@@ -186,8 +186,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <div class="module-hint">Clique un chapitre pour filtrer puis lancer le quiz.</div>
     </div>
     <div class="stat-grid">
-      <div class="stat"><span id="sc1">4</span>Chapitres</div>
-      <div class="stat"><span>20</span>QCM / partiel</div>
+      <div class="stat"><span id="sc1">5</span>Chapitres</div>
+      <div class="stat"><span>150</span>QCM Total</div>
       <div class="stat"><span>45'</span>Timer</div>
       <div class="stat"><span>∞</span>Partiels possibles</div>
     </div>
@@ -586,7 +586,7 @@ function bootstrapPage(){
     console.error('Erreur au démarrage de Douleur', error);
     const accountContent = document.getElementById('account-content');
     if(accountContent){
-      accountContent.innerHTML = '<div class="history-item">La page a chargé, mais une erreur a bloqué l’initialisation du menu. Ouvre la console pour le détail.</div>';
+      accountContent.innerHTML = '<div class="history-item">La page a charge, mais une erreur a bloque l\'initialisation du menu. Ouvre la console pour le detail.</div>';
     }
   }
 }
@@ -1085,14 +1085,14 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerDouleur = document.getElementById('global-timer');
-const partielTimerDouleur = document.getElementById('partiel-timer');
-if (globalTimerDouleur && partielTimerDouleur) {
-  globalTimerDouleur.addEventListener('change', (e) => {
-    partielTimerDouleur.value = e.target.value;
+const globalTimerDouleurIncomplete = document.getElementById('global-timer');
+const partielTimerDouleurIncomplete = document.getElementById('partiel-timer');
+if (globalTimerDouleurIncomplete && partielTimerDouleurIncomplete) {
+  globalTimerDouleurIncomplete.addEventListener('change', (e) => {
+    partielTimerDouleurIncomplete.value = e.target.value;
   });
-  partielTimerDouleur.addEventListener('change', (e) => {
-    globalTimerDouleur.value = e.target.value;
+  partielTimerDouleurIncomplete.addEventListener('change', (e) => {
+    globalTimerDouleurIncomplete.value = e.target.value;
   });
 }
 </script>

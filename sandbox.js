@@ -18,7 +18,7 @@ let wrongPoints = 0.083;
 let currentUser = null;
 let lastSessionSignature = '';
 let activeModule = 'sandbox';
-let selectedChapterQuick = null;
+let selectedChapterQuick = [];
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
@@ -202,7 +202,7 @@ function normalizeStoredResult(result) {
 }
 
 function getSelectedQuickChapter() {
-  return selectedChapterQuick ? [selectedChapterQuick] : [];
+  return Array.isArray(selectedChapterQuick) ? [...selectedChapterQuick] : [];
 }
 
 function syncChapterFilterSelection(chapters) {
@@ -221,11 +221,16 @@ function getCurrentGradingConfig() {
     return { good: 1, bad: 0, label: 'Simple (+1 / 0)' };
   }
   if (gradingMode === 'custom') {
-    const good = parseFloat(document.getElementById('custom-good')?.value || '0.25');
-    const bad = parseFloat(document.getElementById('custom-bad')?.value || '0.083');
+    const parseCustomValue = (value, fallback) => {
+      const normalized = String(value ?? '').replace(',', '.').trim();
+      const parsed = parseFloat(normalized);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    };
+    const good = parseCustomValue(document.getElementById('custom-good')?.value, 0.25);
+    const bad = parseCustomValue(document.getElementById('custom-bad')?.value, 0.083);
     return {
-      good: Number.isFinite(good) ? good : 0.25,
-      bad: Number.isFinite(bad) ? bad : 0.083,
+      good,
+      bad,
       label: 'Personnalisé'
     };
   }
@@ -253,6 +258,7 @@ function styleOptionsPanel() {
     .account-badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#1d4435;color:#8ef0be;font-size:.78rem;font-weight:700;margin-bottom:10px}
     .history-list{margin-top:10px;max-height:180px;overflow:auto;border-top:1px solid #2b5144;padding-top:8px}
     .history-item{font-size:.78rem;color:#cde2da;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .chapter-chip.active{border-color:#e74c3c;background:rgba(231,76,60,.18);color:#fff}
   `;
   document.head.appendChild(style);
 
@@ -558,10 +564,16 @@ function initSandboxPage() {
   const chapterFilter = document.getElementById('chapter-filter');
   if (chapterFilter) {
     chapterFilter.addEventListener('change', () => {
-      selectedChapterQuick = null;
+      selectedChapterQuick = [];
       refreshExamSizeFromFilters();
+      const quickList = document.getElementById('chapter-quick-list');
+      if (quickList) {
+        quickList.querySelectorAll('.chapter-chip').forEach(el => el.classList.remove('active'));
+      }
     });
   }
+
+  ensurePartielCustomQuestionInput();
   const gradingSelect = document.getElementById('partiel-grading');
   const gradingCustom = document.getElementById('partiel-custom-box');
   if (gradingSelect && gradingCustom) {
@@ -572,6 +584,19 @@ function initSandboxPage() {
     refreshGradingVisibility();
   }
   defaultChapterFilter();
+  
+  // Synchroniser global-timer et partiel-timer
+  const globalTimer = document.getElementById('global-timer');
+  const partielTimer = document.getElementById('partiel-timer');
+  if (globalTimer && partielTimer) {
+    globalTimer.addEventListener('change', (e) => {
+      partielTimer.value = e.target.value;
+    });
+    partielTimer.addEventListener('change', (e) => {
+      globalTimer.value = e.target.value;
+    });
+  }
+  
   switchModule('sandbox');
 }
 
@@ -620,14 +645,19 @@ function renderChapterList() {
     chip.type = 'button';
     chip.textContent = ch;
     chip.onclick = () => {
-      selectedChapterQuick = selectedChapterQuick === ch ? null : ch;
+      const current = new Set(getSelectedQuickChapter());
+      if (current.has(ch)) current.delete(ch);
+      else current.add(ch);
+      selectedChapterQuick = Array.from(current);
       syncChapterFilterSelection(getSelectedQuickChapter());
       refreshExamSizeFromFilters();
       quickList.querySelectorAll('.chapter-chip').forEach(el => {
-        el.classList.toggle('active', el.textContent === selectedChapterQuick);
+        el.classList.toggle('active', getSelectedQuickChapter().includes(el.textContent));
       });
       preview.querySelectorAll('[data-preview-chapter]').forEach(block => {
-        block.style.display = !selectedChapterQuick || block.getAttribute('data-preview-chapter') === selectedChapterQuick ? 'block' : 'none';
+        const selected = getSelectedQuickChapter();
+        const chapter = block.getAttribute('data-preview-chapter');
+        block.style.display = selected.length === 0 || selected.includes(chapter) ? 'block' : 'none';
       });
     };
     quickList.appendChild(chip);
@@ -655,6 +685,31 @@ function renderChapterList() {
   });
 }
 
+function ensurePartielCustomQuestionInput() {
+  const partielPanel = document.getElementById('module-partiel');
+  const sizeSelect = document.getElementById('partiel-size');
+  if (!partielPanel || !sizeSelect) return;
+  if (document.getElementById('partiel-size-custom')) return;
+
+  const block = document.createElement('div');
+  block.style.marginTop = '10px';
+  block.innerHTML = `
+    <label for="partiel-size-custom">Nombre de QCM personnalisé (min 5)</label>
+    <input id="partiel-size-custom" type="number" min="5" step="1" value="${parseInt(sizeSelect.value || '25', 10) || 25}">
+  `;
+  const hint = partielPanel.querySelector('.module-hint');
+  if (hint) partielPanel.insertBefore(block, hint);
+  else partielPanel.appendChild(block);
+
+  sizeSelect.addEventListener('change', () => {
+    const customInput = document.getElementById('partiel-size-custom');
+    if (customInput) {
+      const value = parseInt(sizeSelect.value || '25', 10);
+      if (Number.isFinite(value) && value > 0) customInput.value = String(value);
+    }
+  });
+}
+
 function injectExamOptions(){
   return;
 }
@@ -677,7 +732,7 @@ function switchModule(moduleId) {
     if (tab) tab.classList.toggle('active', id === moduleId);
   });
 
-  if (moduleId !== 'chapitres' && selectedChapterQuick) {
+  if (moduleId !== 'chapitres' && getSelectedQuickChapter().length) {
     syncChapterFilterSelection(getSelectedQuickChapter());
   }
 }
@@ -757,7 +812,7 @@ function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault) 
 
 function refreshExamSizeFromFilters() {
   const filter = document.getElementById('chapter-filter');
-  const selectedChapters = selectedChapterQuick ? getSelectedQuickChapter() : getSelectedChapters(filter);
+  const selectedChapters = getSelectedQuickChapter().length ? getSelectedQuickChapter() : getSelectedChapters(filter);
   const pool = selectedChapters.length ? BANK.filter(q => selectedChapters.includes(q.ch)) : BANK;
   syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
   const questionCount = document.getElementById('question-count');
@@ -781,21 +836,23 @@ function getBalancedDraw(pool, totalCount) {
     byChapter.get(chapter).push(q);
   });
 
-  const chapters = shuffle(Array.from(byChapter.keys()));
-  const base = Math.floor(wanted / chapters.length);
-  const extra = wanted % chapters.length;
+  const chapters = shuffle(Array.from(byChapter.keys())).map(ch => ({
+    chapter: ch,
+    questions: shuffle(byChapter.get(ch))
+  }));
+
+  // Round-robin draw: keeps chapter counts as balanced as possible (difference <= 1 when feasible).
   const picked = [];
-
-  chapters.forEach((chapter, idx) => {
-    const chapterQs = shuffle(byChapter.get(chapter));
-    const target = base + (idx < extra ? 1 : 0);
-    picked.push(...chapterQs.slice(0, Math.min(target, chapterQs.length)));
-  });
-
-  if (picked.length < wanted) {
-    const seen = new Set(picked.map(q => `${q.ch}::${q.q}`));
-    const rest = shuffle(pool.filter(q => !seen.has(`${q.ch}::${q.q}`)));
-    picked.push(...rest.slice(0, wanted - picked.length));
+  while (picked.length < wanted) {
+    let added = false;
+    for (const bucket of chapters) {
+      if (picked.length >= wanted) break;
+      if (bucket.questions.length > 0) {
+        picked.push(bucket.questions.pop());
+        added = true;
+      }
+    }
+    if (!added) break;
   }
 
   return shuffle(picked).slice(0, wanted);
@@ -824,7 +881,8 @@ function startExam() {
     return;
   }
   const filter = document.getElementById('chapter-filter');
-  const sandboxSelectedChapters = selectedChapterQuick ? getSelectedQuickChapter() : getSelectedChapters(filter);
+  const quickSelected = getSelectedQuickChapter();
+  const sandboxSelectedChapters = quickSelected.length ? quickSelected : getSelectedChapters(filter);
   const sandboxPool = sandboxSelectedChapters.length === 0 ? BANK : BANK.filter(q => sandboxSelectedChapters.includes(q.ch));
 
   let pool = sandboxPool;
@@ -835,13 +893,20 @@ function startExam() {
     const gradingConfig = getCurrentGradingConfig();
     correctPoints = gradingConfig.good;
     wrongPoints = gradingConfig.bad;
-    requestedCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
-    timerMins = Math.max(1, parseInt(document.getElementById('partiel-timer')?.value || '45', 10));
+    const presetCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
+    const customCount = parseInt(document.getElementById('partiel-size-custom')?.value || '', 10);
+    requestedCount = Number.isFinite(customCount) ? customCount : presetCount;
+    requestedCount = Math.max(5, requestedCount || 25);
     pool = BANK;
   } else {
     correctPoints = 0.25;
     wrongPoints = 0.083;
   }
+
+  // Timer peut être défini dans tous les modes, pas juste 'partiel'
+  const timerValue = document.getElementById('global-timer')?.value || document.getElementById('partiel-timer')?.value;
+  const timerParsed = parseInt(String(timerValue || '').trim(), 10);
+  timerMins = Number.isFinite(timerParsed) && timerParsed > 0 ? timerParsed : 0;
 
   if (activeModule === 'chapitres') {
     pool = sandboxPool;
@@ -932,8 +997,9 @@ function updateTimerDisplay(){
   const m = Math.floor(remainingSeconds / 60);
   const s = remainingSeconds % 60;
   t.textContent = `${m}:${String(s).padStart(2,'0')}`;
-  if (remainingSeconds <= 30) t.classList.add('danger');
-  else if (remainingSeconds <= 120) t.classList.add('warn');
+  t.className = '';
+  if (remainingSeconds <= 30) t.className = 'danger';
+  else if (remainingSeconds <= 120) t.className = 'warn';
 }
 
 function startTimer(){

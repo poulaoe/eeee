@@ -58,7 +58,8 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
         <p class="lead">Cette page fusionne les résultats locaux et cloud, puis trie les meilleures performances par score, pourcentage et date.</p>
       </div>
       <div class="actions">
-        <a class="btn btn-secondary" href="index.html">Retour menu</a>
+        <button class="btn btn-secondary" type="button" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'">Retour</button>
+        <a class="btn btn-secondary" href="index.html">Accueil</a>
         <button class="btn btn-primary" type="button" onclick="refreshBoard()">Rafraîchir</button>
       </div>
     </div>
@@ -121,20 +122,37 @@ function checkAndResetIfNeeded() {
   }
 }
 
+function parseStoredDate(value) {
+  if (!value) return null;
+
+  const direct = new Date(value);
+  if (!Number.isNaN(direct.getTime())) return direct;
+
+  const match = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2}))?$/);
+  if (!match) return null;
+
+  const day = Number(match[1]);
+  const month = Number(match[2]) - 1;
+  const year = Number(match[3].length === 2 ? `20${match[3]}` : match[3]);
+  const hour = Number(match[4] || 0);
+  const minute = Number(match[5] || 0);
+  const parsed = new Date(year, month, day, hour, minute);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 function loadLeaderboard() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    
-    // Filtre pour garder seulement les données des 7 derniers jours
+
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    return parsed.filter(item => {
-      const itemDate = new Date(item.date);
-      return itemDate >= sevenDaysAgo;
+
+    return parsed.map(normalizeEntry).filter(item => {
+      const itemDate = parseStoredDate(item.date);
+      return itemDate && itemDate >= sevenDaysAgo;
     });
   } catch (e) {
     return [];
@@ -193,7 +211,7 @@ async function loadRemoteLeaderboard() {
 
 function formatDateLabel(value) {
   if (!value) return '';
-  const date = new Date(value);
+  const date = parseStoredDate(value);
   return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('fr-FR');
 }
 

@@ -112,6 +112,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
       <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
     </div>
+    <div style="background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px">
+      <label for="global-timer" style="display:block;color:#ccd;margin-bottom:8px;font-size:.84rem">Durée du quiz (min)</label>
+      <input id="global-timer" type="number" min="1" step="1" value="45" style="width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
+      <div style="font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px">Utilisé pour tous les modes</div>
+    </div>
     <div class="module-panel active" id="module-sandbox">
       <label for="exam-size">Nombre de QCM</label>
       <select id="exam-size">
@@ -138,10 +143,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
           </select>
         </div>
         <div>
-          <label for="partiel-timer">Durée personnalisée (min)</label>
-          <input id="partiel-timer" type="number" min="1" step="1" value="45">
-        </div>
-        <div>
           <label for="partiel-grading">Barème</label>
           <select id="partiel-grading">
             <option value="bac" selected>Bac (+0,25 / -0,083)</option>
@@ -150,8 +151,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
           </select>
         </div>
         <div>
-          <label>Minuteur</label>
-          <div class="toggle-row">Activé automatiquement</div>
+          <label for="partiel-timer">Timer (min)</label>
+          <input id="partiel-timer" type="number" min="1" step="1" value="45">
         </div>
       </div>
       <div id="partiel-custom-box" class="module-panel" style="display:none;margin-top:10px">
@@ -1190,6 +1191,7 @@ function pickQuestionsWithRepeats(pool, count) {
 }
 
 function startExam() {
+  stopTimer();
   let requestedCount = 25;
   let durationMinutes = 45;
   let sourcePool = [...BANK];
@@ -1201,9 +1203,11 @@ function startExam() {
   }
   if (activeModule === 'partiel') {
     requestedCount = Number(document.getElementById('partiel-size')?.value || 25);
-    durationMinutes = Math.max(1, Number(document.getElementById('partiel-timer')?.value || 45));
     updateGradingConfig();
+    durationMinutes = Math.max(1, Number(document.getElementById('partiel-timer')?.value || document.getElementById('global-timer')?.value || 45));
   } else {
+    // Timer accessible dans tous les autres modes via le champ global
+    durationMinutes = Math.max(1, Number(document.getElementById('global-timer')?.value || 45));
     gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
   }
   if (activeModule === 'chapitres') {
@@ -1282,7 +1286,7 @@ function buildUI() {
     document.getElementById('questions-zone').appendChild(card);
   });
   document.getElementById('submit-zone').style.display = 'block';
-  document.querySelector('#submit-zone p').textContent = `Répondues : 0/${currentExamSize} — Questions non répondues = 0 point`;
+  document.querySelector('#submit-zone p').innerHTML = `Répondues : <span id="answered-count">0</span>/${currentExamSize} — Questions non répondues = 0 point`;
   updateProgress();
 }
 
@@ -1306,8 +1310,22 @@ function goTo(idx) {
 
 function updateProgress() {
   const done = answers.filter(a => a !== null).length;
-  document.getElementById('answered-count').textContent = done;
-  document.getElementById('progress-fill').style.width = (done / currentExamSize * 100) + '%';
+  let countEl = document.getElementById('answered-count');
+  if (!countEl) {
+    // Si le span n'existe pas (cache), le créer
+    const p = document.querySelector('#submit-zone p');
+    if (p) {
+      p.innerHTML = `Répondues : <span id="answered-count">0</span>/${currentExamSize} — Questions non répondues = 0 point`;
+      countEl = document.getElementById('answered-count');
+    }
+  }
+  if (countEl) {
+    countEl.textContent = done;
+  }
+  const fillEl = document.getElementById('progress-fill');
+  if (fillEl) {
+    fillEl.style.width = (done / currentExamSize * 100) + '%';
+  }
 }
 
 function startTimer() {
@@ -1435,6 +1453,18 @@ function goHome() {
   document.getElementById('timer').className = '';
   document.getElementById('home').style.display = 'block';
   examFinished = false;
+}
+
+// Synchroniser global-timer et partiel-timer
+const globalTimerPatho = document.getElementById('global-timer');
+const partielTimerPatho = document.getElementById('partiel-timer');
+if (globalTimerPatho && partielTimerPatho) {
+  globalTimerPatho.addEventListener('change', (e) => {
+    partielTimerPatho.value = e.target.value;
+  });
+  partielTimerPatho.addEventListener('change', (e) => {
+    globalTimerPatho.value = e.target.value;
+  });
 }
 </script>
 </body>

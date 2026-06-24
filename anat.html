@@ -3,12 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banque Partiel — Anatomie (295 questions)</title>
+<title>Banque Partiel — Anat (295 questions)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
 #header{background:linear-gradient(135deg,#c0392b,#922b21);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.5)}
 #header h1{font-size:.9rem;font-weight:700;letter-spacing:.5px;line-height:1.3}
+#timer{font-size:1.25rem;font-weight:800;background:rgba(0,0,0,.3);padding:6px 14px;border-radius:20px;min-width:76px;text-align:center;transition:color .3s,background .3s;flex-shrink:0}
+#timer.warn{color:#f39c12;background:rgba(243,156,18,.2)}
+#timer.danger{color:#e74c3c;background:rgba(231,76,60,.3);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 #progress-bar{background:#16213e;height:4px}
 #progress-fill{height:4px;background:linear-gradient(90deg,#c0392b,#e74c3c);transition:width .3s}
 #nav-pills{background:#16213e;padding:10px 18px;display:flex;flex-wrap:wrap;gap:5px;border-bottom:1px solid #2d2d50}
@@ -87,12 +91,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="home-btn" type="button" onclick="window.location.href='index.html'">Accueil</button>
     </div>
     <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
-    <h2 id="home-title">Bac à sable Anatomie</h2>
-    <p id="home-desc">Mode bac à sable Anatomie. Ajoute ici les questions d’anatomie dans la variable BANK.</p>
+    <h2 id="home-title">Bac à sable Anat</h2>
+    <p id="home-desc">Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.<br>Banque de <strong id="total-q-count">295</strong> questions disponibles.</p>
     <div class="module-tabs">
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
       <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
+    </div>
+    <div style="background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px">
+      <label for="global-timer" style="display:block;color:#ccd;margin-bottom:8px;font-size:.84rem">Durée du quiz (min)</label>
+      <input id="global-timer" type="number" min="1" step="1" value="45" style="width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
+      <div style="font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px">Utilisé pour tous les modes</div>
     </div>
     <div class="module-panel active" id="module-sandbox">
       <label for="exam-size">Nombre de QCM</label>
@@ -130,24 +139,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
           </select>
         </div>
       </div>
-      <div class="grading-custom" id="partiel-custom-box">
-        <div class="inline-small">
+      <div id="partiel-custom-box" class="module-panel" style="display:none;margin-top:10px">
+        <div class="module-grid">
           <div>
-            <label for="custom-good">Bonne réponse (+)</label>
-            <select id="custom-good">
-              <option value="1">+1</option>
-              <option value="0.5">+0,5</option>
-              <option value="0.25" selected>+0,25</option>
-            </select>
+            <label for="custom-good">Bonne réponse</label>
+            <input id="custom-good" type="number" step="0.01" value="0.25">
           </div>
           <div>
-            <label for="custom-bad">Mauvaise réponse (-)</label>
-            <select id="custom-bad">
-              <option value="0">0</option>
-              <option value="0.083" selected>-0,083</option>
-              <option value="0.25">-0,25</option>
-              <option value="0.5">-0,5</option>
-            </select>
+            <label for="custom-bad">Mauvaise réponse</label>
+            <input id="custom-bad" type="number" step="0.01" value="0.083">
           </div>
         </div>
       </div>
@@ -173,7 +173,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <div id="header" style="display:none">
-  <h1>📋 PARTIEL BLANC — Anatomie</h1>
+  <h1>📋 PARTIEL BLANC — Anat</h1>
 </div>
 <div id="progress-bar" style="display:none"><div id="progress-fill" style="width:0%"></div></div>
 <div id="nav-pills" style="display:none"></div>
@@ -187,7 +187,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <div id="results"></div>
 <script src="anat-bank.js"></script>
 <script>
-window.SUBJECT_NAME = 'Anatomie';
+window.SUBJECT_NAME = 'Anat';
 window.SUBJECT_DESC = 'Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
 window.BANK = window.ANAT_BANK || [];
 window.QC_BANK = window.QC_BANK || [];
@@ -196,7 +196,7 @@ if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
-    desc.textContent = 'La banque Anatomie ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
+    desc.textContent = 'La banque Anat ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
   }
   if (msg) {
     msg.style.color = '#ffb3a8';

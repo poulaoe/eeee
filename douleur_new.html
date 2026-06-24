@@ -1085,14 +1085,14 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerDouleur = document.getElementById('global-timer');
-const partielTimerDouleur = document.getElementById('partiel-timer');
-if (globalTimerDouleur && partielTimerDouleur) {
-  globalTimerDouleur.addEventListener('change', (e) => {
-    partielTimerDouleur.value = e.target.value;
+const globalTimerDouleurNew = document.getElementById('global-timer');
+const partielTimerDouleurNew = document.getElementById('partiel-timer');
+if (globalTimerDouleurNew && partielTimerDouleurNew) {
+  globalTimerDouleurNew.addEventListener('change', (e) => {
+    partielTimerDouleurNew.value = e.target.value;
   });
-  partielTimerDouleur.addEventListener('change', (e) => {
-    globalTimerDouleur.value = e.target.value;
+  partielTimerDouleurNew.addEventListener('change', (e) => {
+    globalTimerDouleurNew.value = e.target.value;
   });
 }
 </script>
