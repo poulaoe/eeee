@@ -1403,12 +1403,52 @@ function populateChapterControls() {
 
 function pickQuestionsWithRepeats(pool, count) {
   if (!pool.length) return [];
-  const shuffled = shuffle([...pool]);
-  if (shuffled.length >= count) return shuffled.slice(0, count);
-  const result = [...shuffled];
-  while (result.length < count) {
-    result.push(...shuffle([...pool]));
+
+  // Melange plus homogene: repartition par chapitre en round-robin.
+  const byChapter = new Map();
+  pool.forEach((q) => {
+    const chapter = q && q.ch ? q.ch : 'Sans chapitre';
+    if (!byChapter.has(chapter)) byChapter.set(chapter, []);
+    byChapter.get(chapter).push(q);
+  });
+
+  const buckets = shuffle(Array.from(byChapter.keys())).map((chapter) => ({
+    chapter,
+    questions: shuffle(byChapter.get(chapter))
+  }));
+
+  const result = [];
+  let guard = 0;
+  while (result.length < count && guard < count * 10) {
+    guard += 1;
+    let addedOnPass = false;
+
+    for (const bucket of buckets) {
+      if (result.length >= count) break;
+
+      // Rechargement du chapitre quand vide pour permettre repetition,
+      // tout en conservant une alternance inter-chapitres.
+      if (!bucket.questions.length) {
+        bucket.questions = shuffle(byChapter.get(bucket.chapter));
+      }
+
+      if (!bucket.questions.length) continue;
+
+      const next = bucket.questions.pop();
+      const prev = result[result.length - 1];
+      if (prev && next && prev.q === next.q && bucket.questions.length) {
+        // Evite de poser exactement la meme question deux fois de suite.
+        bucket.questions.unshift(next);
+        result.push(bucket.questions.pop());
+      } else {
+        result.push(next);
+      }
+      addedOnPass = true;
+    }
+
+    if (!addedOnPass) break;
   }
+
   return result.slice(0, count);
 }
 
