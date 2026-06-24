@@ -19,6 +19,7 @@ let currentUser = null;
 let lastSessionSignature = '';
 let activeModule = 'sandbox';
 let selectedChapterQuick = [];
+const RECENT_QUESTIONS_STORAGE_PREFIX = 'qcm_recent_questions_v1::';
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
@@ -1094,6 +1095,66 @@ function examSignature(questions) {
   return questions.map(q => `${q.ch}::${q.q}`).sort().join('||');
 }
 
+function questionKey(item) {
+  const q = item || {};
+  return `${String(q.ch || '')}::${String(q.q || '')}`;
+}
+
+function loadRecentQuestionKeys(subjectName) {
+  const key = RECENT_QUESTIONS_STORAGE_PREFIX + String(subjectName || SUBJECT_NAME || 'General');
+  try {
+    const raw = safeGetItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveRecentQuestionKeys(subjectName, keys) {
+  const key = RECENT_QUESTIONS_STORAGE_PREFIX + String(subjectName || SUBJECT_NAME || 'General');
+  const unique = [];
+  const seen = new Set();
+  (Array.isArray(keys) ? keys : []).forEach((k) => {
+    const value = String(k || '').trim();
+    if (!value || seen.has(value)) return;
+    seen.add(value);
+    unique.push(value);
+  });
+  safeSetItem(key, JSON.stringify(unique.slice(0, 500)));
+}
+
+function pickSessionWithHistory(pool, totalCount) {
+  const wanted = Math.min(totalCount, pool.length);
+  if (wanted <= 0) return [];
+
+  const recent = loadRecentQuestionKeys(SUBJECT_NAME);
+  const recentWindow = Math.max(wanted * 3, 60);
+  const recentSet = new Set(recent.slice(0, recentWindow));
+
+  let candidatePool = pool;
+  if (pool.length > wanted && recentSet.size) {
+    const fresh = pool.filter((q) => !recentSet.has(questionKey(q)));
+    if (fresh.length >= wanted) {
+      candidatePool = fresh;
+    } else if (fresh.length > 0) {
+      const older = shuffle(pool.filter((q) => recentSet.has(questionKey(q))));
+      candidatePool = fresh.concat(older.slice(0, wanted - fresh.length));
+    }
+  }
+
+  let draw = getVariedBalancedDraw(candidatePool, wanted);
+  if (draw.length < wanted) {
+    const used = new Set(draw.map(questionKey));
+    const rest = shuffle(pool.filter((q) => !used.has(questionKey(q))));
+    draw = draw.concat(rest).slice(0, wanted);
+  }
+
+  saveRecentQuestionKeys(SUBJECT_NAME, draw.map(questionKey).concat(recent));
+  return draw;
+}
+
 function getBalancedDraw(pool, totalCount) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
@@ -1193,7 +1254,7 @@ function startExam() {
   }
 
   const selectedCount = Math.min(requestedCount, pool.length);
-  currentSession = getVariedBalancedDraw(pool, selectedCount);
+  currentSession = pickSessionWithHistory(pool, selectedCount);
   if (!currentSession.length) {
     alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
     return;

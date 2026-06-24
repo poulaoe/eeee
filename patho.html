@@ -1156,6 +1156,16 @@ function shuffle(arr) {
   return a;
 }
 
+function getSignedUserName() {
+  try {
+    const stored = localStorage.getItem('qcm_signed_user');
+    const name = String(stored || '').trim();
+    return name || 'Invité';
+  } catch (e) {
+    return 'Invité';
+  }
+}
+
 function escapeHtml(value) {
   return String(value == null ? '' : value)
     .replace(/&/g, '&amp;')
@@ -1227,7 +1237,7 @@ function reportQuestion(questionIndex, description) {
   const report = {
     date: new Date().toISOString(),
     subject: 'Patho',
-    user: 'Résultat local',
+    user: getSignedUserName(),
     question: q.q.substring(0, 100),
     chapter: q.ch,
     description: description || '',
@@ -1330,7 +1340,7 @@ function sendContactMessage() {
   const contact = {
     date: new Date().toISOString(),
     subject: 'Patho',
-    user: 'Résultat local',
+    user: getSignedUserName(),
     message: msg,
     type: 'contact'
   };
@@ -1685,7 +1695,7 @@ function showResults() {
     const leaderboardEntry = {
       date: new Date().toISOString(),
       subject: 'Patho',
-      user: 'Résultat local',
+      user: getSignedUserName(),
       score: parseFloat(finalNote),
       max: 20,
       pct: pct
