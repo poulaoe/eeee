@@ -359,8 +359,8 @@
       errorZone.innerHTML = '';
       
       try {
-        if (!window.QCM_REMOTE || !window.QCM_REMOTE.fetchFeedback) {
-          throw new Error('❌ Supabase non configuré');
+        if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchFeedback !== 'function') {
+          throw new Error('❌ Supabase non configuré ou fetchFeedback indisponible');
         }
         
         const result = await window.QCM_REMOTE.fetchFeedback();

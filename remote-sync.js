@@ -152,7 +152,11 @@
     })
       .then(function (response) {
         if (!response || !response.ok) return [];
-        return response.json ? response.json() : [];
+        if (!response.json) return [];
+        return response.json();
+      })
+      .then(function (data) {
+        return Array.isArray(data) ? data : [];
       })
       .catch(function () {
         return [];
