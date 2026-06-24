@@ -97,7 +97,15 @@
       })
       .then(function (rows) {
         if (!Array.isArray(rows)) return [];
-        return rows.map(normalizeEntry);
+        
+        // Filtre pour garder seulement les données des 7 derniers jours
+        var now = new Date();
+        var sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        
+        return rows.filter(function(row) {
+          var rowDate = new Date(row.date);
+          return rowDate >= sevenDaysAgo;
+        }).map(normalizeEntry);
       })
       .catch(function () {
         return [];

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classement local</title>
+<title>Classement synchronisé</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:
@@ -53,9 +53,9 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
   <section class="hero">
     <div class="hero-top">
       <div>
-        <div class="eyebrow">Classement local</div>
+        <div class="eyebrow">Classement synchronisé</div>
         <h1>Les meilleurs scores enregistrés</h1>
-        <p class="lead">Cette page lit les résultats sauvegardés sur l’appareil et trie les meilleures performances par score, puis par pourcentage et date.</p>
+        <p class="lead">Cette page fusionne les résultats locaux et cloud, puis trie les meilleures performances par score, pourcentage et date.</p>
       </div>
       <div class="actions">
         <a class="btn btn-secondary" href="index.html">Retour menu</a>
@@ -86,7 +86,7 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
       <div class="side-list" id="summary-list"></div>
       <div class="mini" style="margin-top:12px">
         <h3>Astuce</h3>
-        <p>Le classement reste local à cet appareil. Pour avoir plus d’entrées, lance des partiels dans Patho, Douleur ou les matières du bac à sable.</p>
+        <p>Le classement est en ligne et synchronisé. Pour avoir plus d'entrées, lance des partiels dans Patho, Douleur ou les matières du bac à sable, puis clique sur Rafraîchir.</p>
       </div>
     </aside>
   </div>
@@ -96,14 +96,46 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
 <script src="remote-sync.js"></script>
 <script>
 const STORAGE_KEY = 'qcm_leaderboard_v1';
+const LAST_RESET_KEY = 'qcm_last_reset_week';
 let cachedEntries = [];
+
+function getCurrentWeek() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const diff = now - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  return Math.floor(diff / oneDay / 7);
+}
+
+function checkAndResetIfNeeded() {
+  try {
+    const currentWeek = getCurrentWeek();
+    const lastResetWeek = parseInt(localStorage.getItem(LAST_RESET_KEY) || '0', 10);
+    
+    if (currentWeek !== lastResetWeek) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(LAST_RESET_KEY, String(currentWeek));
+    }
+  } catch (e) {
+    // Silencieusement ignorer les erreurs de localStorage
+  }
+}
 
 function loadLeaderboard() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    
+    // Filtre pour garder seulement les données des 7 derniers jours
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    return parsed.filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate >= sevenDaysAgo;
+    });
   } catch (e) {
     return [];
   }
@@ -285,6 +317,7 @@ function resetFilters() {
 document.getElementById('subject-filter').addEventListener('change', renderBoard);
 document.getElementById('user-filter').addEventListener('change', renderBoard);
 document.getElementById('sort-filter').addEventListener('change', renderBoard);
+checkAndResetIfNeeded();
 refreshBoard();
 </script>
 </body>

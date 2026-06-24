@@ -390,6 +390,15 @@ function initSandboxPage() {
   const examSize = document.getElementById('exam-size');
 
   if (!homeTitle || !homeDesc || !chapterCount || !questionCount || !messageZone || !examSize) {
+    console.error('❌ Éléments manquants:');
+    console.error('  home-title:', homeTitle ? '✓' : '✗');
+    console.error('  home-desc:', homeDesc ? '✓' : '✗');
+    console.error('  sc1:', chapterCount ? '✓' : '✗');
+    console.error('  question-count:', questionCount ? '✓' : '✗');
+    console.error('  message-zone:', messageZone ? '✓' : '✗');
+    console.error('  exam-size:', examSize ? '✓' : '✗');
+    console.error('DOM readyState:', document.readyState);
+    console.error('document.body HTML:', document.body ? document.body.innerHTML.substring(0, 500) : 'body null');
     throw new Error('Structure HTML incomplète: un ou plusieurs éléments requis sont absents.');
   }
 
@@ -592,6 +601,15 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function getSelectedChapters(filter) {
@@ -848,11 +866,11 @@ function buildUI() {
     card.className = 'qcard' + (i === 0 ? ' active' : '');
     card.id = 'qcard-' + i;
     card.innerHTML = `
-      <div class="chapitre-tag">${q.ch} — ${q.label}</div>
+      <div class="chapitre-tag">${escapeHtml(q.ch)} — ${escapeHtml(q.label)}</div>
       <div class="qtag ${tc}">${tt}</div>
-      <div class="qtext">Q${i + 1}. ${q.q}</div>
+      <div class="qtext">Q${i + 1}. ${escapeHtml(q.q)}</div>
       <div class="opts" id="opts-${i}">
-        ${shuffledOpts[i].map((o, oi) => `<button class="opt" id="opt-${i}-${oi}" onclick="selectOpt(${i},${oi})">${String.fromCharCode(65 + oi)}. ${o}</button>`).join('')}
+        ${shuffledOpts[i].map((o, oi) => `<button class="opt" id="opt-${i}-${oi}" onclick="selectOpt(${i},${oi})">${String.fromCharCode(65 + oi)}. ${escapeHtml(o)}</button>`).join('')}
       </div>
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
@@ -915,11 +933,11 @@ function showResults() {
     const ut = ua !== null ? shuffledOpts[i][ua] : '—';
     const ct = shuffledOpts[i][ca];
     corrHTML += `<div class="corr-item ${cls}">
-      <div class="ch-badge">${q.ch}</div>
-      <div class="corr-q">${q.q}</div>
-      <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${ut}</span></div>
-      <div class="corr-ans">Bonne réponse : <span class="corr-ok">${ct}</span></div>
-      <div class="corr-expl">💡 ${q.e}</div>
+      <div class="ch-badge">${escapeHtml(q.ch)}</div>
+      <div class="corr-q">${escapeHtml(q.q)}</div>
+      <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${escapeHtml(ut)}</span></div>
+      <div class="corr-ans">Bonne réponse : <span class="corr-ok">${escapeHtml(ct)}</span></div>
+      <div class="corr-expl">💡 ${escapeHtml(q.e)}</div>
     </div>`;
   });
 

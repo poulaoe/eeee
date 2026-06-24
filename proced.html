@@ -54,10 +54,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,57,43,.4)}
 .corr-item{background:#16213e;border-radius:10px;padding:14px 18px;margin-bottom:9px;border-left:4px solid #27ae60}
 .corr-item.wrong{border-left-color:#e74c3c}.corr-item.skipped{border-left-color:#f39c12}
-.corr-q{font-size:.81rem;font-weight:600;margin-bottom:5px;color:#dde}
-.corr-ans{font-size:.8rem;margin-bottom:3px}
-.corr-ok{color:#2ecc71;font-weight:400}.corr-ko{color:#e74c3c;font-weight:400}
-.corr-expl{font-size:.74rem;color:#99a;line-height:1.5;margin-top:5px;padding-top:5px;border-top:1px solid #2d2d50}
+.corr-q{font-size:.83rem;font-weight:700;margin-bottom:8px;color:#f0f0f0;line-height:1.5}
+.corr-ans{font-size:.81rem;font-weight:600;margin-bottom:4px;color:#c5d3e8}
+.corr-ok{color:#2ecc71;font-weight:500}.corr-ko{color:#e74c3c;font-weight:500}
+.corr-expl{font-size:.76rem;color:#9aab;font-weight:400;line-height:1.55;margin-top:7px;padding-top:6px;border-top:1px solid #2d2d50;font-style:normal}
 #qc-section{background:#16213e;border-radius:12px;padding:22px;margin-top:6px;border:1px solid #2d2d50}
 #qc-section h2{color:#e74c3c;margin-bottom:14px;font-size:.95rem}
 .qc-item{margin-bottom:16px}
@@ -66,6 +66,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .show-r-btn{margin-top:5px;background:transparent;border:1px solid #3498db;color:#3498db;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.73rem}
 .restart-btn{background:#c0392b;color:#fff;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-top:14px}
 .ch-badge{display:inline-block;background:rgba(192,57,43,.15);color:#e74c3c;border-radius:4px;padding:2px 7px;font-size:.68rem;font-weight:700;margin-bottom:6px}
+.module-tabs{display:flex;gap:8px;justify-content:center;margin:8px 0 16px}
+.module-tab{border:1px solid #2d2d50;background:#0f3460;color:#cfd7e6;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.82rem}
+.module-tab.active{background:#c0392b;color:#fff;border-color:#e74c3c}
+.module-panel{display:none;background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px;text-align:left}
+.module-panel.active{display:block}
+.module-panel label{display:block;color:#ccd;margin-bottom:8px;font-size:.84rem}
+.module-panel select{width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff}
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.module-hint{font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px}
+.chapter-chip{display:inline-block;margin:5px 6px 0 0;padding:6px 10px;border:1px solid #2d2d50;background:#1a1a2e;color:#cdd6e8;border-radius:999px;cursor:pointer;font-size:.78rem}
+.chapter-chip:hover{border-color:#e74c3c;color:#fff}
 </style>
 </head>
 <body>
@@ -78,43 +89,86 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
     <h2 id="home-title">Bac à sable Procédure</h2>
     <p id="home-desc">Mode bac à sable Procédure. Ajoute ici les questions de procédure dans la variable BANK.</p>
+    <div class="module-tabs">
+      <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
+      <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
+      <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
+    </div>
+    <div class="module-panel active" id="module-sandbox">
+      <label for="exam-size">Nombre de QCM</label>
+      <select id="exam-size" style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
+        <option value="10">10 QCM</option>
+        <option value="15">15 QCM</option>
+        <option value="20">20 QCM</option>
+        <option value="25" selected>25 QCM</option>
+      </select>
+      <label for="chapter-filter" style="margin-top:10px">Chapitres (plusieurs possibles)</label>
+      <select id="chapter-filter" multiple style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff;min-height:120px"></select>
+      <div class="module-hint">Tu peux choisir la taille du quiz et filtrer par chapitres.</div>
+    </div>
+    <div class="module-panel" id="module-partiel">
+      <div class="module-grid">
+        <div>
+          <label for="partiel-size">Nombre de QCM</label>
+          <select id="partiel-size">
+            <option value="20">20 QCM</option>
+            <option value="25" selected>25 QCM (standard)</option>
+            <option value="30">30 QCM</option>
+            <option value="40">40 QCM</option>
+          </select>
+        </div>
+        <div>
+          <label for="partiel-timer">Durée personnalisée (min)</label>
+          <input id="partiel-timer" type="number" min="1" step="1" value="45">
+        </div>
+        <div>
+          <label for="partiel-grading">Barème</label>
+          <select id="partiel-grading">
+            <option value="bac" selected>Bac (+0,25 / -0,083)</option>
+            <option value="simple">Simple (+1 / 0)</option>
+            <option value="custom">Personnalisé</option>
+          </select>
+        </div>
+      </div>
+      <div class="grading-custom" id="partiel-custom-box">
+        <div class="inline-small">
+          <div>
+            <label for="custom-good">Bonne réponse (+)</label>
+            <select id="custom-good">
+              <option value="1">+1</option>
+              <option value="0.5">+0,5</option>
+              <option value="0.25" selected>+0,25</option>
+            </select>
+          </div>
+          <div>
+            <label for="custom-bad">Mauvaise réponse (-)</label>
+            <select id="custom-bad">
+              <option value="0">0</option>
+              <option value="0.083" selected>-0,083</option>
+              <option value="0.25">-0,25</option>
+              <option value="0.5">-0,5</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="module-hint">Mode partiel: tirage homogène sur tous les chapitres, différent à chaque essai.</div>
+    </div>
+    <div class="module-panel" id="module-chapitres">
+      <div id="chapter-quick-list"></div>
+      <div class="module-hint">Clique un chapitre pour le sélectionner puis lance le partiel.</div>
+    </div>
     <div class="stat-grid">
       <div class="stat"><span id="sc1">0</span>Chapitres</div>
       <div class="stat"><span id="question-count">25</span>QCM / partiel</div>
-      <div class="stat"><span>∞</span>Temps</div>
+      <div class="stat"><span>45'</span>Timer</div>
       <div class="stat"><span>∞</span>Partiels possibles</div>
     </div>
-    <div id="sandbox-options" class="home-options" style="text-align:left;margin-top:18px;margin-bottom:18px;display:none">
-      <div style="margin-bottom:14px">
-        <label for="exam-size" style="display:block;margin-bottom:8px;font-weight:700;color:#fff">Nombre de QCM</label>
-        <select id="exam-size" style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
-          <option value="10">10 QCM</option>
-          <option value="15">15 QCM</option>
-          <option value="20">20 QCM</option>
-          <option value="25" selected>25 QCM</option>
-        </select>
-      </div>
-      <div style="margin-bottom:14px">
-        <label for="chapter-filter" style="display:block;margin-bottom:8px;font-weight:700;color:#fff">Chapitres (plusieurs possibles)</label>
-        <select id="chapter-filter" multiple style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff;min-height:120px"></select>
-      </div>
-      <div id="message-zone" style="color:#aaa;font-size:.88rem;line-height:1.5">Chargement...</div>
+    <div id="account-zone" class="account-shell">
+      <h3>Compte local</h3>
+      <p>Connecte-toi pour enregistrer l'historique de tes scores sur cet appareil.</p>
+      <div id="account-content"></div>
     </div>
-    <div id="common-options" style="text-align:left;margin-top:18px;margin-bottom:18px">
-      <div style="margin-bottom:14px">
-        <label style="color:#ccc;font-size:.86rem">⏱ Options :</label>
-        <label style="color:#ccc;font-size:.86rem"><input id="enable-timer" type="checkbox"> Minuterie</label>
-        <label style="color:#ccc;font-size:.86rem">Durée (min): <input id="timer-minutes" type="number" min="1" value="30" style="width:68px;margin-left:6px;padding:4px;border-radius:6px;background:#0f3460;color:#fff;border:1px solid #2d2d50"></label>
-        <label style="color:#ccc;font-size:.86rem">Barème: <select id="grading-scheme" style="margin-left:6px;padding:4px;border-radius:6px;background:#0f3460;color:#fff;border:1px solid #2d2d50"><option value="classic">Bac (+0.25 / −0.083)</option><option value="simple">Simple (+1 / 0)</option><option value="custom">Personnalisé</option></select></label>
-        <div id="custom-grading-fields" style="display:none;margin-top:8px;color:#ccc;font-size:.86rem">
-          <label style="display:block;margin-bottom:6px">Notation personnalisée :</label>
-          <label style="display:block;margin-bottom:4px">Points bonne réponse : <input id="custom-correct" type="number" min="0" step="0.05" value="0.25" style="width:80px;margin-left:6px;padding:4px;border-radius:6px;background:#0f3460;color:#fff;border:1px solid #2d2d50"></label>
-          <label style="display:block">Pénalité mauvaise réponse : <input id="custom-wrong" type="number" min="0" step="0.01" value="0.08" style="width:80px;margin-left:6px;padding:4px;border-radius:6px;background:#0f3460;color:#fff;border:1px solid #2d2d50"></label>
-        </div>
-      </div>
-    <button class="btn-start" onclick="startExam()">🚀 Lancer</button>
-      </div>
-    </div>
+    <button class="btn-start" onclick="startExam()">🚀 Lancer un partiel</button>
   </div>
 <div id="header" style="display:none">
   <h1>📋 PARTIEL BLANC — Procédure</h1>

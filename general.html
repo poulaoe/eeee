@@ -3,16 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banque Partiel — Pathologie 20 chapitres (99 questions)</title>
+<title>Général — Bac à sable</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
 #header{background:linear-gradient(135deg,#c0392b,#922b21);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.5)}
 #header h1{font-size:.9rem;font-weight:700;letter-spacing:.5px;line-height:1.3}
-#timer{font-size:1.25rem;font-weight:800;background:rgba(0,0,0,.3);padding:6px 14px;border-radius:20px;min-width:76px;text-align:center;transition:color .3s,background .3s;flex-shrink:0}
-#timer.warn{color:#f39c12;background:rgba(243,156,18,.2)}
-#timer.danger{color:#e74c3c;background:rgba(231,76,60,.3);animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 #progress-bar{background:#16213e;height:4px}
 #progress-fill{height:4px;background:linear-gradient(90deg,#c0392b,#e74c3c);transition:width .3s}
 #nav-pills{background:#16213e;padding:10px 18px;display:flex;flex-wrap:wrap;gap:5px;border-bottom:1px solid #2d2d50}
@@ -32,7 +28,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .chapitre-tag{font-size:.62rem;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
 .qtext{font-size:.97rem;line-height:1.6;font-weight:500;margin-bottom:18px;color:#dde}
 .opts{display:flex;flex-direction:column;gap:9px}
-.opt{background:#0f3460;border:2px solid #2d2d50;border-radius:8px;padding:11px 15px;cursor:pointer;font-size:.88rem;color:#ccd;transition:all .2s;text-align:left;font-weight:400}
+.opt{background:#0f3460;border:2px solid #2d2d50;border-radius:8px;padding:11px 15px;cursor:pointer;font-size:.88rem;color:#ccd;transition:all .2s;text-align:left}
 .opt:hover{border-color:#c0392b;background:#1a1a2e;color:#fff}
 .opt.selected{border-color:#3498db;background:rgba(52,152,219,.15);color:#fff}
 .qnav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:8px}
@@ -44,42 +40,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .btn-submit{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;padding:12px 30px;font-size:.95rem}
 #submit-zone{text-align:center;padding:22px;background:#16213e;border-radius:12px;border:1px solid #2d2d50;margin-top:6px}
 #submit-zone p{color:#aaa;margin-bottom:14px;font-size:.88rem}
-/* ACCUEIL */
 #home{max-width:600px;margin:40px auto;padding:24px;text-align:center}
 .home-card{background:#16213e;border-radius:16px;padding:32px;border:1px solid #2d2d50}
 .home-card h2{color:#e74c3c;font-size:1.4rem;margin-bottom:12px}
 .home-card p{color:#aaa;font-size:.9rem;line-height:1.6;margin-bottom:20px}
-.module-tabs{display:flex;gap:8px;justify-content:center;margin:8px 0 16px}
-.module-tab{border:1px solid #2d2d50;background:#0f3460;color:#cfd7e6;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.82rem}
-.module-tab.active{background:#c0392b;color:#fff;border-color:#e74c3c}
-.module-panel{display:none;background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px;text-align:left}
-.module-panel.active{display:block}
-.module-panel label{display:block;color:#ccd;margin-bottom:8px;font-size:.84rem}
-.module-panel select,.module-panel input{width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff}
-.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.module-hint{font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px}
-.chapter-chip{display:inline-block;margin:5px 6px 0 0;padding:6px 10px;border:1px solid #2d2d50;background:#1a1a2e;color:#cdd6e8;border-radius:999px;cursor:pointer;font-size:.78rem}
-.chapter-chip.active{border-color:#e74c3c;color:#fff;background:#2a1a1a}
-.chapter-chip:hover{border-color:#e74c3c;color:#fff}
-.home-btn{padding:7px 10px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:9px;cursor:pointer;font-size:.8rem;font-weight:700;margin-left:8px}
-.home-btn:hover{background:rgba(0,0,0,.35)}
 .stat-grid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
 .stat{background:#0f3460;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#aac}
 .stat span{display:block;font-size:1.4rem;font-weight:800;color:#e74c3c}
 .btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;border:none;cursor:pointer;font-size:1rem;font-weight:800;letter-spacing:.5px}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,57,43,.4)}
-/* RESULTATS */
-#results{display:none;max-width:820px;margin:0 auto;padding:18px}
-.score-card{background:linear-gradient(135deg,#0f3460,#16213e);border-radius:16px;padding:28px;text-align:center;margin-bottom:20px;border:1px solid #2d2d50}
-.score-num{font-size:3.2rem;font-weight:900;margin-bottom:4px}
-.score-detail{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.sc-box{background:rgba(255,255,255,.05);border-radius:8px;padding:7px 12px;font-size:.8rem}
 .corr-item{background:#16213e;border-radius:10px;padding:14px 18px;margin-bottom:9px;border-left:4px solid #27ae60}
 .corr-item.wrong{border-left-color:#e74c3c}.corr-item.skipped{border-left-color:#f39c12}
-.corr-q{font-size:.81rem;font-weight:600;margin-bottom:3px}
-.corr-ans{font-size:.77rem;margin-bottom:3px}
-.corr-ok{color:#2ecc71;font-weight:700}.corr-ko{color:#e74c3c;font-weight:700}
-.corr-expl{font-size:.74rem;color:#99a;line-height:1.5;margin-top:5px;padding-top:5px;border-top:1px solid #2d2d50}
+.corr-q{font-size:.83rem;font-weight:700;margin-bottom:8px;color:#f0f0f0;line-height:1.5}
+.corr-ans{font-size:.81rem;font-weight:600;margin-bottom:4px;color:#c5d3e8}
+.corr-ok{color:#2ecc71;font-weight:500}.corr-ko{color:#e74c3c;font-weight:500}
+.corr-expl{font-size:.76rem;color:#9aab;font-weight:400;line-height:1.55;margin-top:7px;padding-top:6px;border-top:1px solid #2d2d50;font-style:normal}
 #qc-section{background:#16213e;border-radius:12px;padding:22px;margin-top:6px;border:1px solid #2d2d50}
 #qc-section h2{color:#e74c3c;margin-bottom:14px;font-size:.95rem}
 .qc-item{margin-bottom:16px}
@@ -88,19 +63,25 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .show-r-btn{margin-top:5px;background:transparent;border:1px solid #3498db;color:#3498db;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.73rem}
 .restart-btn{background:#c0392b;color:#fff;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;margin-top:14px}
 .ch-badge{display:inline-block;background:rgba(192,57,43,.15);color:#e74c3c;border-radius:4px;padding:2px 7px;font-size:.68rem;font-weight:700;margin-bottom:6px}
-.corr-ans span{font-weight:400!important;font-size:inherit!important}
+.module-tabs{display:flex;gap:8px;justify-content:center;margin:8px 0 16px}
+.module-tab{border:1px solid #2d2d50;background:#0f3460;color:#cfd7e6;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.82rem}
+.module-tab.active{background:#c0392b;color:#fff;border-color:#e74c3c}
+.module-panel{display:none;background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px;text-align:left}
+.module-panel.active{display:block}
+.module-panel label{display:block;color:#ccd;margin-bottom:8px;font-size:.84rem}
+.module-panel select{width:100%;padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff}
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.module-hint{font-size:.8rem;color:#9fb0c8;line-height:1.45;margin-top:8px}
+.chapter-chip{display:inline-block;margin:5px 6px 0 0;padding:6px 10px;border:1px solid #2d2d50;background:#1a1a2e;color:#cdd6e8;border-radius:999px;cursor:pointer;font-size:.78rem}
+.chapter-chip:hover{border-color:#e74c3c;color:#fff}
 </style>
 </head>
 <body>
-
-<!-- ECRAN ACCUEIL -->
 <div id="home">
   <div class="home-card">
     <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
-    <h2>Banque Partiel — Pathologie</h2>
-    <p>Banque de <strong id="total-q-count">0</strong> questions sur 20 chapitres.<br>
-    Chaque partiel tire <strong>25 QCM aléatoires</strong> + 4 questions courtes.<br>
-    Timer 45 min — navigation libre — résultats à la fin.</p>
+    <h2 id="home-title">Bac à sable Général</h2>
+    <p id="home-desc">Mode bac à sable général avec tous les chapitres et sans timer.</p>
     <div class="module-tabs">
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
@@ -108,17 +89,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
     <div class="module-panel active" id="module-sandbox">
       <label for="exam-size">Nombre de QCM</label>
-      <select id="exam-size">
+      <select id="exam-size" style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
         <option value="10">10 QCM</option>
         <option value="15">15 QCM</option>
-        <option value="20" selected>20 QCM</option>
-        <option value="25">25 QCM</option>
+        <option value="20">20 QCM</option>
+        <option value="25" selected>25 QCM</option>
       </select>
-      <label style="margin-top:10px" for="chapter-filter">Chapitre</label>
-      <select id="chapter-filter">
-        <option value="all">Tous les chapitres</option>
-      </select>
-      <div class="module-hint">Choisis un chapitre pour filtrer le bac à sable.</div>
+      <label for="chapter-filter" style="margin-top:10px">Chapitres (plusieurs possibles)</label>
+      <select id="chapter-filter" multiple style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff;min-height:120px"></select>
+      <div class="module-hint">Tu peux choisir la taille du quiz et filtrer par chapitres.</div>
     </div>
     <div class="module-panel" id="module-partiel">
       <div class="module-grid">
@@ -126,39 +105,66 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
           <label for="partiel-size">Nombre de QCM</label>
           <select id="partiel-size">
             <option value="20">20 QCM</option>
-            <option value="25" selected>25 QCM</option>
+            <option value="25" selected>25 QCM (standard)</option>
             <option value="30">30 QCM</option>
+            <option value="40">40 QCM</option>
           </select>
         </div>
         <div>
-          <label for="partiel-timer">Durée (min)</label>
+          <label for="partiel-timer">Durée personnalisée (min)</label>
           <input id="partiel-timer" type="number" min="1" step="1" value="45">
         </div>
+        <div>
+          <label for="partiel-grading">Barème</label>
+          <select id="partiel-grading">
+            <option value="bac" selected>Bac (+0,25 / -0,083)</option>
+            <option value="simple">Simple (+1 / 0)</option>
+            <option value="custom">Personnalisé</option>
+          </select>
+        </div>
       </div>
-      <div class="module-hint">Mode partiel: tirage aléatoire sur tous les chapitres.</div>
+      <div class="grading-custom" id="partiel-custom-box">
+        <div class="inline-small">
+          <div>
+            <label for="custom-good">Bonne réponse (+)</label>
+            <select id="custom-good">
+              <option value="1">+1</option>
+              <option value="0.5">+0,5</option>
+              <option value="0.25" selected>+0,25</option>
+            </select>
+          </div>
+          <div>
+            <label for="custom-bad">Mauvaise réponse (-)</label>
+            <select id="custom-bad">
+              <option value="0">0</option>
+              <option value="0.083" selected>-0,083</option>
+              <option value="0.25">-0,25</option>
+              <option value="0.5">-0,5</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="module-hint">Mode partiel: tirage homogène sur tous les chapitres, différent à chaque essai.</div>
     </div>
     <div class="module-panel" id="module-chapitres">
       <div id="chapter-quick-list"></div>
-      <div class="module-hint">Clique un chapitre puis lance l'examen.</div>
+      <div class="module-hint">Clique un chapitre pour le sélectionner puis lance le partiel.</div>
     </div>
     <div class="stat-grid">
-      <div class="stat"><span id="sc1">20</span>Chapitres</div>
-      <div class="stat"><span>25</span>QCM / partiel</div>
+      <div class="stat"><span id="sc1">0</span>Chapitres</div>
+      <div class="stat"><span id="question-count">25</span>QCM / partiel</div>
       <div class="stat"><span>45'</span>Timer</div>
       <div class="stat"><span>∞</span>Partiels possibles</div>
     </div>
+    <div id="account-zone" class="account-shell">
+      <h3>Compte local</h3>
+      <p>Connecte-toi pour enregistrer l'historique de tes scores sur cet appareil.</p>
+      <div id="account-content"></div>
+    </div>
     <button class="btn-start" onclick="startExam()">🚀 Lancer un partiel</button>
   </div>
-</div>
-
-<!-- HEADER (caché au départ) -->
 <div id="header" style="display:none">
-  <h1>📋 PARTIEL BLANC — Pathologie (tirage aléatoire)</h1>
-  <div style="display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-    <div id="timer">45:00</div>
-    <button class="home-btn" type="button" onclick="goBack()">Retour</button>
-    <button class="home-btn" type="button" onclick="goHome()">Menu</button>
-  </div>
+  <h1>📋 PARTIEL BLANC — Général</h1>
 </div>
 <div id="progress-bar" style="display:none"><div id="progress-fill" style="width:0%"></div></div>
 <div id="nav-pills" style="display:none"></div>
@@ -170,10 +176,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <div id="results"></div>
-
 <script>
-// ===================== BANQUE DE QUESTIONS =====================
-const BANK = [
+window.SUBJECT_NAME = 'Général';
+window.SUBJECT_DESC = 'Mode bac à sable général avec tous les chapitres et sans timer.';
+window.BANK = window.BANK || [
 // ===== CH3 — COGNITIF =====
 {ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
  q:"Laquelle de ces affirmations concernant l'aphasie de BROCA est FAUSSE ?",
@@ -489,341 +495,27 @@ const BANK = [
  opts:["Le massage n'a aucun effet sur la distribution du médicament","L'application de chaleur peut accélérer l'absorption locale d'un médicament en augmentant la circulation","L'exercice physique est toujours contre-indiqué pendant un traitement médicamenteux","Les ultrasons thérapeutiques n'influencent jamais la perméabilité tissulaire"],
  a:1,e:"CHALEUR → vasodilatation → ↑ circulation locale → accélère l'absorption. Important par exemple avec les patchs cutanés (chaleur + patch = absorption accrue). Masse, exercice, ultrasons peuvent tous modifier la pharmacocinétique du principe actif."}
 ];
-
-const QC_BANK = [
+window.QC_BANK = window.QC_BANK || [
   {q:"Décrivez les 3 signes moteurs cardinaux de la maladie de Parkinson et leurs mécanismes.",
-   r:"1. TREMBLEMENT AU REPOS : involontaire, rythmique, disparaît au mouvement et au sommeil, asymétrique au début (distale, 'compter des pièces'), dû à l'absence de dopamine dans le striatum. 2. RIGIDITÉ EXTRAPIRAMDALE : signe de la roue dentée (résistance constante + saccades) ou du tuyau de plomb (résistance uniforme), persiste en flexion et extension passive. 3. BRADYKINÉSIE/HYPOKINÉSIE : lenteur des mouvements volontaires (écriture micrographique, petits pas) et réduction des mouvements involontaires (hypomimie = 'masque de poker', absence de clignement)."},
+   r:"1. TREMBLEMENT AU REPOS : involontaire, rythmique, disparaît au mouvement et au sommeil, asymétrique au début (distale, 'compter des pièces'), dû à l'absence de dopamine dans le striatum. 2. RIGIDITÉ EXTRAPIRAMPELAIRE : signe de la roue dentée (résistance constante + saccades) ou du tuyau de plomb (résistance uniforme), persiste en flexion et extension passive. 3. BRADYKINÉSIE/HYPOKINÉSIE : lenteur des mouvements volontaires (écriture micrographique, petits pas) et réduction des mouvements involontaires (hypomimie = 'masque de poker', absence de clignement)."},
   {q:"Quels sont les 4 types du SGB et leurs caractéristiques principales ?",
    r:"1. AIDP : + fréquente en Europe, atteinte DÉMYÉLINISANTE. 2. AMAN : axonale MOTRICE pure, plus grave, moins fréquente. 3. AMSAN : axonale MOTRICE + SENSORIELLE. 4. MILLER-FISHER : rare — triade ATAXIE + ARÉFLEXIE + OPHTALMOPLÉGIE. Mécanisme commun : réponse auto-immune contre la myéline ou l'axone → faiblesse ascendante + aréflexie. Risque vital : paralysie respiratoire."},
   {q:"Expliquez la différence entre syndrome du 1er et du 2e motoneurone.",
    r:"1er MN (supérieur/central) : paralysie SPASMODIQUE, hypertonie (spasticité — signe de la lame de canif), réflexes myotatiques EXALTÉS, Babinski POSITIF, amyotrophie LÉGÈRE, PAS de fasciculations. 2e MN (inférieur/périphérique) : paralysie FLASQUE, hypotonie, réflexes SUPPRIMÉS (0/++++), Babinski absent (RCP aboli), amyotrophie MARQUÉE, fasciculations PRÉSENTES. Mnémotechnique : 1er MN = 'trop' (hypertonus, hyperréflexie) ; 2e MN = 'absent' (hypotonie, aréflexie)."},
   {q:"Citez les facteurs prénataux, périnataux et postnataux de la paralysie cérébrale infantile.",
-   r:"PRÉNATAUX : infections congénitales (toxoplasmose, rubéole, cytomégalovirus), malformations congénitales, troubles génétiques. PÉRINATAUX : hypoxie pendant l'accouchement, prématurité, traumatisme obstétrique. POSTNATAUX : méningite, traumatisme crânien, accident vasculaire cérébral néonatal. Ces facteurs entraînent une lésion cérébrale non progressive touchant les zones motrices, pouvant provoquer les formes spastique, dyskinétique ou ataxique de PCI."}
+   r:"PRÉNATAUX : infections congénitales (toxoplasmose, rubéole, cytomégalovirus), malformations congénitales, troubles génétiques. PÉRINATAUX : hypoxie pendant l'accouchement, prématurité, traumatisme obstétrique. POSTNATAUX : méningite, traumatisme crânien, accident vasculaire cérébral néonatal. Ces facteurs entraînent une lésion cérébrale non progressive touchant les zones motrices, pouvant provoquer les formes spastique, dyskinétique ou ataxique de PCI."},
+  {q:"Définissez la biodisponibilité et expliquez pourquoi le kinésithérapeute doit la connaître.",
+   r:"Biodisponibilité F = proportion de médicament atteignant la CIRCULATION SANGUINE par rapport à la dose administrée (0-100%). La voie IV = 100% par définition. Importance pour le kiné : ses interventions peuvent MODIFIER la pharmacocinétique — chaleur (↑ absorption locale), massages (↑ distribution), exercice (↑ circulation générale), ultrasons (modification perméabilité tissulaire). Il doit donc coordonner ses séances avec les pics d'effet du traitement et rester vigilant face à l'absence de réponse thérapeutique attendue ou aux effets indésirables."},
+  {q:"Quels sont les 4 critères diagnostiques de la détérioration cognitive légère (DCL) ?",
+   r:"1. Perte de MÉMOIRE signalée par le patient ou un informateur de confiance. 2. Capacité mémorielle INFÉRIEURE DE 1,5 ÉCART-TYPE à la moyenne pour l'âge. 3. COGNITION GÉNÉRALE NORMALE. 4. ACTIVITÉS DE VIE QUOTIDIENNE NORMALES (+ absence de critères de démence). Évolution selon la 'règle des tiers' : 1/3 évolue vers une démence, 1/3 reste stable, 1/3 s'améliore. Nécessite un suivi rapproché."},
+  {q:"Décrivez les caractéristiques de la névrite optique rétrobulbaire dans la SEP.",
+   r:"Névrite optique SEP (36% des premières poussées) : perte visuelle UNILATÉRALE et SUBAIGUË + DOULEUR lors des mouvements oculaires + SCOTOME CENTRAL (campimétrie). Fond d'œil : peut montrer une papillite. Récupération PARTIELLE ou TOTALE en quelques semaines. Peut être la 1ère manifestation d'une SEP ou apparaître lors d'une poussée ultérieure. Importante à connaître car souvent l'événement révélateur de la maladie."},
+  {q:"Expliquez le mécanisme de la myasthénie gravis et sa différence avec la myopathie de Duchenne.",
+   r:"MYASTHÉNIE GRAVIS (auto-immune) : anticorps anti-récepteurs ACh à la JNM → blocage de la transmission neuromusculaire → faiblesse FLUCTUANTE (aggravée par l'effort, améliorée par le repos). NON auto-immune : forme CONGÉNITALE (rare). DUCHENNE : mutation gène de la DYSTROPHINE (chromosome X) → dégénérescence musculaire PROGRESSIVE, touche les GARÇONS, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire évolutive. Points communs : faiblesse musculaire. Différences : mécanisme (JNM vs structure musculaire), évolution, sexe atteint."}
 ];
-
-// ===================== LOGIQUE APP ======================
-let currentSession = [];
-let currentQC = [];
-let answers = [];
-let shuffledOpts = [];
-let shuffledCorrects = [];
-let currentQ = 0;
-let timeLeft = 45 * 60;
-let timerInterval = null;
-let examFinished = false;
-let activeModule = 'sandbox';
-let currentExamSize = 25;
-let selectedChapterQuick = null;
-
-// Init count sur l'écran d'accueil
-document.getElementById('total-q-count').textContent = BANK.length;
-populateChapterControls();
-
-function shuffle(arr) {
-  let a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function switchModule(mode) {
-  activeModule = mode;
-  ['sandbox', 'partiel', 'chapitres'].forEach(m => {
-    const tab = document.getElementById('tab-' + m);
-    const panel = document.getElementById('module-' + m);
-    if (tab) tab.classList.toggle('active', m === mode);
-    if (panel) panel.classList.toggle('active', m === mode);
-  });
-}
-
-function getUniqueChapters() {
-  return [...new Set(BANK.map(q => q.ch))].sort((a, b) => a.localeCompare(b, 'fr'));
-}
-
-function populateChapterControls() {
-  const chapterSelect = document.getElementById('chapter-filter');
-  const quickList = document.getElementById('chapter-quick-list');
-  if (!chapterSelect || !quickList) return;
-
-  const chapters = getUniqueChapters();
-  chapterSelect.innerHTML = '<option value="all">Tous les chapitres</option>';
-  chapters.forEach(ch => {
-    const opt = document.createElement('option');
-    opt.value = ch;
-    opt.textContent = ch;
-    chapterSelect.appendChild(opt);
-  });
-
-  quickList.innerHTML = '';
-  chapters.forEach(ch => {
-    const chip = document.createElement('button');
-    chip.className = 'chapter-chip';
-    chip.type = 'button';
-    chip.textContent = ch;
-    chip.onclick = () => {
-      selectedChapterQuick = ch;
-      chapterSelect.value = ch;
-      quickList.querySelectorAll('.chapter-chip').forEach(el => el.classList.toggle('active', el.textContent === ch));
-    };
-    quickList.appendChild(chip);
-  });
-}
-
-function pickQuestionsWithRepeats(pool, count) {
-  if (!pool.length) return [];
-  const shuffled = shuffle([...pool]);
-  if (shuffled.length >= count) return shuffled.slice(0, count);
-  const result = [...shuffled];
-  while (result.length < count) {
-    result.push(...shuffle([...pool]));
-  }
-  return result.slice(0, count);
-}
-
-function startExam() {
-  let requestedCount = 25;
-  let durationMinutes = 45;
-  let sourcePool = [...BANK];
-
-  if (activeModule === 'sandbox') {
-    requestedCount = Number(document.getElementById('exam-size')?.value || 20);
-    const chapter = document.getElementById('chapter-filter')?.value || 'all';
-    if (chapter !== 'all') sourcePool = BANK.filter(q => q.ch === chapter);
-  }
-  if (activeModule === 'partiel') {
-    requestedCount = Number(document.getElementById('partiel-size')?.value || 25);
-    durationMinutes = Math.max(1, Number(document.getElementById('partiel-timer')?.value || 45));
-  }
-  if (activeModule === 'chapitres') {
-    requestedCount = Number(document.getElementById('exam-size')?.value || 20);
-    const chapter = selectedChapterQuick || document.getElementById('chapter-filter')?.value || 'all';
-    if (chapter !== 'all') sourcePool = BANK.filter(q => q.ch === chapter);
-  }
-
-  currentExamSize = requestedCount;
-
-  // Tirage aléatoire avec répétition si nécessaire
-  currentSession = pickQuestionsWithRepeats(sourcePool, requestedCount);
-  // Tirage de 4 questions courtes
-  const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
-  currentQC = shuffledQC.slice(0, 4).map(i => QC_BANK[i]);
-
-  // Mélanger les options
-  answers = new Array(currentExamSize).fill(null);
-  shuffledOpts = [];
-  shuffledCorrects = [];
-  currentSession.forEach(q => {
-    const correctText = q.opts[q.a];
-    const sh = shuffle(q.opts);
-    shuffledOpts.push(sh);
-    shuffledCorrects.push(sh.indexOf(correctText));
-  });
-
-  currentQ = 0;
-  timeLeft = durationMinutes * 60;
-  examFinished = false;
-  selectedChapterQuick = null;
-  const timerEl = document.getElementById('timer');
-  timerEl.className = '';
-  timerEl.textContent = `${durationMinutes}:00`;
-
-  document.getElementById('home').style.display = 'none';
-  document.getElementById('header').style.display = 'flex';
-  document.getElementById('progress-bar').style.display = 'block';
-  document.getElementById('nav-pills').style.display = 'flex';
-  document.getElementById('main').style.display = 'block';
-
-  buildUI();
-  startTimer();
-}
-
-function buildUI() {
-  document.getElementById('questions-zone').innerHTML = '';
-  document.getElementById('nav-pills').innerHTML = '';
-  currentSession.forEach((q, i) => {
-    // Pill
-    const p = document.createElement('button');
-    p.className = 'pill' + (i === 0 ? ' current' : '');
-    p.textContent = i + 1;
-    p.id = 'pill-' + i;
-    p.onclick = () => goTo(i);
-    document.getElementById('nav-pills').appendChild(p);
-    // Card
-    const tc = q.type === 'fausse' ? 'tag-fausse' : q.type === 'vraie' ? 'tag-vraie' : 'tag-direct';
-    const tt = q.type === 'fausse' ? '❌ LAQUELLE EST FAUSSE ?' : q.type === 'vraie' ? '✅ LAQUELLE EST VRAIE ?' : '❓ QUESTION DIRECTE';
-    const card = document.createElement('div');
-    card.className = 'qcard' + (i === 0 ? ' active' : '');
-    card.id = 'qcard-' + i;
-    card.innerHTML = `
-      <div class="chapitre-tag">${q.ch} — ${q.label}</div>
-      <div class="qtag ${tc}">${tt}</div>
-      <div class="qtext">Q${i + 1}. ${q.q}</div>
-      <div class="opts" id="opts-${i}">
-        ${shuffledOpts[i].map((o, oi) => `<button class="opt" id="opt-${i}-${oi}" onclick="selectOpt(${i},${oi})">${String.fromCharCode(65 + oi)}. ${o}</button>`).join('')}
-      </div>
-      <div class="qnav">
-        <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
-        <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
-        ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
-      </div>`;
-    document.getElementById('questions-zone').appendChild(card);
-  });
-  document.getElementById('submit-zone').style.display = 'block';
-  document.querySelector('#submit-zone p').textContent = `Répondues : 0/${currentExamSize} — Questions non répondues = 0 point`;
-  updateProgress();
-}
-
-function selectOpt(qi, oi) {
-  if (examFinished) return;
-  answers[qi] = oi;
-  document.querySelectorAll(`#opts-${qi} .opt`).forEach((b, i) => b.classList.toggle('selected', i === oi));
-  document.getElementById('pill-' + qi).classList.add('answered');
-  updateProgress();
-}
-
-function goTo(idx) {
-  if (idx < 0 || idx >= currentSession.length) return;
-  document.getElementById('qcard-' + currentQ).classList.remove('active');
-  document.getElementById('pill-' + currentQ).classList.remove('current');
-  currentQ = idx;
-  document.getElementById('qcard-' + idx).classList.add('active');
-  document.getElementById('pill-' + idx).classList.add('current');
-  window.scrollTo(0, 0);
-}
-
-function updateProgress() {
-  const done = answers.filter(a => a !== null).length;
-  document.getElementById('answered-count').textContent = done;
-  document.getElementById('progress-fill').style.width = (done / currentExamSize * 100) + '%';
-}
-
-function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-    const el = document.getElementById('timer');
-    el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
-    if (timeLeft <= 300) el.className = 'danger';
-    else if (timeLeft <= 600) el.className = 'warn';
-    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(); }
-  }, 1000);
-}
-
-function stopTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-}
-
-function submitExam() {
-  if (examFinished) return;
-  examFinished = true;
-  stopTimer();
-  document.getElementById('main').style.display = 'none';
-  document.getElementById('nav-pills').style.display = 'none';
-  showResults();
-}
-
-function showResults() {
-  let correct = 0, wrong = 0, skipped = 0;
-  const timeUsed = 45 * 60 - timeLeft;
-  const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
-  let corrHTML = '';
-  currentSession.forEach((q, i) => {
-    const ua = answers[i], ca = shuffledCorrects[i];
-    let sc, cls;
-    if (ua === null) { sc = '⏭ Passée'; cls = 'skipped'; skipped++; }
-    else if (ua === ca) { sc = '✅ Correct'; cls = ''; correct++; }
-    else { sc = '❌ Incorrect'; cls = 'wrong'; wrong++; }
-    const ut = ua !== null ? shuffledOpts[i][ua] : '—';
-    const ct = shuffledOpts[i][ca];
-    corrHTML += `<div class="corr-item ${cls}">
-      <div class="ch-badge">${q.ch}</div>
-      <div class="corr-q">${q.q}</div>
-      <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${ut}</span></div>
-      <div class="corr-ans">Bonne réponse : <span class="corr-ok">${ct}</span></div>
-      <div class="corr-expl">💡 ${q.e}</div>
-    </div>`;
-  });
-  const score = Math.max(0, (correct * 0.25 - wrong * 0.083)).toFixed(2);
-  const scoreMax = (currentExamSize * 0.25).toFixed(2);
-  const pct = Math.round(correct / currentExamSize * 100);
-  const emoji = score >= 5.5 ? '🏆' : score >= 4 ? '👍' : score >= 3 ? '📖' : '💪';
-
-  const qcHTML = currentQC.map((qc, i) => `
-    <div class="qc-item">
-      <div class="qc-q">Q${i + 1}. ${qc.q}</div>
-      <button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button>
-      <div class="qc-r" id="qcr-${i}">${qc.r}</div>
-    </div>`).join('');
-
-  document.getElementById('results').innerHTML = `
-    <div class="score-card">
-      <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
-      <div class="score-num" style="color:${score >= 4.5 ? '#2ecc71' : score >= 3 ? '#f39c12' : '#e74c3c'}">${score}<span style="font-size:1.4rem">/${scoreMax}</span></div>
-      <div style="color:#aaa;font-size:.82rem;margin-top:4px">Score sur ${currentExamSize} QCM (+0,25 / -0,083 / 0) — ${pct}% de bonnes réponses</div>
-      <div class="score-detail">
-        <div class="sc-box" style="color:#2ecc71">✅ ${correct} correctes</div>
-        <div class="sc-box" style="color:#e74c3c">❌ ${wrong} incorrectes</div>
-        <div class="sc-box" style="color:#f39c12">⏭ ${skipped} passées</div>
-        <div class="sc-box">⏱ ${mu}min ${su.toString().padStart(2, '0')}s</div>
-      </div>
-    </div>
-    <div id="qc-section">
-      <h2>📝 QUESTIONS COURTES — Rédige d'abord, puis dévoile</h2>
-      ${qcHTML}
-    </div>
-    <div style="margin-top:14px">
-      <h3 style="color:#e74c3c;margin-bottom:10px;font-size:.92rem">📋 CORRECTIONS DÉTAILLÉES</h3>
-      ${corrHTML}
-    </div>
-    <div style="text-align:center;padding:20px">
-      <div style="color:#aaa;font-size:.82rem;margin-bottom:10px">Banque : ${BANK.length} questions • ${QC_BANK.length} questions courtes</div>
-      <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
-    </div>`;
-  document.getElementById('results').style.display = 'block';
-  window.scrollTo(0, 0);
-}
-
-function toggleR(i) {
-  const el = document.getElementById('qcr-' + i);
-  const btn = document.getElementById('sbtn-' + i);
-  const hidden = el.style.display === 'none' || el.style.display === '';
-  el.style.display = hidden ? 'block' : 'none';
-  btn.textContent = hidden ? 'Masquer' : 'Voir la réponse';
-}
-
-function newExam() {
-  goHome();
-}
-
-function goBack() {
-  if (!examFinished && document.getElementById('main').style.display === 'block' && currentQ > 0) {
-    goTo(currentQ - 1);
-    return;
-  }
-  goHome();
-}
-
-function goHome() {
-  if (!examFinished && document.getElementById('main').style.display === 'block') {
-    const ok = confirm('Quitter l\'examen en cours et revenir à l\'accueil ?');
-    if (!ok) return;
-  }
-  stopTimer();
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('results').innerHTML = '';
-  document.getElementById('header').style.display = 'none';
-  document.getElementById('progress-bar').style.display = 'none';
-  document.getElementById('main').style.display = 'none';
-  document.getElementById('nav-pills').style.display = 'none';
-  document.getElementById('timer').className = '';
-  document.getElementById('home').style.display = 'block';
-  examFinished = false;
-}
 </script>
+<script src="remote-config.js"></script>
+<script src="remote-sync.js"></script>
+<script src="sandbox.js"></script>
 </body>
 </html>
