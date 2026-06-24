@@ -1182,6 +1182,11 @@ function startExam() {
     pool = sandboxPool;
   }
 
+  if (!Number.isFinite(requestedCount) || requestedCount < 1) {
+    requestedCount = 25;
+  }
+  requestedCount = Math.floor(requestedCount);
+
   if (pool.length === 0) {
     alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.');
     return;
@@ -1189,6 +1194,10 @@ function startExam() {
 
   const selectedCount = Math.min(requestedCount, pool.length);
   currentSession = getVariedBalancedDraw(pool, selectedCount);
+  if (!currentSession.length) {
+    alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
+    return;
+  }
   if (pool.length < requestedCount) {
     alert(`Les chapitres choisis contiennent seulement ${pool.length} questions. Le quiz utilisera toutes les questions disponibles.`);
   }

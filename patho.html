@@ -1429,10 +1429,24 @@ function startExam() {
     if (chapter !== 'all') sourcePool = BANK.filter(q => q.ch === chapter);
   }
 
+  // Garde-fou simulation/chapitres: éviter un tirage vide si la valeur UI est invalide.
+  if (!Number.isFinite(requestedCount) || requestedCount < 1) {
+    requestedCount = 20;
+  }
+  requestedCount = Math.floor(requestedCount);
+
+  if (!Array.isArray(sourcePool) || sourcePool.length === 0) {
+    sourcePool = [...BANK];
+  }
+
   currentExamSize = requestedCount;
 
   // Tirage aléatoire avec répétition si nécessaire
   currentSession = pickQuestionsWithRepeats(sourcePool, requestedCount);
+  if (!currentSession.length) {
+    alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
+    return;
+  }
   // Tirage de 4 questions courtes
   const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
   currentQC = shuffledQC.slice(0, 4).map(i => QC_BANK[i]);
