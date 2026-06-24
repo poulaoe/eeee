@@ -97,6 +97,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
       <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
+      <button class="module-tab" id="tab-feedback" type="button" onclick="switchModule('feedback')">Feedback 💬</button>
     </div>
     <div style="background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px">
       <label for="global-timer" style="display:block;color:#ccd;margin-bottom:8px;font-size:.84rem">Durée du quiz (min)</label>
@@ -157,6 +158,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <div id="chapter-quick-list"></div>
       <div class="module-hint">Clique un chapitre pour le sélectionner puis lance le partiel.</div>
     </div>
+    <div class="module-panel" id="module-feedback">
+      <!-- Feedback content loaded by renderFeedbackPanel() -->
+    </div>
     <div class="stat-grid">
       <div class="stat"><span id="sc1">0</span>Chapitres</div>
       <div class="stat"><span id="question-count">25</span>QCM / partiel</div>
@@ -183,6 +187,18 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <div id="results"></div>
+<div id="report-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:999;justify-content:center;align-items:center;padding:20px">
+  <div style="background:#16213e;border-radius:12px;padding:24px;max-width:400px;width:100%;border:1px solid #2d2d50">
+    <h3 style="margin-bottom:12px;color:#e74c3c">🚩 Signaler une question</h3>
+    <p style="font-size:.85rem;color:#aab;margin-bottom:12px">Décris le problème que tu as trouvé avec cette question.</p>
+    <input id="report-question-idx" type="hidden">
+    <textarea id="report-description" placeholder="Ex: La réponse marquée correcte est fausse, la question est mal formulée, etc..." style="width:100%;background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:10px;color:#fff;min-height:80px;font-family:inherit;font-size:.85rem;resize:vertical;margin-bottom:12px"></textarea>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeReportModal()" style="flex:1;background:#2d2d50;border:none;color:#aaa;padding:10px;border-radius:8px;cursor:pointer;font-weight:700">Annuler</button>
+      <button onclick="submitReport()" style="flex:1;background:#e74c3c;border:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;font-weight:700">Signaler</button>
+    </div>
+  </div>
+</div>
 <script>
 window.SUBJECT_NAME = 'Procédure';
 window.SUBJECT_DESC = 'Mode bac à sable Procédure. Ajoute ici les questions de procédure dans la variable BANK.';

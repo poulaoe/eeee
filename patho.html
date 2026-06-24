@@ -111,6 +111,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
       <button class="module-tab" id="tab-chapitres" type="button" onclick="switchModule('chapitres')">Chapitres</button>
+      <button class="module-tab" id="tab-feedback" type="button" onclick="switchModule('feedback')">Feedback 💬</button>
     </div>
     <div style="background:rgba(15,52,96,.35);border:1px solid #2d2d50;border-radius:10px;padding:12px;margin-bottom:12px">
       <label for="global-timer" style="display:block;color:#ccd;margin-bottom:8px;font-size:.84rem">Durée du quiz (min)</label>
@@ -173,6 +174,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <div id="chapter-quick-list"></div>
       <div class="module-hint">Clique un chapitre pour filtrer puis lancer le quiz.</div>
     </div>
+    <div class="module-panel" id="module-feedback">
+      <!-- Feedback content loaded by renderFeedbackPanel() -->
+    </div>
     <div class="stat-grid">
       <div class="stat"><span id="sc1">20</span>Chapitres</div>
       <div class="stat"><span>25</span>QCM / partiel</div>
@@ -202,6 +206,18 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <div id="results"></div>
+<div id="report-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:999;justify-content:center;align-items:center;padding:20px">
+  <div style="background:#16213e;border-radius:12px;padding:24px;max-width:400px;width:100%;border:1px solid #2d2d50">
+    <h3 style="margin-bottom:12px;color:#e74c3c">🚩 Signaler une question</h3>
+    <p style="font-size:.85rem;color:#aab;margin-bottom:12px">Décris le problème que tu as trouvé avec cette question.</p>
+    <input id="report-question-idx" type="hidden">
+    <textarea id="report-description" placeholder="Ex: La réponse marquée correcte est fausse, la question est mal formulée, etc..." style="width:100%;background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:10px;color:#fff;min-height:80px;font-family:inherit;font-size:.85rem;resize:vertical;margin-bottom:12px"></textarea>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeReportModal()" style="flex:1;background:#2d2d50;border:none;color:#aaa;padding:10px;border-radius:8px;cursor:pointer;font-weight:700">Annuler</button>
+      <button onclick="submitReport()" style="flex:1;background:#e74c3c;border:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;font-weight:700">Signaler</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ===================== BANQUE DE QUESTIONS =====================
@@ -1136,14 +1152,154 @@ function shuffle(arr) {
   return a;
 }
 
+// ===== FONCTIONS DE SIGNALEMENT =====
+function loadFeedbackReports() {
+  try {
+    const raw = localStorage.getItem('qcm_feedback_reports_v1');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn('Impossible de charger les signalements', e);
+  }
+  return [];
+}
+
+function saveFeedbackReports(reports) {
+  localStorage.setItem('qcm_feedback_reports_v1', JSON.stringify(reports));
+}
+
+function reportQuestion(questionIndex, description) {
+  const q = currentSession[questionIndex];
+  if (!q) return;
+  
+  const report = {
+    date: new Date().toISOString(),
+    subject: 'Patho',
+    user: 'Résultat local',
+    question: q.q.substring(0, 100),
+    chapter: q.ch,
+    description: description || '',
+    questionIndex: questionIndex,
+    fullQuestion: q
+  };
+  
+  const reports = loadFeedbackReports();
+  reports.unshift(report);
+  saveFeedbackReports(reports.slice(0, 200));
+}
+
+function openReportModal(questionIndex) {
+  const modal = document.getElementById('report-modal');
+  if (!modal) {
+    console.error('Modal de signalement non trouvé');
+    return;
+  }
+  
+  document.getElementById('report-question-idx').value = questionIndex;
+  document.getElementById('report-description').value = '';
+  modal.style.display = 'flex';
+}
+
+function closeReportModal() {
+  const modal = document.getElementById('report-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function submitReport() {
+  const idx = parseInt(document.getElementById('report-question-idx').value);
+  const desc = document.getElementById('report-description').value.trim();
+  
+  if (!desc) {
+    alert('Merci de décrire le problème.');
+    return;
+  }
+  
+  reportQuestion(idx, desc);
+  closeReportModal();
+  alert('Signalement enregistré. Merci !');
+}
+
+function renderFeedbackPanel() {
+  const panel = document.getElementById('module-feedback');
+  if (!panel) return;
+  
+  const reports = loadFeedbackReports();
+  
+  let html = `
+    <div class="feedback-section">
+      <h3>📋 Signalements de questions</h3>
+      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Questions signalées comme potentiellement erronées</p>
+  `;
+  
+  if (reports.length === 0) {
+    html += '<div style="color:#888;font-size:.85rem">Aucun signalement pour le moment.</div>';
+  } else {
+    reports.slice(0, 20).forEach((r, i) => {
+      html += `
+        <div style="background:#0f3460;border-radius:8px;padding:10px;margin-bottom:8px;border-left:3px solid #e74c3c">
+          <div style="font-size:.78rem;color:#999">${r.date ? new Date(r.date).toLocaleString('fr-FR') : 'N/A'} • ${r.chapter} • ${r.subject}</div>
+          <div style="font-size:.82rem;color:#dde;margin:6px 0">${r.question}</div>
+          <div style="font-size:.78rem;color:#aab;font-style:italic">"${r.description}"</div>
+          <div style="font-size:.76rem;color:#777;margin-top:4px">Par: ${r.user}</div>
+        </div>
+      `;
+    });
+  }
+  
+  html += `
+    </div>
+    <div class="feedback-section" style="margin-top:20px;border-top:1px solid #2d2d50;padding-top:16px">
+      <h3>💬 Formulaire de contact</h3>
+      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Envoie un message direct</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <textarea id="contact-message" placeholder="Écris ton message..." style="background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:10px;color:#fff;min-height:80px;font-family:inherit;font-size:.85rem;resize:vertical"></textarea>
+        <button onclick="sendContactMessage()" style="background:#27ae60;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">Envoyer</button>
+      </div>
+      <div id="contact-status" style="margin-top:8px;font-size:.78rem;color:#aab"></div>
+    </div>
+  `;
+  
+  panel.innerHTML = html;
+}
+
+function sendContactMessage() {
+  const msg = document.getElementById('contact-message')?.value.trim();
+  if (!msg) {
+    alert('Veuillez entrer un message.');
+    return;
+  }
+  
+  const contact = {
+    date: new Date().toISOString(),
+    subject: 'Patho',
+    user: 'Résultat local',
+    message: msg
+  };
+  
+  const reports = loadFeedbackReports();
+  reports.unshift({ ...contact, type: 'contact' });
+  saveFeedbackReports(reports.slice(0, 200));
+  
+  document.getElementById('contact-message').value = '';
+  document.getElementById('contact-status').textContent = '✓ Message enregistré';
+  setTimeout(() => {
+    document.getElementById('contact-status').textContent = '';
+  }, 2000);
+}
+
 function switchModule(mode) {
   activeModule = mode;
-  ['sandbox', 'partiel', 'chapitres'].forEach(m => {
+  ['sandbox', 'partiel', 'chapitres', 'feedback'].forEach(m => {
     const tab = document.getElementById('tab-' + m);
     const panel = document.getElementById('module-' + m);
     if (tab) tab.classList.toggle('active', m === mode);
     if (panel) panel.classList.toggle('active', m === mode);
   });
+  
+  if (mode === 'feedback') {
+    renderFeedbackPanel();
+  }
 }
 
 function getUniqueChapters() {
@@ -1281,6 +1437,7 @@ function buildUI() {
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
+        <button class="report-btn" onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:700;margin-left:auto">🚩 Signaler</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
       </div>`;
     document.getElementById('questions-zone').appendChild(card);
@@ -1375,6 +1532,7 @@ function showResults() {
       <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${ut}</span></div>
       <div class="corr-ans">Bonne réponse : <span class="corr-ok">${ct}</span></div>
       <div class="corr-expl">💡 ${q.e}</div>
+      <div style="margin-top:8px"><button onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:.7rem;font-weight:700">🚩 Signaler cette question</button></div>
     </div>`;
   });
   const scoreRaw = correct * gradingConfig.good - wrong * gradingConfig.bad;

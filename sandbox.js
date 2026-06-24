@@ -22,6 +22,7 @@ let selectedChapterQuick = [];
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
+const FEEDBACK_STORAGE_KEY = 'qcm_feedback_reports_v1';
 const memoryStorageFallback = {};
 const windowNameStoragePrefix = 'QCM_STATE::';
 
@@ -456,6 +457,141 @@ function saveResultForCurrentUser(result) {
   renderAccountPanel();
 }
 
+function loadFeedbackReports() {
+  try {
+    const raw = safeGetItem(FEEDBACK_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn('Impossible de charger les signalements', e);
+  }
+  return [];
+}
+
+function saveFeedbackReports(reports) {
+  safeSetItem(FEEDBACK_STORAGE_KEY, JSON.stringify(reports));
+}
+
+function reportQuestion(questionIndex, description) {
+  const q = currentSession[questionIndex];
+  if (!q) return;
+  
+  const report = {
+    date: buildResultTimestamp(),
+    subject: SUBJECT_NAME,
+    user: currentUser || 'Invité',
+    question: q.q.substring(0, 100),
+    chapter: q.ch,
+    description: description || '',
+    questionIndex: questionIndex,
+    fullQuestion: q
+  };
+  
+  const reports = loadFeedbackReports();
+  reports.unshift(report);
+  saveFeedbackReports(reports.slice(0, 200));
+}
+
+function openReportModal(questionIndex) {
+  const modal = document.getElementById('report-modal');
+  if (!modal) {
+    console.error('Modal de signalement non trouvé');
+    return;
+  }
+  
+  document.getElementById('report-question-idx').value = questionIndex;
+  document.getElementById('report-description').value = '';
+  modal.style.display = 'flex';
+}
+
+function closeReportModal() {
+  const modal = document.getElementById('report-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function submitReport() {
+  const idx = parseInt(document.getElementById('report-question-idx').value);
+  const desc = document.getElementById('report-description').value.trim();
+  
+  if (!desc) {
+    alert('Merci de décrire le problème.');
+    return;
+  }
+  
+  reportQuestion(idx, desc);
+  closeReportModal();
+  alert('Signalement enregistré. Merci !');
+}
+
+function renderFeedbackPanel() {
+  const panel = document.getElementById('module-feedback');
+  if (!panel) return;
+  
+  const reports = loadFeedbackReports();
+  
+  let html = `
+    <div class="feedback-section">
+      <h3>📋 Signalements de questions</h3>
+      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Questions signalées comme potentiellement erronées</p>
+  `;
+  
+  if (reports.length === 0) {
+    html += '<div style="color:#888;font-size:.85rem">Aucun signalement pour le moment.</div>';
+  } else {
+    reports.slice(0, 20).forEach((r, i) => {
+      html += `
+        <div style="background:#0f3460;border-radius:8px;padding:10px;margin-bottom:8px;border-left:3px solid #e74c3c">
+          <div style="font-size:.78rem;color:#999">${r.date ? new Date(r.date).toLocaleString('fr-FR') : 'N/A'} • ${r.chapter} • ${r.subject}</div>
+          <div style="font-size:.82rem;color:#dde;margin:6px 0">${r.question}</div>
+          <div style="font-size:.78rem;color:#aab;font-style:italic">"${r.description}"</div>
+          <div style="font-size:.76rem;color:#777;margin-top:4px">Par: ${r.user}</div>
+        </div>
+      `;
+    });
+  }
+  
+  html += `
+    </div>
+    <div class="feedback-section" style="margin-top:20px;border-top:1px solid #2d2d50;padding-top:16px">
+      <h3>💬 Formulaire de contact</h3>
+      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Envoie un message direct</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <textarea id="contact-message" placeholder="Écris ton message..." style="background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:10px;color:#fff;min-height:80px;font-family:inherit;font-size:.85rem;resize:vertical"></textarea>
+        <button onclick="sendContactMessage()" style="background:#27ae60;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">Envoyer</button>
+      </div>
+      <div id="contact-status" style="margin-top:8px;font-size:.78rem;color:#aab"></div>
+    </div>
+  `;
+  
+  panel.innerHTML = html;
+}
+
+function sendContactMessage() {
+  const msg = document.getElementById('contact-message')?.value.trim();
+  if (!msg) {
+    alert('Veuillez entrer un message.');
+    return;
+  }
+  
+  const contact = {
+    date: buildResultTimestamp(),
+    subject: SUBJECT_NAME,
+    user: currentUser || 'Invité',
+    message: msg
+  };
+  
+  const reports = loadFeedbackReports();
+  reports.unshift({ ...contact, type: 'contact' });
+  saveFeedbackReports(reports.slice(0, 200));
+  
+  document.getElementById('contact-message').value = '';
+  document.getElementById('contact-status').textContent = '✓ Message enregistré';
+  setTimeout(() => {
+    document.getElementById('contact-status').textContent = '';
+  }, 2000);
+}
+
 function removeDuplicateIds(scope, id) {
   const nodes = scope.querySelectorAll(`#${safeCssEscape(id)}`);
   if (nodes.length <= 1) return;
@@ -596,6 +732,9 @@ function initSandboxPage() {
       globalTimer.value = e.target.value;
     });
   }
+  
+  // Initialiser le panel feedback
+  renderFeedbackPanel();
   
   switchModule('sandbox');
 }
@@ -1045,6 +1184,7 @@ function buildUI() {
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
+        <button class="report-btn" onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:700;margin-left:auto">🚩 Signaler</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
       </div>`;
     document.getElementById('questions-zone').appendChild(card);
@@ -1108,6 +1248,7 @@ function showResults() {
       <div class="corr-ans">Ta réponse : <span class="${ua === ca ? 'corr-ok' : 'corr-ko'}">${escapeHtml(ut)}</span></div>
       <div class="corr-ans">Bonne réponse : <span class="corr-ok">${escapeHtml(ct)}</span></div>
       <div class="corr-expl">💡 ${escapeHtml(q.e)}</div>
+      <div style="margin-top:8px"><button onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:.7rem;font-weight:700">🚩 Signaler cette question</button></div>
     </div>`;
   });
 
