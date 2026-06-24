@@ -1,6 +1,6 @@
 (function () {
-  var SUPABASE_URL = 'https://jpyplehhnqivczqxarpz.supabase.co';
-  var DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpweXBsZWhobnFpdmN6cXhhcnB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyODQ2OTYsImV4cCI6MjA5Nzg2MDY5Nn0.eZYGPJAw4CN-rPPukH3W49iToJwmSLFdadiT6yl-kT8';
+  var SUPABASE_URL = 'https://ynvkxudmusfaivcrkjox.supabase.co';
+  var DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inludmt4dWRtdXNmYWl2Y3Jram94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNDE3MDYsImV4cCI6MjA5NzgxNzcwNn0._XgvmdHq6KeT1K2-xpvML7HIF8GimRegl14DhMsBp8E';
   var ANON_KEY_STORAGE = 'qcm_supabase_anon_key';
   var TABLE_STORAGE = 'qcm_supabase_table';
   var DEFAULT_TABLE = 'leaderboard';
