@@ -484,6 +484,7 @@ function reportQuestion(questionIndex, description) {
     question: q.q.substring(0, 100),
     chapter: q.ch,
     description: description || '',
+    type: 'report',
     questionIndex: questionIndex,
     fullQuestion: q
   };
@@ -491,6 +492,11 @@ function reportQuestion(questionIndex, description) {
   const reports = loadFeedbackReports();
   reports.unshift(report);
   saveFeedbackReports(reports.slice(0, 200));
+  
+  // Envoyer à Supabase si configuré
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') {
+    window.QCM_REMOTE.pushFeedback(report).catch(() => {});
+  }
 }
 
 function openReportModal(questionIndex) {
@@ -578,12 +584,18 @@ function sendContactMessage() {
     date: buildResultTimestamp(),
     subject: SUBJECT_NAME,
     user: currentUser || 'Invité',
-    message: msg
+    message: msg,
+    type: 'contact'
   };
   
   const reports = loadFeedbackReports();
-  reports.unshift({ ...contact, type: 'contact' });
+  reports.unshift({ ...contact });
   saveFeedbackReports(reports.slice(0, 200));
+  
+  // Envoyer à Supabase si configuré
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') {
+    window.QCM_REMOTE.pushFeedback(contact).catch(() => {});
+  }
   
   document.getElementById('contact-message').value = '';
   document.getElementById('contact-status').textContent = '✓ Message enregistré';

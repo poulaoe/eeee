@@ -112,10 +112,42 @@
       });
   }
 
+  function pushFeedback(report) {
+    if (!hasRemote()) return Promise.resolve({ ok: false, reason: 'missing-config' });
+
+    var cfg = getConfig();
+    var payload = {
+      date: toIsoDate(report.date),
+      subject: String(report.subject || 'Inconnu').slice(0, 120),
+      user: String(report.user || 'Invité').slice(0, 120),
+      type: String(report.type || 'report').slice(0, 50),
+      chapter: String(report.chapter || '').slice(0, 120),
+      question: String(report.question || '').slice(0, 500),
+      description: String(report.description || '').slice(0, 2000),
+      message: String(report.message || '').slice(0, 2000)
+    };
+
+    return request('/rest/v1/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(function (response) {
+        return { ok: !!(response && response.ok), status: response ? response.status : 0 };
+      })
+      .catch(function () {
+        return { ok: false, reason: 'network-error' };
+      });
+  }
+
   window.QCM_REMOTE = {
     isConfigured: hasRemote,
     pushResult: pushResult,
     fetchResults: fetchResults,
-    normalizeEntry: normalizeEntry
+    normalizeEntry: normalizeEntry,
+    pushFeedback: pushFeedback
   };
 })();
