@@ -350,6 +350,17 @@
   <script>
     let allFeedback = [];
 
+    function loadLocalFeedbackFallback() {
+      try {
+        const raw = localStorage.getItem('qcm_feedback_reports_v1');
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.map(normalizeFeedbackEntry) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
     function normalizeFeedbackEntry(entry) {
       const raw = entry || {};
       return {
@@ -383,13 +394,19 @@
         
         const result = await window.QCM_REMOTE.fetchFeedback();
         allFeedback = Array.isArray(result) ? result.map(normalizeFeedbackEntry) : [];
+        if (!allFeedback.length) {
+          list.innerHTML = '<div class="empty-state">Aucune donnée distante pour le moment.</div>';
+        }
         
         updateStats();
         renderFeedback();
         
       } catch (error) {
-        errorZone.innerHTML = `<div class="error">⚠️ Erreur: ${error.message}</div>`;
-        list.innerHTML = '<div class="empty-state">Erreur lors du chargement.</div>';
+        const localFallback = loadLocalFeedbackFallback();
+        allFeedback = localFallback;
+        errorZone.innerHTML = `<div class="error">⚠️ Erreur serveur: ${error.message}<br>Mode local activé (${localFallback.length} entrées de ce navigateur).</div>`;
+        updateStats();
+        renderFeedback();
       } finally {
         loading.style.display = 'none';
       }
