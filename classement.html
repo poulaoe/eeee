@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classement synchronisé</title>
+<title>Classement en ligne</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:
@@ -45,6 +45,9 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
 .mini p{font-size:.84rem;color:#b7c7e6;line-height:1.5}
 .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .tag{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:.74rem;color:#dbe8ff}
+.status{margin-top:10px;font-size:.82rem;color:#9fb0c8}
+.status.loading{color:#ffd8d4}
+.status.error{color:#ffb3a8}
 @media (max-width: 860px){.grid{grid-template-columns:1fr}.entry{grid-template-columns:auto 1fr}.score{text-align:left}}
 </style>
 </head>
@@ -53,9 +56,9 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
   <section class="hero">
     <div class="hero-top">
       <div>
-        <div class="eyebrow">Classement synchronisé</div>
+        <div class="eyebrow">Classement en ligne</div>
         <h1>Les meilleurs scores enregistrés</h1>
-        <p class="lead">Cette page fusionne les résultats locaux et cloud, puis trie les meilleures performances par score, pourcentage et date.</p>
+        <p class="lead">Cette page affiche uniquement le classement Supabase partagé entre tous les appareils, puis trie les meilleures performances par score, pourcentage et date.</p>
       </div>
       <div class="actions">
         <button class="btn btn-secondary" type="button" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'">Retour</button>
@@ -64,6 +67,7 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
       </div>
     </div>
     <div class="stats" id="stats"></div>
+    <div class="status" id="refresh-status">Prêt.</div>
   </section>
 
   <div class="grid">
@@ -87,7 +91,7 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
       <div class="side-list" id="summary-list"></div>
       <div class="mini" style="margin-top:12px">
         <h3>Astuce</h3>
-        <p>Le classement est en ligne et synchronisé. Pour avoir plus d'entrées, lance des partiels dans Patho, Douleur ou les matières du bac à sable, puis clique sur Rafraîchir.</p>
+        <p>Le classement affiché ici vient du cloud. Pour avoir plus d'entrées, lance des partiels dans Patho, Douleur ou les matières du bac à sable, puis clique sur Rafraîchir.</p>
       </div>
     </aside>
   </div>
@@ -96,8 +100,8 @@ select{background:#0f3460;color:#fff;border:1px solid #2d2d50;border-radius:10px
 <script src="remote-config.js"></script>
 <script src="remote-sync.js"></script>
 <script>
-const STORAGE_KEY = 'qcm_leaderboard_v1';
 let cachedEntries = [];
+let remoteStatus = 'idle';
 
 function normalizeSubjectName(value) {
   const subject = String(value || 'Inconnu').trim().toLowerCase();
@@ -127,19 +131,6 @@ function parseStoredDate(value) {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-function loadLeaderboard() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.map(normalizeEntry);
-  } catch (e) {
-    return [];
-  }
-}
-
 function normalizeEntry(item) {
   const raw = item || {};
   const toNumber = (value, fallback) => {
@@ -154,38 +145,39 @@ function normalizeEntry(item) {
   return {
     date: toIsoDate(raw.date),
     subject: normalizeSubjectName(raw.subject),
-    user: String(raw.user || 'Résultat local'),
+    user: String(raw.user || 'Invité'),
     score: toNumber(raw.score, 0),
     max: toNumber(raw.max, 0),
     pct: toNumber(raw.pct, 0)
   };
 }
 
-function dedupeKey(item) {
-  return [item.date, item.subject, item.user, item.score, item.max, item.pct].join('|');
-}
-
-function mergeEntries(localEntries, remoteEntries) {
-  const merged = [];
+function dedupeEntries(entries) {
   const seen = new Set();
-  const all = ([]).concat(localEntries || [], remoteEntries || []);
-  all.forEach((entry) => {
+  return (Array.isArray(entries) ? entries : []).filter((entry) => {
     const normalized = normalizeEntry(entry);
-    const key = dedupeKey(normalized);
-    if (seen.has(key)) return;
+    const key = [normalized.date, normalized.subject, normalized.user, normalized.score, normalized.max, normalized.pct].join('|');
+    if (seen.has(key)) return false;
     seen.add(key);
-    merged.push(normalized);
-  });
-  return merged;
+    return true;
+  }).map(normalizeEntry);
 }
 
 async function loadRemoteLeaderboard() {
-  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchResults !== 'function') return [];
-  if (typeof window.QCM_REMOTE.isConfigured === 'function' && !window.QCM_REMOTE.isConfigured()) return [];
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchResults !== 'function') {
+    remoteStatus = 'unavailable';
+    return [];
+  }
+  if (typeof window.QCM_REMOTE.isConfigured === 'function' && !window.QCM_REMOTE.isConfigured()) {
+    remoteStatus = 'unavailable';
+    return [];
+  }
   try {
     const rows = await window.QCM_REMOTE.fetchResults({ limit: 300 });
+    remoteStatus = 'ready';
     return Array.isArray(rows) ? rows : [];
   } catch (e) {
+    remoteStatus = 'error';
     return [];
   }
 }
@@ -200,7 +192,7 @@ function buildFilters(entries) {
   const select = document.getElementById('subject-filter');
   const userSelect = document.getElementById('user-filter');
   const subjects = Array.from(new Set(entries.map(item => item.subject || 'Inconnu'))).sort((a, b) => a.localeCompare(b, 'fr'));
-  const users = Array.from(new Set(entries.map(item => item.user || 'Résultat local'))).sort((a, b) => a.localeCompare(b, 'fr'));
+  const users = Array.from(new Set(entries.map(item => item.user || 'Invité'))).sort((a, b) => a.localeCompare(b, 'fr'));
   select.innerHTML = '<option value="all">Toutes les matières</option>' + subjects.map(s => `<option value="${s}">${s}</option>`).join('');
   userSelect.innerHTML = '<option value="all">Tous les utilisateurs</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
 }
@@ -212,7 +204,7 @@ function summarize(entries) {
   const byUser = new Map();
   entries.forEach(item => {
     const subject = item.subject || 'Inconnu';
-    const user = item.user || 'Résultat local';
+    const user = item.user || 'Invité';
     const bucket = bySubject.get(subject) || { count: 0, best: null, avg: 0 };
     bucket.count += 1;
     bucket.avg += parseFloat(item.pct || 0);
@@ -240,14 +232,14 @@ function summarize(entries) {
         const avg = data.count ? Math.round((data.avg / data.count) * 10) / 10 : 0;
         return `<div class="mini"><h3>${subject}</h3><p>${data.count} tentative(s)<br>Moyenne: ${avg}%<br>Meilleur: ${data.best ? `${data.best.score}/${data.best.max}` : '—'}</p></div>`;
       }).join('')
-    : '<div class="mini"><h3>Aucun résultat</h3><p>Fais un partiel pour remplir le classement.</p></div>';
+    : '<div class="mini"><h3>Aucun résultat</h3><p>Fais un partiel pour remplir le classement en ligne.</p></div>';
 
   const userSummary = document.createElement('div');
   userSummary.className = 'mini';
   userSummary.style.marginTop = '10px';
   userSummary.innerHTML = byUser.size
     ? `<h3>Utilisateurs</h3><div class="tag-row">${Array.from(byUser.entries()).sort((a, b) => a[0].localeCompare(b[0], 'fr')).slice(0, 8).map(([user, data]) => `<span class="tag">${user} • ${data.count}</span>`).join('')}</div>`
-    : '<h3>Utilisateurs</h3><p>Aucun compte local identifié.</p>';
+    : '<h3>Utilisateurs</h3><p>Aucun résultat cloud chargé.</p>';
   if (!summary.querySelector('.mini[data-user-summary]')) {
     userSummary.setAttribute('data-user-summary', '1');
     summary.appendChild(userSummary);
@@ -258,7 +250,7 @@ function summarize(entries) {
 }
 
 function renderBoard() {
-  const source = cachedEntries.length ? cachedEntries : loadLeaderboard();
+  const source = cachedEntries;
   const entries = source.slice().sort((a, b) => {
     const scoreDiff = parseFloat(b.score || 0) - parseFloat(a.score || 0);
     if (scoreDiff !== 0) return scoreDiff;
@@ -273,7 +265,7 @@ function renderBoard() {
   const subjectFilter = document.getElementById('subject-filter').value || 'all';
   const userFilter = document.getElementById('user-filter').value || 'all';
   const sortFilter = document.getElementById('sort-filter').value || 'score';
-  let filtered = entries.filter(item => (subjectFilter === 'all' || (item.subject || 'Inconnu') === subjectFilter) && (userFilter === 'all' || (item.user || 'Résultat local') === userFilter));
+  let filtered = entries.filter(item => (subjectFilter === 'all' || (item.subject || 'Inconnu') === subjectFilter) && (userFilter === 'all' || (item.user || 'Invité') === userFilter));
   filtered = filtered.slice().sort((a, b) => {
     if (sortFilter === 'pct') return parseFloat(b.pct || 0) - parseFloat(a.pct || 0);
     if (sortFilter === 'date') return new Date(b.date || 0) - new Date(a.date || 0);
@@ -282,7 +274,15 @@ function renderBoard() {
 
   const list = document.getElementById('leaderboard-list');
   if (!filtered.length) {
-    list.innerHTML = '<div class="empty">Aucun résultat enregistré pour le moment. Lance un partiel ou un bac à sable pour alimenter ce classement.</div>';
+    if (remoteStatus === 'unavailable') {
+      list.innerHTML = '<div class="empty">Le classement en ligne n\'est pas configuré sur cet appareil.</div>';
+      return;
+    }
+    if (remoteStatus === 'error') {
+      list.innerHTML = '<div class="empty">Impossible de charger le classement en ligne pour le moment. Réessaie dans un instant.</div>';
+      return;
+    }
+    list.innerHTML = '<div class="empty">Aucun résultat enregistré pour le moment. Lance un partiel pour alimenter le classement en ligne.</div>';
     return;
   }
 
@@ -291,7 +291,7 @@ function renderBoard() {
       <div class="rank">${index + 1}</div>
       <div>
         <div class="subject">${item.subject || 'Inconnu'}</div>
-        <div class="name">${item.user || 'Résultat local'}</div>
+        <div class="name">${item.user || 'Invité'}</div>
         <div class="meta">${formatDateLabel(item.date)}<br>${item.max ? `Sur ${item.max}` : ''}</div>
       </div>
       <div class="score">${item.score || '0'}/${item.max || '0'}<br><span style="font-size:.9rem;color:#b7c7e6">${item.pct || 0}%</span></div>
@@ -300,10 +300,24 @@ function renderBoard() {
 }
 
 async function refreshBoard() {
-  const localEntries = loadLeaderboard();
+  const status = document.getElementById('refresh-status');
+  if (status) {
+    status.textContent = 'Rafraîchissement en cours...';
+    status.className = 'status loading';
+  }
   const remoteEntries = await loadRemoteLeaderboard();
-  cachedEntries = mergeEntries(localEntries, remoteEntries);
+  cachedEntries = dedupeEntries(remoteEntries);
   renderBoard();
+  if (status) {
+    const count = cachedEntries.length;
+    const message = remoteStatus === 'ready'
+      ? `Classement mis à jour: ${count} résultat(s) chargés.`
+      : remoteStatus === 'unavailable'
+        ? 'Connexion Supabase indisponible sur cet appareil.'
+        : 'Impossible de joindre le classement en ligne.';
+    status.textContent = message;
+    status.className = `status ${remoteStatus === 'ready' ? '' : remoteStatus === 'unavailable' ? '' : 'error'}`.trim();
+  }
 }
 
 function resetFilters() {

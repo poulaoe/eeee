@@ -1,5 +1,7 @@
 (function () {
   var DEFAULT_TABLE = 'leaderboard';
+  var lastResultSignature = '';
+  var lastResultAt = 0;
 
   function getConfig() {
     var cfg = window.QCM_SUPABASE || {};
@@ -61,7 +63,12 @@
       (init && init.headers) || {}
     );
 
-    return fetch(cfg.url + path, Object.assign({}, init || {}, { headers: headers }));
+    var options = Object.assign({}, init || {}, { headers: headers });
+    if (!options.cache && String(options.method || 'GET').toUpperCase() === 'GET') {
+      options.cache = 'no-store';
+    }
+
+    return fetch(cfg.url + path, options);
   }
 
   function parseErrorResponse(response) {
@@ -89,11 +96,32 @@
     return String(value || 'General').slice(0, 120);
   }
 
+  function leaderboardSignature(entry) {
+    var normalized = normalizeEntry(entry);
+    return [
+      normalized.date,
+      normalized.subject,
+      normalized.user,
+      normalized.score,
+      normalized.max,
+      normalized.pct
+    ].join('|');
+  }
+
   function pushResult(entry) {
     if (!hasRemote()) return Promise.resolve({ ok: false, reason: 'missing-config' });
 
     var cfg = getConfig();
     var payload = normalizeEntry(entry);
+    var signature = leaderboardSignature(payload);
+    var now = Date.now();
+
+    if (signature === lastResultSignature && (now - lastResultAt) < 5000) {
+      return Promise.resolve({ ok: true, skipped: true, reason: 'duplicate-result' });
+    }
+
+    lastResultSignature = signature;
+    lastResultAt = now;
 
     return request('/rest/v1/' + encodeURIComponent(cfg.table), {
       method: 'POST',
