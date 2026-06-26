@@ -1368,7 +1368,41 @@ function ensureShuffleLaunchButton() {
   }
 }
 
+function ensureFloatingClearButton() {
+  if (document.getElementById('floating-clear-btn')) return;
+
+  const style = document.createElement('style');
+  style.id = 'floating-clear-style';
+  style.textContent = `
+    #floating-clear-btn{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:1200;
+      background:#16213e;
+      border:2px solid #e74c3c;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:800;
+      box-shadow:0 8px 24px rgba(0,0,0,.35);
+      display:none;
+    }
+    #floating-clear-btn:hover{background:#1f2b4d}
+  `;
+  document.head.appendChild(style);
+
+  const button = document.createElement('button');
+  button.id = 'floating-clear-btn';
+  button.type = 'button';
+  button.textContent = 'Effacer la sélection';
+  button.onclick = () => clearOpt(currentQ);
+  document.body.appendChild(button);
+}
+
 function startExam(options) {
+  ensureFloatingClearButton();
   const config = options || {};
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
@@ -1475,6 +1509,8 @@ function startExam(options) {
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('nav-pills').style.display = 'flex';
   document.getElementById('main').style.display = 'block';
+  const floatingClearBtn = document.getElementById('floating-clear-btn');
+  if (floatingClearBtn) floatingClearBtn.style.display = 'inline-flex';
 
   buildUI();
 }
@@ -1555,6 +1591,8 @@ function submitExam() {
   examFinished = true;
   document.getElementById('main').style.display = 'none';
   document.getElementById('nav-pills').style.display = 'none';
+  const floatingClearBtn = document.getElementById('floating-clear-btn');
+  if (floatingClearBtn) floatingClearBtn.style.display = 'none';
   showResults();
 }
 
@@ -1697,6 +1735,8 @@ function newExam() {
 function goHome() {
   stopTimer();
   examFinished = false;
+  const floatingClearBtn = document.getElementById('floating-clear-btn');
+  if (floatingClearBtn) floatingClearBtn.style.display = 'none';
   document.getElementById('results').style.display = 'none';
   document.getElementById('results').innerHTML = '';
   document.getElementById('header').style.display = 'none';
