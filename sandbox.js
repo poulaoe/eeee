@@ -351,7 +351,20 @@ function createLocalAccount() {
   const accounts = loadAccounts();
   if (accounts[username]) { alert('Ce compte existe déjà. Utilise "Se connecter".'); return; }
   accounts[username] = { pin, history: [] };
-  saveAccounts(accounts); setSignedUser(username); renderAccountPanel();
+  saveAccounts(accounts); setSignedUser(username); 
+  // Enregistrer sur Supabase
+if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
+  fetch(`${window.QCM_SUPABASE.url}/rest/v1/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': window.QCM_SUPABASE.anonKey,
+      'Authorization': 'Bearer ' + window.QCM_SUPABASE.anonKey,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ username: username })
+  }).catch(() => {});
+}renderAccountPanel();
 }
 
 function loginLocalAccount() {
