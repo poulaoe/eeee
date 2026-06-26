@@ -365,7 +365,9 @@ var EXTRA_Q2 = [
   {c:"28",l:"Chap. 2.8",q:"Dans la jambe, la zone antérieure est innervée par :",o:["Nerf tibial","Nerf fibulaire superficiel","Nerf fibulaire profond","Nerf saphène"],a:2,e:"Zone ANT. jambe = nerf FIBULAIRE PROFOND (tibial ant. + long ext. orteils + long ext. hallux + 3e fibulaire)."},
   {c:"28",l:"Chap. 2.8",q:"Le nerf fémoral est la branche la plus importante du plexus lombaire ?",o:["Vrai","Faux"],a:0,e:"VRAI. Le nerf FÉMORAL est la branche la PLUS IMPORTANTE du plexus lombaire (L2–L4)."}
 ];
-
+var EXTRA_Q = [];
+var EXTRA_Q2 = [];
+var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
 var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
 
 window.ANAT_BANK = ALL_Q.map(function(item) {
