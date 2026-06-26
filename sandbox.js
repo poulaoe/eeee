@@ -1182,4 +1182,10 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => { try { initSandboxPage(); } catch (error) { showFatalInitError(error); } });
 } else {
   try { initSandboxPage(); } catch (error) { showFatalInitError(error); }
+}function goBack() {
+  if (window.history.length > 1) {
+    history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
 }
