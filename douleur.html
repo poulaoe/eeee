@@ -341,6 +341,76 @@ function escapeHtml(value){
     .replace(/'/g, '&#39;');
 }
 
+function normalizeQuestionText(value){
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeOptionKey(value){
+  return normalizeQuestionText(value).toLowerCase();
+}
+
+function questionKey(item){
+  const q = item || {};
+  return `${normalizeQuestionText(q.ch).toLowerCase()}::${normalizeQuestionText(q.q).toLowerCase()}`;
+}
+
+function sanitizeQuestionEntry(entry){
+  const source = entry || {};
+  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+  const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
+  const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
+  const correctText = originalOptions[safeAnswerIndex];
+  const uniqueOptions = [];
+  const seenOptions = new Set();
+
+  originalOptions.forEach((option) => {
+    const raw = String(option == null ? '' : option);
+    const key = normalizeOptionKey(raw);
+    if (!key || seenOptions.has(key)) return;
+    seenOptions.add(key);
+    uniqueOptions.push(raw);
+  });
+
+  let nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
+  if (nextAnswerIndex < 0) {
+    if (correctText != null && normalizeOptionKey(correctText)) {
+      uniqueOptions.unshift(String(correctText));
+      nextAnswerIndex = 0;
+    } else {
+      nextAnswerIndex = 0;
+    }
+  }
+  if (!uniqueOptions.length) {
+    uniqueOptions.push('Option indisponible');
+    nextAnswerIndex = 0;
+  }
+
+  return {
+    ...source,
+    q: String(source.q || ''),
+    opts: uniqueOptions,
+    ans: nextAnswerIndex,
+    a: nextAnswerIndex
+  };
+}
+
+function prepareQuestionPool(pool){
+  const uniqueQuestions = [];
+  const seenQuestions = new Set();
+  (Array.isArray(pool) ? pool : []).forEach((entry) => {
+    const sanitized = sanitizeQuestionEntry(entry);
+    const key = questionKey(sanitized);
+    if (!key || seenQuestions.has(key)) return;
+    seenQuestions.add(key);
+    uniqueQuestions.push(sanitized);
+  });
+  return uniqueQuestions;
+}
+
+function getPreparedBank(){
+  return prepareQuestionPool(BANK);
+}
+
 const QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
   return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
@@ -361,6 +431,7 @@ let timerEnabled = true;
 let gradingMode = 'bac';
 let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
 let lastPartielSignature = '';
+let lastDrawQuestionKeys = [];
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 let currentUser = null;
@@ -617,7 +688,7 @@ window.addEventListener('pageshow', () => {
 bootstrapPage();
 
 function getChapters(){
-  return Array.from(new Set(BANK.map(q => q.ch))).sort((a,b) => a.localeCompare(b, 'fr'));
+  return Array.from(new Set(getPreparedBank().map(q => q.ch))).sort((a,b) => a.localeCompare(b, 'fr'));
 }
 function selectedValues(selectEl){
   return selectEl ? Array.from(selectEl.selectedOptions).map(o => o.value) : [];
@@ -653,6 +724,7 @@ function initHomeModules(){
   }
   initPartielOptions();
   renderAccountPanel();
+  ensureShuffleLaunchButton();
   const quickList=document.getElementById('chapter-quick-list');
   if(quickList){
     quickList.innerHTML='';
@@ -720,67 +792,48 @@ function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault){
 
 function refreshExamSizeChoices(){
   const selectedChapters = selectedValues(document.getElementById('chapter-filter'));
-  const sandboxPool = applyPoolFilters(BANK, selectedChapters);
-  const sandboxMax = sandboxPool.length === 0 ? 0 : Math.max(sandboxPool.length, 25);
-  const partielMax = BANK.length === 0 ? 0 : Math.max(BANK.length, 30);
+  const questionBank = getPreparedBank();
+  const sandboxPool = applyPoolFilters(questionBank, selectedChapters);
+  const sandboxMax = sandboxPool.length === 0 ? 0 : sandboxPool.length;
+  const partielMax = questionBank.length === 0 ? 0 : questionBank.length;
   syncExamSizeSelect('exam-size', sandboxMax, [10, 15, 20, 25], 20);
   syncExamSizeSelect('partiel-size', partielMax, [15, 20, 25, 30], 25);
 }
 
-function fillToSizeWithRepeats(baseDraw, totalCount, pool){
-  const result = baseDraw.slice();
-  if (totalCount <= result.length) return result.slice(0, totalCount);
-  if (!Array.isArray(pool) || pool.length === 0) return result;
-
-  while (result.length < totalCount) {
-    const cycle = shuffle(pool.slice());
-    if (result.length && cycle.length > 1) {
-      const last = result[result.length - 1];
-      if (last && cycle[0] && cycle[0].q === last.q) {
-        cycle.push(cycle.shift());
-      }
-    }
-    for (let i = 0; i < cycle.length && result.length < totalCount; i++) {
-      result.push(cycle[i]);
-    }
-  }
-  return result;
-}
-
-function drawFromPool(pool, totalCount){
+function getBalancedDraw(pool, totalCount){
   const source = Array.isArray(pool) ? pool : [];
-  if (!source.length) return [];
-  const uniqueCount = Math.min(totalCount, source.length);
-  const shuffled = shuffle([...Array(source.length).keys()]);
-  const uniqueDraw = shuffled.slice(0, uniqueCount).map(i => source[i]);
-  return fillToSizeWithRepeats(uniqueDraw, totalCount, source);
-}
+  const wanted = Math.min(totalCount, source.length);
+  if (wanted <= 0) return [];
+  if (wanted >= source.length) return shuffle(source).slice(0, wanted);
 
-function pickBalancedQuestions(totalCount){
-  const byChapter=new Map();
-  BANK.forEach(q=>{
+  const byChapter = new Map();
+  source.forEach(q => {
     if(!byChapter.has(q.ch)) byChapter.set(q.ch, []);
     byChapter.get(q.ch).push(q);
   });
-  const chapters=shuffle(Array.from(byChapter.keys()));
-  const base=Math.floor(totalCount / chapters.length);
-  const extra=totalCount % chapters.length;
-  const chosen=[];
-  chapters.forEach((ch, idx)=>{
-    const chapterQs=shuffle(byChapter.get(ch));
-    const target=base + (idx < extra ? 1 : 0);
-    chosen.push(...chapterQs.slice(0, Math.min(target, chapterQs.length)));
-  });
-  if(chosen.length < totalCount){
-    const already=new Set(chosen.map(q => `${q.ch}||${q.q}`));
-    const rest=shuffle(BANK.filter(q => !already.has(`${q.ch}||${q.q}`)));
-    chosen.push(...rest.slice(0, totalCount - chosen.length));
+  const chapters = shuffle(Array.from(byChapter.keys())).map((ch) => ({
+    chapter: ch,
+    questions: shuffle(byChapter.get(ch))
+  }));
+
+  const chosen = [];
+  while (chosen.length < wanted) {
+    let added = false;
+    for (const bucket of chapters) {
+      if (chosen.length >= wanted) break;
+      if (bucket.questions.length > 0) {
+        chosen.push(bucket.questions.pop());
+        added = true;
+      }
+    }
+    if (!added) break;
   }
-  return shuffle(chosen).slice(0, totalCount);
+
+  return shuffle(chosen).slice(0, wanted);
 }
 
 function examSignature(draw){
-  return draw.map(q => `${q.ch}::${q.q}`).sort().join('||');
+  return draw.map(questionKey).sort().join('||');
 }
 
 function overlapWithLastDraw(draw){
@@ -788,20 +841,30 @@ function overlapWithLastDraw(draw){
   const previous = new Set(lastPartielSignature.split('||').filter(Boolean));
   let overlap = 0;
   draw.forEach(q => {
-    if(previous.has(`${q.ch}::${q.q}`)) overlap += 1;
+    if(previous.has(questionKey(q))) overlap += 1;
   });
   return overlap;
 }
 
-function getPartielDraw(examSize){
-  const uniqueCount = Math.min(examSize, BANK.length);
+function getVariedBalancedDraw(pool, examSize, options){
+  const source = Array.isArray(pool) ? pool : [];
+  const uniqueCount = Math.min(examSize, source.length);
+  const config = options || {};
+  let candidatePool = source;
+
+  if(config.forceDifferent && lastDrawQuestionKeys.length && source.length > uniqueCount){
+    const previousSet = new Set(lastDrawQuestionKeys);
+    const fresh = source.filter(q => !previousSet.has(questionKey(q)));
+    if(fresh.length >= uniqueCount) candidatePool = fresh;
+  }
+
   const tries = 12;
   let bestDraw = [];
   let bestSignature = '';
   let bestOverlap = Number.POSITIVE_INFINITY;
 
   for(let i = 0; i < tries; i++){
-    const draw = pickBalancedQuestions(uniqueCount);
+    const draw = getBalancedDraw(candidatePool, uniqueCount);
     const sig = examSignature(draw);
     const overlap = overlapWithLastDraw(draw);
 
@@ -811,19 +874,50 @@ function getPartielDraw(examSize){
       bestOverlap = overlap;
     }
 
-    if(sig !== lastPartielSignature || BANK.length <= examSize){
+    if(sig !== lastPartielSignature || candidatePool.length <= examSize){
       lastPartielSignature = sig;
-      return fillToSizeWithRepeats(draw, examSize, BANK);
+      lastDrawQuestionKeys = draw.map(questionKey);
+      return draw;
     }
   }
 
   lastPartielSignature = bestSignature || examSignature(bestDraw);
-  const fallback = bestDraw.length ? bestDraw : pickBalancedQuestions(uniqueCount);
-  return fillToSizeWithRepeats(fallback, examSize, BANK);
+  const fallback = bestDraw.length ? bestDraw : getBalancedDraw(candidatePool, uniqueCount);
+  lastDrawQuestionKeys = fallback.map(questionKey);
+  return fallback;
 }
-function startExam(){
+
+function ensureShuffleLaunchButton(){
+  const startBtn = document.querySelector('.btn-start');
+  if(!startBtn || document.getElementById('shuffle-launch-btn')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'launch-actions';
+  wrap.style.display = 'flex';
+  wrap.style.justifyContent = 'center';
+  wrap.style.gap = '10px';
+  wrap.style.flexWrap = 'wrap';
+  wrap.style.marginTop = '8px';
+  startBtn.parentNode.insertBefore(wrap, startBtn);
+  wrap.appendChild(startBtn);
+
+  const shuffleBtn = document.createElement('button');
+  shuffleBtn.id = 'shuffle-launch-btn';
+  shuffleBtn.type = 'button';
+  shuffleBtn.className = 'btn-start';
+  shuffleBtn.textContent = '🔀 Nouveau tirage';
+  shuffleBtn.style.background = 'linear-gradient(135deg,#1f6fb2,#3498db)';
+  shuffleBtn.onclick = () => {
+    lastPartielSignature = '';
+    startExam({ forceDifferent: true });
+  };
+  wrap.appendChild(shuffleBtn);
+}
+
+function startExam(options){
+  const config = options || {};
   stopTimer();
-  let pool=BANK;
+  const questionBank = getPreparedBank();
+  let pool=questionBank;
   let examSize=20;
   examDurationMinutes=45;
   timerEnabled=true;
@@ -836,7 +930,7 @@ function startExam(){
     examSize=sizeEl ? parseInt(sizeEl.value, 10) : 20;
     if(!Number.isFinite(examSize) || examSize < 1) examSize = 20;
     const selectedChapters = selectedValues(chapterFilter);
-    pool = applyPoolFilters(BANK, selectedChapters);
+    pool = applyPoolFilters(questionBank, selectedChapters);
   } else if(activeModule === 'partiel'){
     const partielSize=document.getElementById('partiel-size');
     const partielTimer=document.getElementById('partiel-timer');
@@ -856,15 +950,18 @@ function startExam(){
       const bad = customBad ? parseFloat(customBad.value) : 0.083;
       gradingConfig = { good, bad, label:`Personnalisé (+${good} / -${bad})` };
     }
-    currentSession = getPartielDraw(examSize);
+    currentSession = getVariedBalancedDraw(questionBank, examSize, config);
   }
 
   if(activeModule !== 'partiel' && pool.length === 0){
     alert('Aucune question disponible pour la sélection actuelle.');
     return;
   }
+  if(pool.length < examSize){
+    alert(`Seulement ${pool.length} question(s) unique(s) disponible(s) pour cette sélection. Le quiz utilisera toutes les questions disponibles.`);
+  }
   if(activeModule !== 'partiel'){
-    currentSession = drawFromPool(pool, examSize);
+    currentSession = getVariedBalancedDraw(pool, examSize, config);
   }
 
   const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
@@ -873,7 +970,9 @@ function startExam(){
   shuffledOpts = [];
   shuffledCorrects = [];
   currentSession.forEach(q => {
-    const correctText = q.opts[q.ans];
+    const rawIndex = Number.isInteger(q.ans) ? q.ans : (Number.isInteger(q.a) ? q.a : 0);
+    const safeIndex = rawIndex >= 0 && rawIndex < q.opts.length ? rawIndex : 0;
+    const correctText = q.opts[safeIndex];
     const sh = shuffle(q.opts);
     shuffledOpts.push(sh);
     shuffledCorrects.push(sh.indexOf(correctText));
@@ -914,6 +1013,7 @@ function buildUI(){
       </div>
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
+        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
       </div>`;
@@ -928,6 +1028,14 @@ function selectOpt(qi, oi){
   answers[qi] = oi;
   document.querySelectorAll(`#opts-${qi} .opt`).forEach((b, i) => b.classList.toggle('selected', i === oi));
   document.getElementById('pill-' + qi).classList.add('answered');
+  updateProgress();
+}
+function clearOpt(qi){
+  if(examFinished) return;
+  if(qi < 0 || qi >= answers.length) return;
+  answers[qi] = null;
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach((button) => button.classList.remove('selected'));
+  document.getElementById('pill-' + qi).classList.remove('answered');
   updateProgress();
 }
 function goTo(idx){
@@ -999,7 +1107,9 @@ function showResults(){
     else if (ua === ca) { correct++; }
     else { cls = 'wrong'; wrong++; }
     const ut = ua !== null ? shuffledOpts[i][ua] : '—';
-    const ct = shuffledOpts[i][ca];
+    const ct = (ca >= 0 && ca < shuffledOpts[i].length)
+      ? shuffledOpts[i][ca]
+      : (q.opts[(Number.isInteger(q.ans) ? q.ans : (Number.isInteger(q.a) ? q.a : 0))] || 'Réponse indisponible');
     corrHTML += `<div class="corr-item ${cls}">
       <div class="ch-badge">${escapeHtml(q.ch)}</div>
       <div class="corr-q">${escapeHtml(q.q)}</div>
