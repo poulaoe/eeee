@@ -939,8 +939,9 @@ function startExam(options) {
     const gradingConfig = getCurrentGradingConfig();
     correctPoints = gradingConfig.good; wrongPoints = gradingConfig.bad;
     const presetCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
-    const customCount = parseInt(document.getElementById('partiel-size-custom')?.value || '', 10);
-    requestedCount = Number.isFinite(customCount) ? customCount : presetCount;
+const customInput = document.getElementById('partiel-size-custom');
+const customCount = customInput ? parseInt(customInput.value || '', 10) : NaN;
+requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCount : presetCount;
     requestedCount = Math.max(5, requestedCount || 25);
     pool = questionBank;
   } else {
