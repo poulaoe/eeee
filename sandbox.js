@@ -34,23 +34,15 @@ function readWindowNameStorage() {
   try {
     const parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
     return parsed && typeof parsed === 'object' ? parsed : {};
-  } catch (e) {
-    return {};
-  }
+  } catch (e) { return {}; }
 }
 
 function writeWindowNameStorage(store) {
-  try {
-    window.name = windowNameStoragePrefix + JSON.stringify(store);
-  } catch (e) {
-    return;
-  }
+  try { window.name = windowNameStoragePrefix + JSON.stringify(store); } catch (e) { return; }
 }
 
 function safeGetItem(key) {
-  try {
-    return localStorage.getItem(key);
-  } catch (e) {
+  try { return localStorage.getItem(key); } catch (e) {
     const persisted = readWindowNameStorage();
     if (Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
     return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
@@ -58,9 +50,7 @@ function safeGetItem(key) {
 }
 
 function safeSetItem(key, value) {
-  try {
-    localStorage.setItem(key, value);
-  } catch (e) {
+  try { localStorage.setItem(key, value); } catch (e) {
     memoryStorageFallback[key] = String(value);
     const persisted = readWindowNameStorage();
     persisted[key] = String(value);
@@ -69,9 +59,7 @@ function safeSetItem(key, value) {
 }
 
 function safeRemoveItem(key) {
-  try {
-    localStorage.removeItem(key);
-  } catch (e) {
+  try { localStorage.removeItem(key); } catch (e) {
     delete memoryStorageFallback[key];
     const persisted = readWindowNameStorage();
     delete persisted[key];
@@ -80,9 +68,7 @@ function safeRemoveItem(key) {
 }
 
 function safeCssEscape(value) {
-  if (window.CSS && typeof window.CSS.escape === 'function') {
-    return window.CSS.escape(value);
-  }
+  if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
   return String(value).replace(/(["'\\.#:\[\](),>+~*^$|=\s])/g, '\\$1');
 }
 
@@ -111,15 +97,11 @@ function loadAccounts() {
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === 'object') return parsed;
-  } catch (e) {
-    console.warn('Impossible de charger les comptes locaux', e);
-  }
+  } catch (e) { console.warn('Impossible de charger les comptes locaux', e); }
   return {};
 }
 
-function saveAccounts(accounts) {
-  safeSetItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
-}
+function saveAccounts(accounts) { safeSetItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts)); }
 
 function loadLeaderboard() {
   try {
@@ -127,70 +109,45 @@ function loadLeaderboard() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    console.warn('Impossible de charger le classement local', e);
-  }
+  } catch (e) { console.warn('Impossible de charger le classement local', e); }
   return [];
 }
 
-function saveLeaderboard(entries) {
-  safeSetItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
-}
+function saveLeaderboard(entries) { safeSetItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries)); }
 
 function recordLeaderboardResult(result) {
   const normalized = normalizeStoredResult(result);
   const entries = loadLeaderboard();
   entries.unshift(normalized);
   saveLeaderboard(entries.slice(0, 100));
-  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-    window.QCM_REMOTE.pushResult(normalized);
-  }
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') window.QCM_REMOTE.pushResult(normalized);
 }
 
-function getSignedUser() {
-  const name = safeGetItem('qcm_signed_user') || '';
-  return name.trim();
-}
+function getSignedUser() { return (safeGetItem('qcm_signed_user') || '').trim(); }
 
 function setSignedUser(name) {
-  if (!name) {
-    safeRemoveItem('qcm_signed_user');
-    currentUser = null;
-    return;
-  }
+  if (!name) { safeRemoveItem('qcm_signed_user'); currentUser = null; return; }
   safeSetItem('qcm_signed_user', name);
   currentUser = name;
 }
 
-function normalizeUsername(value) {
-  return (value || '').trim().toLowerCase().slice(0, 30);
-}
-
-function validatePin(pin) {
-  return /^\d{4,8}$/.test(pin || '');
-}
+function normalizeUsername(value) { return (value || '').trim().toLowerCase().slice(0, 30); }
+function validatePin(pin) { return /^\d{4,8}$/.test(pin || ''); }
 
 function parseStoredDate(value) {
   if (!value) return null;
-
   const direct = new Date(value);
   if (!Number.isNaN(direct.getTime())) return direct;
-
   const match = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2}))?$/);
   if (!match) return null;
-
-  const day = Number(match[1]);
-  const month = Number(match[2]) - 1;
+  const day = Number(match[1]), month = Number(match[2]) - 1;
   const year = Number(match[3].length === 2 ? `20${match[3]}` : match[3]);
-  const hour = Number(match[4] || 0);
-  const minute = Number(match[5] || 0);
+  const hour = Number(match[4] || 0), minute = Number(match[5] || 0);
   const parsed = new Date(year, month, day, hour, minute);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-function buildResultTimestamp() {
-  return new Date().toISOString();
-}
+function buildResultTimestamp() { return new Date().toISOString(); }
 
 function formatStoredDateForDisplay(value) {
   const parsed = parseStoredDate(value);
@@ -204,23 +161,13 @@ function normalizeStoredResult(result) {
     date: parsedDate ? parsedDate.toISOString() : buildResultTimestamp(),
     subject: String(raw.subject || SUBJECT_NAME || 'Inconnu'),
     user: String(raw.user || 'Invité'),
-    score: Number(raw.score),
-    max: Number(raw.max),
-    pct: Number(raw.pct)
+    score: Number(raw.score), max: Number(raw.max), pct: Number(raw.pct)
   };
 }
 
-function getSelectedQuickChapter() {
-  return Array.isArray(selectedChapterQuick) ? [...selectedChapterQuick] : [];
-}
-
-function normalizeQuestionText(value) {
-  return String(value || '').replace(/\s+/g, ' ').trim();
-}
-
-function normalizeOptionKey(value) {
-  return normalizeQuestionText(value).toLowerCase();
-}
+function getSelectedQuickChapter() { return Array.isArray(selectedChapterQuick) ? [...selectedChapterQuick] : []; }
+function normalizeQuestionText(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+function normalizeOptionKey(value) { return normalizeQuestionText(value).toLowerCase(); }
 
 function sanitizeQuestionEntry(entry) {
   const source = entry || {};
@@ -228,81 +175,41 @@ function sanitizeQuestionEntry(entry) {
   const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
   const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
-  const uniqueOptions = [];
-  const seenOptions = new Set();
+  const uniqueOptions = [], seenOptions = new Set();
   let removedOptionCount = 0;
-
   originalOptions.forEach((option) => {
     const raw = String(option == null ? '' : option);
     const key = normalizeOptionKey(raw);
-    if (!key) {
-      removedOptionCount += 1;
-      return;
-    }
-    if (seenOptions.has(key)) {
-      removedOptionCount += 1;
-      return;
-    }
-    seenOptions.add(key);
-    uniqueOptions.push(raw);
+    if (!key) { removedOptionCount += 1; return; }
+    if (seenOptions.has(key)) { removedOptionCount += 1; return; }
+    seenOptions.add(key); uniqueOptions.push(raw);
   });
-
   let nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
   if (nextAnswerIndex < 0) {
-    if (correctText != null && normalizeOptionKey(correctText)) {
-      uniqueOptions.unshift(String(correctText));
-      nextAnswerIndex = 0;
-    } else {
-      nextAnswerIndex = 0;
-    }
+    if (correctText != null && normalizeOptionKey(correctText)) { uniqueOptions.unshift(String(correctText)); nextAnswerIndex = 0; }
+    else nextAnswerIndex = 0;
   }
-  if (!uniqueOptions.length) {
-    uniqueOptions.push('Option indisponible');
-    nextAnswerIndex = 0;
-  }
-
-  return {
-    entry: {
-      ...source,
-      q: String(source.q || ''),
-      opts: uniqueOptions,
-      a: nextAnswerIndex
-    },
-    removedOptionCount
-  };
+  if (!uniqueOptions.length) { uniqueOptions.push('Option indisponible'); nextAnswerIndex = 0; }
+  return { entry: { ...source, q: String(source.q || ''), opts: uniqueOptions, a: nextAnswerIndex }, removedOptionCount };
 }
 
 function prepareQuestionPool(pool) {
-  const uniqueQuestions = [];
-  const seenQuestions = new Set();
-  let duplicateQuestionCount = 0;
-  let duplicateOptionCount = 0;
-
+  const uniqueQuestions = [], seenQuestions = new Set();
+  let duplicateQuestionCount = 0, duplicateOptionCount = 0;
   (Array.isArray(pool) ? pool : []).forEach((entry) => {
     const sanitized = sanitizeQuestionEntry(entry);
     const key = questionKey(sanitized.entry);
     if (!key) return;
-    if (seenQuestions.has(key)) {
-      duplicateQuestionCount += 1;
-      duplicateOptionCount += sanitized.removedOptionCount;
-      return;
-    }
-    seenQuestions.add(key);
-    duplicateOptionCount += sanitized.removedOptionCount;
+    if (seenQuestions.has(key)) { duplicateQuestionCount += 1; duplicateOptionCount += sanitized.removedOptionCount; return; }
+    seenQuestions.add(key); duplicateOptionCount += sanitized.removedOptionCount;
     uniqueQuestions.push(sanitized.entry);
   });
-
-  return {
-    questions: uniqueQuestions,
-    duplicateQuestionCount,
-    duplicateOptionCount
-  };
+  return { questions: uniqueQuestions, duplicateQuestionCount, duplicateOptionCount };
 }
 
 function syncChapterFilterSelection(chapters) {
   const filter = document.getElementById('chapter-filter');
   if (!filter) return;
-
   const wanted = new Set(chapters || []);
   Array.from(filter.options).forEach(option => {
     option.selected = option.value === 'all' ? wanted.size === 0 : wanted.has(option.value);
@@ -311,9 +218,7 @@ function syncChapterFilterSelection(chapters) {
 
 function getCurrentGradingConfig() {
   const gradingMode = document.getElementById('partiel-grading')?.value || 'bac';
-  if (gradingMode === 'simple') {
-    return { good: 1, bad: 0, label: 'Simple (+1 / 0)' };
-  }
+  if (gradingMode === 'simple') return { good: 1, bad: 0, label: 'Simple (+1 / 0)' };
   if (gradingMode === 'custom') {
     const parseCustomValue = (value, fallback) => {
       const normalized = String(value ?? '').replace(',', '.').trim();
@@ -322,11 +227,7 @@ function getCurrentGradingConfig() {
     };
     const good = parseCustomValue(document.getElementById('custom-good')?.value, 0.25);
     const bad = parseCustomValue(document.getElementById('custom-bad')?.value, 0.083);
-    return {
-      good,
-      bad,
-      label: 'Personnalisé'
-    };
+    return { good, bad, label: 'Personnalisé' };
   }
   return { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
 }
@@ -355,31 +256,21 @@ function styleOptionsPanel() {
     .chapter-chip.active{border-color:#e74c3c;background:rgba(231,76,60,.18);color:#fff}
   `;
   document.head.appendChild(style);
-
   const sandboxOptions = document.getElementById('sandbox-options') || document.getElementById('module-sandbox');
   const commonOptions = document.getElementById('common-options') || document.getElementById('module-partiel');
   if (sandboxOptions) {
     sandboxOptions.classList.add('options-shell');
     if (!sandboxOptions.querySelector('.option-heading')) {
-      const heading = document.createElement('div');
-      heading.className = 'option-heading';
-      heading.textContent = 'Filtres de questions';
-      sandboxOptions.prepend(heading);
+      const heading = document.createElement('div'); heading.className = 'option-heading'; heading.textContent = 'Filtres de questions'; sandboxOptions.prepend(heading);
     }
   }
   if (commonOptions) {
     commonOptions.classList.add('options-shell');
     if (!commonOptions.querySelector('.option-heading')) {
-      const heading = document.createElement('div');
-      heading.className = 'option-heading';
-      heading.textContent = 'Paramètres de session';
-      commonOptions.prepend(heading);
+      const heading = document.createElement('div'); heading.className = 'option-heading'; heading.textContent = 'Paramètres de session'; commonOptions.prepend(heading);
     }
-    const chips = commonOptions.querySelectorAll('label');
-    chips.forEach((label, idx) => {
-      if (idx <= 2 && label.querySelector('input[type="checkbox"],input[type="number"],select')) {
-        label.classList.add('option-chip');
-      }
+    commonOptions.querySelectorAll('label').forEach((label, idx) => {
+      if (idx <= 2 && label.querySelector('input[type="checkbox"],input[type="number"],select')) label.classList.add('option-chip');
     });
   }
 }
@@ -389,30 +280,19 @@ function ensureHeaderControls() {
   if (!header) return;
   let controls = document.getElementById('header-controls');
   if (!controls) {
-    controls = document.createElement('div');
-    controls.id = 'header-controls';
-    controls.style.display = 'flex';
-    controls.style.alignItems = 'center';
-    controls.style.gap = '8px';
+    controls = document.createElement('div'); controls.id = 'header-controls';
+    controls.style.display = 'flex'; controls.style.alignItems = 'center'; controls.style.gap = '8px';
     header.appendChild(controls);
   }
   if (!document.getElementById('header-back-btn')) {
     const backBtn = document.createElement('button');
-    backBtn.id = 'header-back-btn';
-    backBtn.type = 'button';
-    backBtn.className = 'home-btn';
-    backBtn.textContent = 'Retour';
-    backBtn.onclick = goBack;
-    controls.appendChild(backBtn);
+    backBtn.id = 'header-back-btn'; backBtn.type = 'button'; backBtn.className = 'home-btn';
+    backBtn.textContent = 'Retour'; backBtn.onclick = goBack; controls.appendChild(backBtn);
   }
   if (!document.getElementById('header-home-btn')) {
     const homeBtn = document.createElement('button');
-    homeBtn.id = 'header-home-btn';
-    homeBtn.type = 'button';
-    homeBtn.className = 'home-btn';
-    homeBtn.textContent = 'Accueil';
-    homeBtn.onclick = goHome;
-    controls.appendChild(homeBtn);
+    homeBtn.id = 'header-home-btn'; homeBtn.type = 'button'; homeBtn.className = 'home-btn';
+    homeBtn.textContent = 'Accueil'; homeBtn.onclick = goHome; controls.appendChild(homeBtn);
   }
 }
 
@@ -420,68 +300,43 @@ function injectAccountPanel() {
   if (document.getElementById('account-zone')) return;
   const homeCard = document.querySelector('.home-card');
   if (!homeCard) return;
-
   const statGrid = homeCard.querySelector('.stat-grid');
   const panel = document.createElement('div');
-  panel.id = 'account-zone';
-  panel.className = 'account-shell';
-  panel.innerHTML = `
-    <h3>Compte local</h3>
-    <p>Crée un compte local pour sauvegarder ton historique de résultats sur cet appareil.</p>
-    <div id="account-content"></div>
-  `;
-
-  if (statGrid && statGrid.nextSibling) {
-    homeCard.insertBefore(panel, statGrid.nextSibling);
-  } else {
-    homeCard.appendChild(panel);
-  }
+  panel.id = 'account-zone'; panel.className = 'account-shell';
+  panel.innerHTML = `<h3>Compte local</h3><p>Crée un compte local pour sauvegarder ton historique de résultats sur cet appareil.</p><div id="account-content"></div>`;
+  if (statGrid && statGrid.nextSibling) homeCard.insertBefore(panel, statGrid.nextSibling);
+  else homeCard.appendChild(panel);
 }
 
 function renderAccountPanel() {
   const content = document.getElementById('account-content');
   if (!content) return;
-
   const accounts = loadAccounts();
   const signed = getSignedUser();
-  if (signed && accounts[signed]) {
-    currentUser = signed;
-  }
-
+  if (signed && accounts[signed]) currentUser = signed;
   if (!currentUser || !accounts[currentUser]) {
     content.innerHTML = `
       <div class="options-row">
-        <label>Nom d'utilisateur
-          <input id="account-username" type="text" placeholder="ex: sara" maxlength="30">
-        </label>
-        <label>Code PIN (4 à 8 chiffres)
-          <input id="account-pin" type="password" placeholder="ex: 1234" maxlength="8">
-        </label>
+        <label>Nom d'utilisateur<input id="account-username" type="text" placeholder="ex: sara" maxlength="30"></label>
+        <label>Code PIN (4 à 8 chiffres)<input id="account-pin" type="password" placeholder="ex: 1234" maxlength="8"></label>
       </div>
       <div class="account-actions" style="margin-top:8px">
         <button class="account-btn" id="create-account-btn" type="button">Créer le compte</button>
         <button class="account-btn" id="login-account-btn" type="button">Se connecter</button>
-      </div>
-    `;
-
+      </div>`;
     const createBtn = document.getElementById('create-account-btn');
     const loginBtn = document.getElementById('login-account-btn');
     if (createBtn) createBtn.addEventListener('click', createLocalAccount);
     if (loginBtn) loginBtn.addEventListener('click', loginLocalAccount);
     return;
   }
-
   const history = accounts[currentUser].history || [];
   content.innerHTML = `
     <div class="account-badge">Connecté: ${currentUser}</div>
-    <div class="account-actions">
-      <button class="account-btn" id="logout-account-btn" type="button">Se déconnecter</button>
-    </div>
+    <div class="account-actions"><button class="account-btn" id="logout-account-btn" type="button">Se déconnecter</button></div>
     <div class="history-list" id="account-history">
       ${history.length ? history.map(item => `<div class="history-item">${formatStoredDateForDisplay(item.date)} • ${item.subject} • ${item.score}/${item.max} (${item.pct}%)</div>`).join('') : '<div class="history-item">Aucun résultat enregistré pour le moment.</div>'}
-    </div>
-  `;
-
+    </div>`;
   const logoutBtn = document.getElementById('logout-account-btn');
   if (logoutBtn) logoutBtn.addEventListener('click', logoutLocalAccount);
 }
@@ -491,26 +346,12 @@ function createLocalAccount() {
   const pinInput = document.getElementById('account-pin');
   const username = normalizeUsername(usernameInput ? usernameInput.value : '');
   const pin = pinInput ? pinInput.value.trim() : '';
-
-  if (!username) {
-    alert('Choisis un nom d\'utilisateur.');
-    return;
-  }
-  if (!validatePin(pin)) {
-    alert('Le code PIN doit contenir 4 à 8 chiffres.');
-    return;
-  }
-
+  if (!username) { alert('Choisis un nom d\'utilisateur.'); return; }
+  if (!validatePin(pin)) { alert('Le code PIN doit contenir 4 à 8 chiffres.'); return; }
   const accounts = loadAccounts();
-  if (accounts[username]) {
-    alert('Ce compte existe déjà. Utilise "Se connecter".');
-    return;
-  }
-
+  if (accounts[username]) { alert('Ce compte existe déjà. Utilise "Se connecter".'); return; }
   accounts[username] = { pin, history: [] };
-  saveAccounts(accounts);
-  setSignedUser(username);
-  renderAccountPanel();
+  saveAccounts(accounts); setSignedUser(username); renderAccountPanel();
 }
 
 function loginLocalAccount() {
@@ -519,35 +360,21 @@ function loginLocalAccount() {
   const username = normalizeUsername(usernameInput ? usernameInput.value : '');
   const pin = pinInput ? pinInput.value.trim() : '';
   const accounts = loadAccounts();
-
-  if (!accounts[username]) {
-    alert('Compte introuvable.');
-    return;
-  }
-  if (accounts[username].pin !== pin) {
-    alert('PIN incorrect.');
-    return;
-  }
-
-  setSignedUser(username);
-  renderAccountPanel();
+  if (!accounts[username]) { alert('Compte introuvable.'); return; }
+  if (accounts[username].pin !== pin) { alert('PIN incorrect.'); return; }
+  setSignedUser(username); renderAccountPanel();
 }
 
-function logoutLocalAccount() {
-  setSignedUser('');
-  renderAccountPanel();
-}
+function logoutLocalAccount() { setSignedUser(''); renderAccountPanel(); }
 
 function saveResultForCurrentUser(result) {
   if (!currentUser) return;
   const accounts = loadAccounts();
   if (!accounts[currentUser]) return;
-
   const history = Array.isArray(accounts[currentUser].history) ? accounts[currentUser].history : [];
   history.unshift(result);
   accounts[currentUser].history = history.slice(0, 30);
-  saveAccounts(accounts);
-  renderAccountPanel();
+  saveAccounts(accounts); renderAccountPanel();
 }
 
 function loadFeedbackReports() {
@@ -556,49 +383,28 @@ function loadFeedbackReports() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    console.warn('Impossible de charger les signalements', e);
-  }
+  } catch (e) { console.warn('Impossible de charger les signalements', e); }
   return [];
 }
 
-function saveFeedbackReports(reports) {
-  safeSetItem(FEEDBACK_STORAGE_KEY, JSON.stringify(reports));
-}
+function saveFeedbackReports(reports) { safeSetItem(FEEDBACK_STORAGE_KEY, JSON.stringify(reports)); }
 
 function reportQuestion(questionIndex, description) {
   const q = currentSession[questionIndex];
   if (!q) return;
-  
   const report = {
-    date: buildResultTimestamp(),
-    subject: SUBJECT_NAME,
-    user: currentUser || 'Invité',
-    question: q.q.substring(0, 100),
-    chapter: q.ch,
-    description: description || '',
-    type: 'report',
-    questionIndex: questionIndex,
-    fullQuestion: q
+    date: buildResultTimestamp(), subject: SUBJECT_NAME, user: currentUser || 'Invité',
+    question: q.q.substring(0, 100), chapter: q.ch, description: description || '',
+    type: 'report', questionIndex, fullQuestion: q
   };
-  
   const reports = loadFeedbackReports();
-  reports.unshift(report);
-  saveFeedbackReports(reports.slice(0, 200));
-  
-  // Envoyer à Supabase si configuré
-  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') {
-    window.QCM_REMOTE.pushFeedback(report).catch(() => {});
-  }
+  reports.unshift(report); saveFeedbackReports(reports.slice(0, 200));
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') window.QCM_REMOTE.pushFeedback(report).catch(() => {});
 }
 
 function openReportModal(questionIndex) {
   const modal = document.getElementById('report-modal');
-  if (!modal) {
-    console.error('Modal de signalement non trouvé');
-    return;
-  }
-  
+  if (!modal) { console.error('Modal de signalement non trouvé'); return; }
   document.getElementById('report-question-idx').value = questionIndex;
   document.getElementById('report-description').value = '';
   modal.style.display = 'flex';
@@ -612,46 +418,28 @@ function closeReportModal() {
 function submitReport() {
   const idx = parseInt(document.getElementById('report-question-idx').value);
   const desc = document.getElementById('report-description').value.trim();
-  
-  if (!desc) {
-    alert('Merci de décrire le problème.');
-    return;
-  }
-  
-  reportQuestion(idx, desc);
-  closeReportModal();
-  alert('Signalement enregistré. Merci !');
+  if (!desc) { alert('Merci de décrire le problème.'); return; }
+  reportQuestion(idx, desc); closeReportModal(); alert('Signalement enregistré. Merci !');
 }
 
 function renderFeedbackPanel() {
   const panel = document.getElementById('module-feedback');
   if (!panel) return;
-  
   const reports = loadFeedbackReports();
-  
-  let html = `
-    <div class="feedback-section">
-      <h3>📋 Signalements de questions</h3>
-      <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Questions signalées comme potentiellement erronées</p>
-  `;
-  
+  let html = `<div class="feedback-section"><h3>📋 Signalements de questions</h3><p style="font-size:.82rem;color:#aab;margin-bottom:12px">Questions signalées comme potentiellement erronées</p>`;
   if (reports.length === 0) {
     html += '<div style="color:#888;font-size:.85rem">Aucun signalement pour le moment.</div>';
   } else {
-    reports.slice(0, 20).forEach((r, i) => {
-      html += `
-        <div style="background:#0f3460;border-radius:8px;padding:10px;margin-bottom:8px;border-left:3px solid #e74c3c">
-          <div style="font-size:.78rem;color:#999">${r.date ? new Date(r.date).toLocaleString('fr-FR') : 'N/A'} • ${r.chapter} • ${r.subject}</div>
-          <div style="font-size:.82rem;color:#dde;margin:6px 0">${r.question}</div>
-          <div style="font-size:.78rem;color:#aab;font-style:italic">"${r.description}"</div>
-          <div style="font-size:.76rem;color:#777;margin-top:4px">Par: ${r.user}</div>
-        </div>
-      `;
+    reports.slice(0, 20).forEach((r) => {
+      html += `<div style="background:#0f3460;border-radius:8px;padding:10px;margin-bottom:8px;border-left:3px solid #e74c3c">
+        <div style="font-size:.78rem;color:#999">${r.date ? new Date(r.date).toLocaleString('fr-FR') : 'N/A'} • ${r.chapter} • ${r.subject}</div>
+        <div style="font-size:.82rem;color:#dde;margin:6px 0">${r.question}</div>
+        <div style="font-size:.78rem;color:#aab;font-style:italic">"${r.description}"</div>
+        <div style="font-size:.76rem;color:#777;margin-top:4px">Par: ${r.user}</div>
+      </div>`;
     });
   }
-  
-  html += `
-    </div>
+  html += `</div>
     <div class="feedback-section" style="margin-top:20px;border-top:1px solid #2d2d50;padding-top:16px">
       <h3>💬 Formulaire de contact</h3>
       <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Envoie un message direct</p>
@@ -660,81 +448,55 @@ function renderFeedbackPanel() {
         <button onclick="sendContactMessage()" style="background:#27ae60;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.85rem">Envoyer</button>
       </div>
       <div id="contact-status" style="margin-top:8px;font-size:.78rem;color:#aab"></div>
-    </div>
-  `;
-  
+    </div>`;
   panel.innerHTML = html;
 }
 
 function renderChatPanel() {
   const panel = document.getElementById('module-chat');
   if (!panel) return;
-
-  let html = `
+  panel.innerHTML = `
     <div class="chat-section" style="display:flex;flex-direction:column;height:400px">
       <h3>💬 Chat public</h3>
       <p style="font-size:.82rem;color:#aab;margin-bottom:12px">Discute avec d'autres utilisateurs</p>
-      
       <div id="quiz-chat-messages" style="flex:1;overflow-y:auto;background:#0f2847;border:1px solid #2d2d50;border-radius:8px;padding:10px;margin-bottom:10px;font-size:.8rem;display:flex;flex-direction:column;gap:8px">
         <div style="color:#666;text-align:center;padding:20px">⏳ Chargement...</div>
       </div>
-      
       <div style="display:flex;gap:8px;align-items:flex-end">
         <textarea id="quiz-chat-input" placeholder="Message rapide..." style="flex:1;background:#0f3460;border:1px solid #2d2d50;border-radius:8px;padding:8px;color:#fff;min-height:40px;max-height:80px;font-family:inherit;font-size:.82rem;resize:vertical" maxlength="2000"></textarea>
         <button onclick="sendQuizChatMessage()" style="background:#27ae60;color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.8rem;white-space:nowrap">Envoyer</button>
       </div>
       <div id="quiz-chat-status" style="margin-top:6px;font-size:.76rem;color:#777"></div>
-    </div>
-  `;
-  
-  panel.innerHTML = html;
+    </div>`;
   loadQuizChatMessages();
-  
-  // Auto-refresh
-  if (window.__qcmQuizChatInterval) {
-    clearInterval(window.__qcmQuizChatInterval);
-  }
+  if (window.__qcmQuizChatInterval) clearInterval(window.__qcmQuizChatInterval);
   window.__qcmQuizChatInterval = setInterval(loadQuizChatMessages, 5000);
 }
 
 async function loadQuizChatMessages() {
   const container = document.getElementById('quiz-chat-messages');
   if (!container) return;
-
   try {
     const subject = SUBJECT_NAME || 'General';
     const status = document.getElementById('quiz-chat-status');
     if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchChatMessages !== 'function') {
-      if (status) status.textContent = 'Supabase non configure';
-      return;
+      if (status) status.textContent = 'Supabase non configure'; return;
     }
-
     const messages = await window.QCM_REMOTE.fetchChatMessages(subject, 50);
     if (status) status.textContent = '';
-    if (!Array.isArray(messages)) {
-      container.innerHTML = '<div style="color:#666">Erreur chargement messages</div>';
-      return;
-    }
-
-    if (messages.length === 0) {
-      container.innerHTML = '<div style="color:#888;text-align:center;padding:20px">Aucun message. Sois le premier !</div>';
-      return;
-    }
-
+    if (!Array.isArray(messages)) { container.innerHTML = '<div style="color:#666">Erreur chargement messages</div>'; return; }
+    if (messages.length === 0) { container.innerHTML = '<div style="color:#888;text-align:center;padding:20px">Aucun message. Sois le premier !</div>'; return; }
     container.innerHTML = messages.map(msg => {
       const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : 'N/A';
       const isOwn = msg.user === (currentUser || 'Invité');
-      return `
-        <div style="background:${isOwn ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.06)'};border-radius:6px;padding:8px;border-left:2px solid ${isOwn ? '#3498db' : '#27ae60'}">
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="font-weight:700;color:#a8d8ff">${escapeHtml(msg.user)}</span>
-            <span style="color:#666;font-size:.75rem">${time}</span>
-          </div>
-          <div style="color:#d4e4f7">${escapeHtml(msg.message)}</div>
+      return `<div style="background:${isOwn ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.06)'};border-radius:6px;padding:8px;border-left:2px solid ${isOwn ? '#3498db' : '#27ae60'}">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-weight:700;color:#a8d8ff">${escapeHtml(msg.user)}</span>
+          <span style="color:#666;font-size:.75rem">${time}</span>
         </div>
-      `;
+        <div style="color:#d4e4f7">${escapeHtml(msg.message)}</div>
+      </div>`;
     }).join('');
-
     container.scrollTop = container.scrollHeight;
   } catch (error) {
     console.error('Erreur chat:', error);
@@ -746,26 +508,13 @@ async function loadQuizChatMessages() {
 async function sendQuizChatMessage() {
   const input = document.getElementById('quiz-chat-input');
   const text = input.value.trim();
-
   if (!text) return;
-
-  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.pushChatMessage !== 'function') {
-    alert('Supabase non configuré');
-    return;
-  }
-
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.pushChatMessage !== 'function') { alert('Supabase non configuré'); return; }
   try {
     const status = document.getElementById('quiz-chat-status');
     status.textContent = 'Envoi...';
-
-    await window.QCM_REMOTE.pushChatMessage({
-      user: currentUser || 'Invité',
-      subject: SUBJECT_NAME || 'General',
-      message: text
-    });
-
-    input.value = '';
-    status.textContent = '✓ Envoyé';
+    await window.QCM_REMOTE.pushChatMessage({ user: currentUser || 'Invité', subject: SUBJECT_NAME || 'General', message: text });
+    input.value = ''; status.textContent = '✓ Envoyé';
     setTimeout(() => { status.textContent = ''; }, 2000);
     await loadQuizChatMessages();
   } catch (error) {
@@ -774,81 +523,36 @@ async function sendQuizChatMessage() {
   }
 }
 
-
 function sendContactMessage() {
   const msg = document.getElementById('contact-message')?.value.trim();
-  if (!msg) {
-    alert('Veuillez entrer un message.');
-    return;
-  }
-  
-  const contact = {
-    date: buildResultTimestamp(),
-    subject: SUBJECT_NAME,
-    user: currentUser || 'Invité',
-    message: msg,
-    type: 'contact'
-  };
-  
+  if (!msg) { alert('Veuillez entrer un message.'); return; }
+  const contact = { date: buildResultTimestamp(), subject: SUBJECT_NAME, user: currentUser || 'Invité', message: msg, type: 'contact' };
   const reports = loadFeedbackReports();
-  reports.unshift({ ...contact });
-  saveFeedbackReports(reports.slice(0, 200));
-  
-  // Envoyer à Supabase si configuré
-  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') {
-    window.QCM_REMOTE.pushFeedback(contact).catch(() => {});
-  }
-  
+  reports.unshift({ ...contact }); saveFeedbackReports(reports.slice(0, 200));
+  if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushFeedback === 'function') window.QCM_REMOTE.pushFeedback(contact).catch(() => {});
   document.getElementById('contact-message').value = '';
   document.getElementById('contact-status').textContent = '✓ Message enregistré';
-  setTimeout(() => {
-    document.getElementById('contact-status').textContent = '';
-  }, 2000);
+  setTimeout(() => { document.getElementById('contact-status').textContent = ''; }, 2000);
 }
 
 function removeDuplicateIds(scope, id) {
   const nodes = scope.querySelectorAll(`#${safeCssEscape(id)}`);
   if (nodes.length <= 1) return;
-  nodes.forEach((node, idx) => {
-    if (idx < nodes.length - 1) node.remove();
-  });
+  nodes.forEach((node, idx) => { if (idx < nodes.length - 1) node.remove(); });
 }
 
 function cleanupDuplicateHomeUI() {
   const home = document.getElementById('home');
   if (!home) return;
-
-  // Keep only the first canonical block when stale DOM/bfcache duplicates are present.
-  [
-    'tab-sandbox',
-    'tab-partiel',
-    'tab-chapitres',
-    'module-sandbox',
-    'module-partiel',
-    'module-chapitres',
-    'chapter-filter',
-    'exam-size',
-    'partiel-size',
-    'partiel-timer',
-    'partiel-grading',
-    'custom-good',
-    'custom-bad',
-    'chapter-quick-list',
-    'question-count',
-    'sc1'
-  ].forEach((id) => removeDuplicateIds(home, id));
-
+  ['tab-sandbox','tab-partiel','tab-chapitres','module-sandbox','module-partiel','module-chapitres',
+   'chapter-filter','exam-size','partiel-size','partiel-timer','partiel-grading','custom-good','custom-bad',
+   'chapter-quick-list','question-count','sc1'].forEach((id) => removeDuplicateIds(home, id));
   const duplicateRows = home.querySelectorAll('.module-tabs');
-  if (duplicateRows.length > 1) {
-    duplicateRows.forEach((row, idx) => {
-      if (idx < duplicateRows.length - 1) row.remove();
-    });
-  }
+  if (duplicateRows.length > 1) duplicateRows.forEach((row, idx) => { if (idx < duplicateRows.length - 1) row.remove(); });
 }
 
 function initSandboxPage() {
   cleanupDuplicateHomeUI();
-
   SUBJECT_NAME = window.SUBJECT_NAME || SUBJECT_NAME;
   SUBJECT_DESC = window.SUBJECT_DESC || SUBJECT_DESC;
   BANK = window.BANK || BANK;
@@ -865,32 +569,17 @@ function initSandboxPage() {
     const homeCard = document.querySelector('.home-card');
     const accountZone = document.getElementById('account-zone');
     messageZone = document.createElement('div');
-    messageZone.id = 'message-zone';
-    messageZone.style.color = '#9fb0c8';
-    messageZone.style.fontSize = '.86rem';
-    messageZone.style.lineHeight = '1.45';
-    messageZone.style.margin = '0 0 10px';
-    if (homeCard) {
-      homeCard.insertBefore(messageZone, accountZone || homeCard.querySelector('.btn-start') || null);
-    }
+    messageZone.id = 'message-zone'; messageZone.style.color = '#9fb0c8';
+    messageZone.style.fontSize = '.86rem'; messageZone.style.lineHeight = '1.45'; messageZone.style.margin = '0 0 10px';
+    if (homeCard) homeCard.insertBefore(messageZone, accountZone || homeCard.querySelector('.btn-start') || null);
   }
 
   if (!homeTitle || !homeDesc || !chapterCount || !questionCount || !messageZone || !examSize) {
-    console.error('❌ Éléments manquants:');
-    console.error('  home-title:', homeTitle ? '✓' : '✗');
-    console.error('  home-desc:', homeDesc ? '✓' : '✗');
-    console.error('  sc1:', chapterCount ? '✓' : '✗');
-    console.error('  question-count:', questionCount ? '✓' : '✗');
-    console.error('  message-zone:', messageZone ? '✓' : '✗');
-    console.error('  exam-size:', examSize ? '✓' : '✗');
-    console.error('DOM readyState:', document.readyState);
-    console.error('document.body HTML:', document.body ? document.body.innerHTML.substring(0, 500) : 'body null');
     throw new Error('Structure HTML incomplète: un ou plusieurs éléments requis sont absents.');
   }
 
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
-
   const customHomeTitle = window.HOME_TITLE || '';
   homeTitle.textContent = customHomeTitle || `Bac à sable ${SUBJECT_NAME}`;
   homeDesc.innerHTML = `${SUBJECT_DESC}<br>Banque de <strong id="total-q-count">${questionBank.length}</strong> questions disponibles.`;
@@ -898,73 +587,42 @@ function initSandboxPage() {
   questionCount.textContent = IS_ANAT_SUBJECT() ? 50 : 25;
   const statGrid = document.querySelector('.stat-grid');
   if (statGrid && !document.getElementById('bank-total-count')) {
-    const stat = document.createElement('div');
-    stat.className = 'stat';
+    const stat = document.createElement('div'); stat.className = 'stat';
     stat.innerHTML = `<span id="bank-total-count">${questionBank.length}</span>QCM dans la banque`;
     statGrid.appendChild(stat);
   }
-  messageZone.textContent = questionBank.length ? '' : 'Aucune question disponible pour cette matière. Ajoute des questions dans la variable BANK de ce fichier.';
+  messageZone.textContent = questionBank.length ? '' : 'Aucune question disponible pour cette matière.';
 
-  populateChapterOptions();
-  styleOptionsPanel();
-  ensureShuffleLaunchButton();
-  injectAccountPanel();
-  renderAccountPanel();
-  renderChapterList();
-  refreshExamSizeFromFilters();
+  populateChapterOptions(); styleOptionsPanel(); ensureShuffleLaunchButton();
+  injectAccountPanel(); renderAccountPanel(); renderChapterList(); refreshExamSizeFromFilters();
   if (IS_ANAT_SUBJECT()) {
     const partielSizeSelect = document.getElementById('partiel-size');
-    if (partielSizeSelect) {
-      partielSizeSelect.innerHTML = '<option value="50">50 QCM</option>';
-      partielSizeSelect.value = '50';
-    }
+    if (partielSizeSelect) { partielSizeSelect.innerHTML = '<option value="50">50 QCM</option>'; partielSizeSelect.value = '50'; }
   }
-  examSize.addEventListener('change', function() {
-    questionCount.textContent = this.value;
-  });
+  examSize.addEventListener('change', function() { questionCount.textContent = this.value; });
   const chapterFilter = document.getElementById('chapter-filter');
   if (chapterFilter) {
     chapterFilter.addEventListener('change', () => {
-      selectedChapterQuick = [];
-      refreshExamSizeFromFilters();
+      selectedChapterQuick = []; refreshExamSizeFromFilters();
       const quickList = document.getElementById('chapter-quick-list');
-      if (quickList) {
-        quickList.querySelectorAll('.chapter-chip').forEach(el => el.classList.remove('active'));
-      }
+      if (quickList) quickList.querySelectorAll('.chapter-chip').forEach(el => el.classList.remove('active'));
     });
   }
-
   ensurePartielCustomQuestionInput();
   const gradingSelect = document.getElementById('partiel-grading');
   const gradingCustom = document.getElementById('partiel-custom-box');
   if (gradingSelect && gradingCustom) {
-    const refreshGradingVisibility = () => {
-      gradingCustom.style.display = gradingSelect.value === 'custom' ? 'block' : 'none';
-    };
-    gradingSelect.addEventListener('change', refreshGradingVisibility);
-    refreshGradingVisibility();
+    const refreshGradingVisibility = () => { gradingCustom.style.display = gradingSelect.value === 'custom' ? 'block' : 'none'; };
+    gradingSelect.addEventListener('change', refreshGradingVisibility); refreshGradingVisibility();
   }
   defaultChapterFilter();
-  
-  // Synchroniser global-timer et partiel-timer
   const globalTimer = document.getElementById('global-timer');
   const partielTimer = document.getElementById('partiel-timer');
   if (globalTimer && partielTimer) {
-    globalTimer.addEventListener('change', (e) => {
-      partielTimer.value = e.target.value;
-    });
-    partielTimer.addEventListener('change', (e) => {
-      globalTimer.value = e.target.value;
-    });
+    globalTimer.addEventListener('change', (e) => { partielTimer.value = e.target.value; });
+    partielTimer.addEventListener('change', (e) => { globalTimer.value = e.target.value; });
   }
-  
-  // Initialiser le panel feedback
-  renderFeedbackPanel();
-  
-  // Initialiser le panel chat
-  renderChatPanel();
-  
-  switchModule('sandbox');
+  renderFeedbackPanel(); renderChatPanel(); switchModule('sandbox');
 }
 
 function populateChapterOptions() {
@@ -972,17 +630,10 @@ function populateChapterOptions() {
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
   filter.innerHTML = '';
-  const defaultOption = document.createElement('option');
-  defaultOption.value = 'all';
-  defaultOption.textContent = 'Tous les chapitres';
+  const defaultOption = document.createElement('option'); defaultOption.value = 'all'; defaultOption.textContent = 'Tous les chapitres';
   filter.appendChild(defaultOption);
-
-  const chapters = Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
-  chapters.forEach(ch => {
-    const option = document.createElement('option');
-    option.value = ch;
-    option.textContent = ch;
-    filter.appendChild(option);
+  Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr')).forEach(ch => {
+    const option = document.createElement('option'); option.value = ch; option.textContent = ch; filter.appendChild(option);
   });
 }
 
@@ -992,63 +643,38 @@ function renderChapterList() {
   if (!modulePanel || !quickList) return;
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
-
   quickList.innerHTML = '';
-
   let preview = document.getElementById('chapter-preview-list');
   if (!preview) {
-    preview = document.createElement('div');
-    preview.id = 'chapter-preview-list';
-    preview.style.marginTop = '12px';
+    preview = document.createElement('div'); preview.id = 'chapter-preview-list'; preview.style.marginTop = '12px';
     modulePanel.insertBefore(preview, modulePanel.querySelector('.module-hint'));
   }
   preview.innerHTML = '';
-
   const chapters = Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
-  if (chapters.length === 0) {
-    preview.innerHTML = '<div style="color:#aaa;font-size:.9rem">Pas de chapitres disponibles.</div>';
-    return;
-  }
-
+  if (chapters.length === 0) { preview.innerHTML = '<div style="color:#aaa;font-size:.9rem">Pas de chapitres disponibles.</div>'; return; }
   chapters.forEach(ch => {
-    const chip = document.createElement('button');
-    chip.className = 'chapter-chip';
-    chip.type = 'button';
-    chip.textContent = ch;
+    const chip = document.createElement('button'); chip.className = 'chapter-chip'; chip.type = 'button'; chip.textContent = ch;
     chip.onclick = () => {
       const current = new Set(getSelectedQuickChapter());
-      if (current.has(ch)) current.delete(ch);
-      else current.add(ch);
+      if (current.has(ch)) current.delete(ch); else current.add(ch);
       selectedChapterQuick = Array.from(current);
-      syncChapterFilterSelection(getSelectedQuickChapter());
-      refreshExamSizeFromFilters();
-      quickList.querySelectorAll('.chapter-chip').forEach(el => {
-        el.classList.toggle('active', getSelectedQuickChapter().includes(el.textContent));
-      });
+      syncChapterFilterSelection(getSelectedQuickChapter()); refreshExamSizeFromFilters();
+      quickList.querySelectorAll('.chapter-chip').forEach(el => el.classList.toggle('active', getSelectedQuickChapter().includes(el.textContent)));
       preview.querySelectorAll('[data-preview-chapter]').forEach(block => {
-        const selected = getSelectedQuickChapter();
-        const chapter = block.getAttribute('data-preview-chapter');
+        const selected = getSelectedQuickChapter(); const chapter = block.getAttribute('data-preview-chapter');
         block.style.display = selected.length === 0 || selected.includes(chapter) ? 'block' : 'none';
       });
     };
     quickList.appendChild(chip);
-
     const list = document.createElement('div');
-    list.setAttribute('data-preview-chapter', ch);
-    list.style.display = 'block';
-    list.style.marginTop = '8px';
-    list.style.marginBottom = '12px';
-    list.style.borderTop = '1px solid #2d2d50';
-    list.style.paddingTop = '8px';
+    list.setAttribute('data-preview-chapter', ch); list.style.display = 'block';
+    list.style.marginTop = '8px'; list.style.marginBottom = '12px';
+    list.style.borderTop = '1px solid #2d2d50'; list.style.paddingTop = '8px';
     list.innerHTML = `<div style="color:#e6eefc;font-weight:700;margin-bottom:8px">${escapeHtml(ch)}</div>`;
-    const items = questionBank.filter(q => q.ch === ch).slice(0, 6);
-    items.forEach(q => {
+    questionBank.filter(q => q.ch === ch).slice(0, 6).forEach(q => {
       const qi = document.createElement('div');
-      qi.style.padding = '8px';
-      qi.style.border = '1px solid #2d2d50';
-      qi.style.borderRadius = '8px';
-      qi.style.marginBottom = '6px';
-      qi.style.background = 'rgba(0,0,0,0.02)';
+      qi.style.padding = '8px'; qi.style.border = '1px solid #2d2d50'; qi.style.borderRadius = '8px';
+      qi.style.marginBottom = '6px'; qi.style.background = 'rgba(0,0,0,0.02)';
       qi.innerHTML = `<strong>Q</strong> ${q.q.length>140?q.q.slice(0,140)+'…':q.q}`;
       list.appendChild(qi);
     });
@@ -1059,93 +685,50 @@ function renderChapterList() {
 function ensurePartielCustomQuestionInput() {
   const partielPanel = document.getElementById('module-partiel');
   const sizeSelect = document.getElementById('partiel-size');
-  if (!partielPanel || !sizeSelect) return;
-  if (document.getElementById('partiel-size-custom')) return;
-
-  const block = document.createElement('div');
-  block.style.marginTop = '10px';
-  block.innerHTML = `
-    <label for="partiel-size-custom">Nombre de QCM personnalisé (min 5)</label>
-    <input id="partiel-size-custom" type="number" min="5" step="1" value="${parseInt(sizeSelect.value || '25', 10) || 25}">
-  `;
+  if (!partielPanel || !sizeSelect || document.getElementById('partiel-size-custom')) return;
+  const block = document.createElement('div'); block.style.marginTop = '10px';
+  block.innerHTML = `<label for="partiel-size-custom">Nombre de QCM personnalisé (min 5)</label><input id="partiel-size-custom" type="number" min="5" step="1" value="${parseInt(sizeSelect.value || '25', 10) || 25}">`;
   const hint = partielPanel.querySelector('.module-hint');
-  if (hint) partielPanel.insertBefore(block, hint);
-  else partielPanel.appendChild(block);
-
+  if (hint) partielPanel.insertBefore(block, hint); else partielPanel.appendChild(block);
   sizeSelect.addEventListener('change', () => {
     const customInput = document.getElementById('partiel-size-custom');
-    if (customInput) {
-      const value = parseInt(sizeSelect.value || '25', 10);
-      if (Number.isFinite(value) && value > 0) customInput.value = String(value);
-    }
+    if (customInput) { const value = parseInt(sizeSelect.value || '25', 10); if (Number.isFinite(value) && value > 0) customInput.value = String(value); }
   });
 }
 
-function injectExamOptions(){
-  return;
-}
-
-function createSubjectTabs(){
-  return;
-}
-
-function switchTab(id){
-  const nextModule = id === 'tab-chap' ? 'chapitres' : id.replace('tab-', '');
-  switchModule(nextModule);
-}
+function injectExamOptions() { return; }
+function createSubjectTabs() { return; }
+function switchTab(id) { switchModule(id === 'tab-chap' ? 'chapitres' : id.replace('tab-', '')); }
 
 function switchModule(moduleId) {
   activeModule = moduleId;
   ['sandbox', 'partiel', 'chapitres', 'feedback', 'chat'].forEach(id => {
-    const panel = document.getElementById(`module-${id}`);
-    const tab = document.getElementById(`tab-${id}`);
+    const panel = document.getElementById(`module-${id}`); const tab = document.getElementById(`tab-${id}`);
     if (panel) panel.classList.toggle('active', id === moduleId);
     if (tab) tab.classList.toggle('active', id === moduleId);
   });
-
-  if (moduleId === 'feedback') {
-    renderFeedbackPanel();
-  }
-  if (moduleId === 'chat') {
-    renderChatPanel();
-  }
-
-  if (moduleId !== 'chapitres' && getSelectedQuickChapter().length) {
-    syncChapterFilterSelection(getSelectedQuickChapter());
-  }
+  if (moduleId === 'feedback') renderFeedbackPanel();
+  if (moduleId === 'chat') renderChatPanel();
+  if (moduleId !== 'chapitres' && getSelectedQuickChapter().length) syncChapterFilterSelection(getSelectedQuickChapter());
 }
 
 function defaultChapterFilter() {
   const filter = document.getElementById('chapter-filter');
   if (!filter) return;
-  // For multi-select: select first chapter by default (or leave empty to mean "all")
-  if (filter.options.length > 0) {
-    // Try to select the "Tous les chapitres" option if it exists
-    const allOption = filter.querySelector('option[value="all"]');
-    if (allOption) {
-      allOption.selected = true;
-    } else if (filter.options.length > 1) {
-      filter.options[1].selected = true; // select first real chapter
-    }
-  }
+  const allOption = filter.querySelector('option[value="all"]');
+  if (allOption) allOption.selected = true;
+  else if (filter.options.length > 1) filter.options[1].selected = true;
 }
 
 function shuffle(arr) {
   let a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
 }
 
 function escapeHtml(value) {
   return String(value == null ? '' : value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function getSelectedChapters(filter) {
@@ -1160,32 +743,18 @@ function getSelectedChapters(filter) {
 function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault) {
   const select = document.getElementById(selectId);
   if (!select) return;
-
   if (!Number.isFinite(maxCount) || maxCount <= 0) {
-    select.innerHTML = '<option value="0">0 QCM disponible</option>';
-    select.value = '0';
-    select.disabled = true;
-    return;
+    select.innerHTML = '<option value="0">0 QCM disponible</option>'; select.value = '0'; select.disabled = true; return;
   }
-
   const previous = parseInt(select.value, 10);
   const candidate = Number.isFinite(previous) && previous > 0 ? previous : preferredDefault;
   const values = Array.from(new Set((presetValues || []).filter(v => Number.isFinite(v) && v > 0 && v <= maxCount)));
   if (!values.includes(maxCount)) values.push(maxCount);
   values.sort((a, b) => a - b);
-
-  select.disabled = false;
-  select.innerHTML = '';
-  values.forEach(v => {
-    const option = document.createElement('option');
-    option.value = String(v);
-    option.textContent = `${v} QCM`;
-    select.appendChild(option);
-  });
-
+  select.disabled = false; select.innerHTML = '';
+  values.forEach(v => { const option = document.createElement('option'); option.value = String(v); option.textContent = `${v} QCM`; select.appendChild(option); });
   const fallback = values.includes(preferredDefault) ? preferredDefault : values[values.length - 1];
-  const nextValue = values.includes(candidate) ? candidate : fallback;
-  select.value = String(nextValue);
+  select.value = String(values.includes(candidate) ? candidate : fallback);
 }
 
 function refreshExamSizeFromFilters() {
@@ -1194,19 +763,14 @@ function refreshExamSizeFromFilters() {
   const questionBank = prepared.questions;
   const selectedChapters = getSelectedQuickChapter().length ? getSelectedQuickChapter() : getSelectedChapters(filter);
   const pool = selectedChapters.length ? questionBank.filter(q => selectedChapters.includes(q.ch)) : questionBank;
-  if (IS_ANAT_SUBJECT()) {
-    syncExamSizeSelect('exam-size', pool.length, [50], 50);
-  } else {
-    syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
-  }
+  if (IS_ANAT_SUBJECT()) syncExamSizeSelect('exam-size', pool.length, [50], 50);
+  else syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
   const questionCount = document.getElementById('question-count');
   const examSize = document.getElementById('exam-size');
   if (questionCount && examSize) questionCount.textContent = examSize.value;
 }
 
-function examSignature(questions) {
-  return questions.map(q => `${q.ch}::${q.q}`).sort().join('||');
-}
+function examSignature(questions) { return questions.map(q => `${q.ch}::${q.q}`).sort().join('||'); }
 
 function questionKey(item) {
   const q = item || {};
@@ -1218,24 +782,16 @@ function questionKey(item) {
 function loadRecentQuestionKeys(subjectName) {
   const key = RECENT_QUESTIONS_STORAGE_PREFIX + String(subjectName || SUBJECT_NAME || 'General');
   try {
-    const raw = safeGetItem(key);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
-  } catch (e) {
-    return [];
-  }
+    const raw = safeGetItem(key); if (!raw) return [];
+    const parsed = JSON.parse(raw); return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+  } catch (e) { return []; }
 }
 
 function saveRecentQuestionKeys(subjectName, keys) {
   const key = RECENT_QUESTIONS_STORAGE_PREFIX + String(subjectName || SUBJECT_NAME || 'General');
-  const unique = [];
-  const seen = new Set();
+  const unique = [], seen = new Set();
   (Array.isArray(keys) ? keys : []).forEach((k) => {
-    const value = String(k || '').trim();
-    if (!value || seen.has(value)) return;
-    seen.add(value);
-    unique.push(value);
+    const value = String(k || '').trim(); if (!value || seen.has(value)) return; seen.add(value); unique.push(value);
   });
   safeSetItem(key, JSON.stringify(unique.slice(0, 500)));
 }
@@ -1244,40 +800,27 @@ function pickSessionWithHistory(pool, totalCount, options) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
   const config = options || {};
-
   const recent = loadRecentQuestionKeys(SUBJECT_NAME);
   const recentWindow = Math.max(wanted * 3, 60);
   const recentSet = new Set(recent.slice(0, recentWindow));
-
   let candidatePool = pool;
   if (pool.length > wanted && recentSet.size) {
     const fresh = pool.filter((q) => !recentSet.has(questionKey(q)));
-    if (fresh.length >= wanted) {
-      candidatePool = fresh;
-    } else if (fresh.length > 0) {
-      const older = shuffle(pool.filter((q) => recentSet.has(questionKey(q))));
-      candidatePool = fresh.concat(older.slice(0, wanted - fresh.length));
-    }
+    if (fresh.length >= wanted) candidatePool = fresh;
+    else if (fresh.length > 0) { const older = shuffle(pool.filter((q) => recentSet.has(questionKey(q)))); candidatePool = fresh.concat(older.slice(0, wanted - fresh.length)); }
   }
-
   if (config.forceDifferent && lastDrawQuestionKeys.length && candidatePool.length > wanted) {
     const previousSet = new Set(lastDrawQuestionKeys);
     const fresh = candidatePool.filter((q) => !previousSet.has(questionKey(q)));
-    if (fresh.length >= wanted) {
-      candidatePool = fresh;
-    } else if (fresh.length > 0) {
-      const older = shuffle(candidatePool.filter((q) => previousSet.has(questionKey(q))));
-      candidatePool = fresh.concat(older.slice(0, wanted - fresh.length));
-    }
+    if (fresh.length >= wanted) candidatePool = fresh;
+    else if (fresh.length > 0) { const older = shuffle(candidatePool.filter((q) => previousSet.has(questionKey(q)))); candidatePool = fresh.concat(older.slice(0, wanted - fresh.length)); }
   }
-
   let draw = getVariedBalancedDraw(candidatePool, wanted);
   if (draw.length < wanted) {
     const used = new Set(draw.map(questionKey));
     const rest = shuffle(pool.filter((q) => !used.has(questionKey(q))));
     draw = draw.concat(rest).slice(0, wanted);
   }
-
   saveRecentQuestionKeys(SUBJECT_NAME, draw.map(questionKey).concat(recent));
   lastDrawQuestionKeys = draw.map(questionKey);
   return draw;
@@ -1287,130 +830,102 @@ function getBalancedDraw(pool, totalCount) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
   if (wanted >= pool.length) return shuffle(pool).slice(0, wanted);
-
   const byChapter = new Map();
-  pool.forEach(q => {
-    const chapter = q.ch || 'Sans chapitre';
-    if (!byChapter.has(chapter)) byChapter.set(chapter, []);
-    byChapter.get(chapter).push(q);
-  });
-
-  const chapters = shuffle(Array.from(byChapter.keys())).map(ch => ({
-    chapter: ch,
-    questions: shuffle(byChapter.get(ch))
-  }));
-
+  pool.forEach(q => { const chapter = q.ch || 'Sans chapitre'; if (!byChapter.has(chapter)) byChapter.set(chapter, []); byChapter.get(chapter).push(q); });
+  const chapters = shuffle(Array.from(byChapter.keys())).map(ch => ({ chapter: ch, questions: shuffle(byChapter.get(ch)) }));
   const picked = [];
   while (picked.length < wanted) {
     let added = false;
-    for (const bucket of chapters) {
-      if (picked.length >= wanted) break;
-      if (bucket.questions.length > 0) {
-        picked.push(bucket.questions.pop());
-        added = true;
-      }
-    }
+    for (const bucket of chapters) { if (picked.length >= wanted) break; if (bucket.questions.length > 0) { picked.push(bucket.questions.pop()); added = true; } }
     if (!added) break;
   }
-
   return shuffle(picked).slice(0, wanted);
 }
 
 function getVariedBalancedDraw(pool, totalCount) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
-  const tries = 8;
-  for (let i = 0; i < tries; i++) {
-    const draw = getBalancedDraw(pool, wanted);
-    const sig = examSignature(draw);
-    if (sig !== lastSessionSignature || pool.length <= wanted) {
-      lastSessionSignature = sig;
-      return draw;
-    }
+  for (let i = 0; i < 8; i++) {
+    const draw = getBalancedDraw(pool, wanted); const sig = examSignature(draw);
+    if (sig !== lastSessionSignature || pool.length <= wanted) { lastSessionSignature = sig; return draw; }
   }
-  const fallback = getBalancedDraw(pool, wanted);
-  lastSessionSignature = examSignature(fallback);
-  return fallback;
+  const fallback = getBalancedDraw(pool, wanted); lastSessionSignature = examSignature(fallback); return fallback;
 }
 
-function startFreshShuffleExam() {
-  lastSessionSignature = '';
-  startExam({ forceDifferent: true });
-}
+function startFreshShuffleExam() { lastSessionSignature = ''; startExam({ forceDifferent: true }); }
 
 function ensureShuffleLaunchButton() {
   const homeCard = document.querySelector('.home-card');
   const startBtn = homeCard ? homeCard.querySelector('.btn-start') : null;
   if (!homeCard || !startBtn) return;
-
   let actions = document.getElementById('launch-actions');
   if (!actions) {
-    actions = document.createElement('div');
-    actions.id = 'launch-actions';
-    actions.style.display = 'flex';
-    actions.style.justifyContent = 'center';
-    actions.style.gap = '10px';
-    actions.style.flexWrap = 'wrap';
-    actions.style.marginTop = '8px';
-    startBtn.parentNode.insertBefore(actions, startBtn);
-    actions.appendChild(startBtn);
+    actions = document.createElement('div'); actions.id = 'launch-actions';
+    actions.style.display = 'flex'; actions.style.justifyContent = 'center';
+    actions.style.gap = '10px'; actions.style.flexWrap = 'wrap'; actions.style.marginTop = '8px';
+    startBtn.parentNode.insertBefore(actions, startBtn); actions.appendChild(startBtn);
   }
-
   if (!document.getElementById('shuffle-launch-btn')) {
     const shuffleBtn = document.createElement('button');
-    shuffleBtn.id = 'shuffle-launch-btn';
-    shuffleBtn.type = 'button';
-    shuffleBtn.className = 'btn-start';
-    shuffleBtn.textContent = '🔀 Nouveau tirage';
-    shuffleBtn.style.background = 'linear-gradient(135deg,#1f6fb2,#3498db)';
-    shuffleBtn.onclick = startFreshShuffleExam;
-    actions.appendChild(shuffleBtn);
+    shuffleBtn.id = 'shuffle-launch-btn'; shuffleBtn.type = 'button'; shuffleBtn.className = 'btn-start';
+    shuffleBtn.textContent = '🔀 Nouveau tirage'; shuffleBtn.style.background = 'linear-gradient(135deg,#1f6fb2,#3498db)';
+    shuffleBtn.onclick = startFreshShuffleExam; actions.appendChild(shuffleBtn);
   }
 }
 
 function ensureFloatingClearButton() {
   if (document.getElementById('floating-clear-btn')) return;
-
-  const style = document.createElement('style');
-  style.id = 'floating-clear-style';
-  style.textContent = `
-    #floating-clear-btn{
-      position:fixed;
-      right:16px;
-      bottom:16px;
-      z-index:1200;
-      background:#16213e;
-      border:2px solid #e74c3c;
-      color:#fff;
-      padding:10px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:800;
-      box-shadow:0 8px 24px rgba(0,0,0,.35);
-      display:none;
-    }
-    #floating-clear-btn:hover{background:#1f2b4d}
-  `;
+  const style = document.createElement('style'); style.id = 'floating-clear-style';
+  style.textContent = `#floating-clear-btn{position:fixed;right:16px;bottom:16px;z-index:1200;background:#16213e;border:2px solid #e74c3c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none;}#floating-clear-btn:hover{background:#1f2b4d}`;
   document.head.appendChild(style);
-
   const button = document.createElement('button');
-  button.id = 'floating-clear-btn';
-  button.type = 'button';
-  button.textContent = 'Effacer la sélection';
-  button.onclick = () => clearOpt(currentQ);
-  document.body.appendChild(button);
+  button.id = 'floating-clear-btn'; button.type = 'button'; button.textContent = 'Effacer la sélection';
+  button.onclick = () => clearOpt(currentQ); document.body.appendChild(button);
 }
+
+// ============================================================
+// TIMER — fonctions définies une seule fois, au niveau global
+// ============================================================
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  return `⏱ ${m}:${(s % 60).toString().padStart(2, '0')}`;
+}
+
+function attachTimerToHeader() {
+  const header = document.getElementById('header');
+  if (!header) return;
+  let timer = document.getElementById('timer');
+  if (!timer) {
+    timer = document.createElement('div'); timer.id = 'timer';
+    timer.style.cssText = 'font-weight:800;font-size:1rem;color:#fff;padding:6px 12px;background:#0f2f52;border:1px solid #29507a;border-radius:8px;margin-left:auto';
+    header.appendChild(timer);
+  }
+  timer.style.display = 'inline-block';
+  timer.textContent = formatTime(remainingSeconds);
+}
+
+function startTimer() {
+  stopTimer();
+  timerInterval = setInterval(() => {
+    remainingSeconds--;
+    const timer = document.getElementById('timer');
+    if (timer) timer.textContent = formatTime(remainingSeconds);
+    if (remainingSeconds <= 0) { stopTimer(); submitExam(); }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+// ============================================================
 
 function startExam(options) {
   ensureFloatingClearButton();
   const config = options || {};
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
+  if (!questionBank.length) { alert('Aucune question disponible pour cette matière.'); return; }
 
-  if (!questionBank.length) {
-    alert('Aucune question disponible pour cette matière.');
-    return;
-  }
   const filter = document.getElementById('chapter-filter');
   const quickSelected = getSelectedQuickChapter();
   const sandboxSelectedChapters = quickSelected.length ? quickSelected : getSelectedChapters(filter);
@@ -1422,48 +937,31 @@ function startExam(options) {
 
   if (activeModule === 'partiel') {
     const gradingConfig = getCurrentGradingConfig();
-    correctPoints = gradingConfig.good;
-    wrongPoints = gradingConfig.bad;
+    correctPoints = gradingConfig.good; wrongPoints = gradingConfig.bad;
     const presetCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
     const customCount = parseInt(document.getElementById('partiel-size-custom')?.value || '', 10);
     requestedCount = Number.isFinite(customCount) ? customCount : presetCount;
     requestedCount = Math.max(5, requestedCount || 25);
     pool = questionBank;
   } else {
-    correctPoints = 0.25;
-    wrongPoints = 0.083;
+    correctPoints = 0.25; wrongPoints = 0.083;
   }
 
   const timerValue = document.getElementById('global-timer')?.value || document.getElementById('partiel-timer')?.value;
   const timerParsed = parseInt(String(timerValue || '').trim(), 10);
   timerMins = Number.isFinite(timerParsed) && timerParsed > 0 ? timerParsed : 0;
 
-  if (activeModule === 'chapitres') {
-    pool = sandboxPool;
-  }
-
-  if (!Number.isFinite(requestedCount) || requestedCount < 1) {
-    requestedCount = 25;
-  }
-  if (IS_ANAT_SUBJECT()) {
-    requestedCount = 50;
-  }
+  if (activeModule === 'chapitres') pool = sandboxPool;
+  if (!Number.isFinite(requestedCount) || requestedCount < 1) requestedCount = 25;
+  if (IS_ANAT_SUBJECT()) requestedCount = 50;
   requestedCount = Math.floor(requestedCount);
 
-  if (pool.length === 0) {
-    alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.');
-    return;
-  }
+  if (pool.length === 0) { alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.'); return; }
 
   const selectedCount = Math.min(requestedCount, pool.length);
   currentSession = pickSessionWithHistory(pool, selectedCount, config);
-  if (!currentSession.length) {
-    alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
-    return;
-  }
-  if (pool.length < requestedCount) {
-    alert(`Les chapitres choisis contiennent seulement ${pool.length} questions. Le quiz utilisera toutes les questions disponibles.`);
-  }
+  if (!currentSession.length) { alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.'); return; }
+  if (pool.length < requestedCount) alert(`Les chapitres choisis contiennent seulement ${pool.length} questions. Le quiz utilisera toutes les questions disponibles.`);
 
   if (prepared.duplicateQuestionCount || prepared.duplicateOptionCount) {
     const details = [];
@@ -1472,26 +970,20 @@ function startExam(options) {
     setMessageZone(details.join(' • '));
   } else if (config.forceDifferent) {
     setMessageZone('Nouveau tirage généré avec une préférence pour des questions différentes.');
-  } else {
-    setMessageZone('');
-  }
+  } else { setMessageZone(''); }
 
   const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
   currentQC = shuffledQC.slice(0, 4).map(i => QC_BANK[i]);
 
   answers = new Array(currentSession.length).fill(null);
-  shuffledOpts = [];
-  shuffledCorrects = [];
+  shuffledOpts = []; shuffledCorrects = [];
   currentSession.forEach(q => {
-    const correctText = q.opts[q.a];
-    const sh = shuffle(q.opts);
-    shuffledOpts.push(sh);
-    shuffledCorrects.push(sh.indexOf(correctText));
+    const correctText = q.opts[q.a]; const sh = shuffle(q.opts);
+    shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
   });
 
-  currentQ = 0;
-  examFinished = false;
-  startTime = Date.now();
+  currentQ = 0; examFinished = false; startTime = Date.now();
+
   if (timerMins > 0) {
     remainingSeconds = timerMins * 60;
     attachTimerToHeader();
@@ -1511,7 +1003,6 @@ function startExam(options) {
   document.getElementById('main').style.display = 'block';
   const floatingClearBtn = document.getElementById('floating-clear-btn');
   if (floatingClearBtn) floatingClearBtn.style.display = 'inline-flex';
-
   buildUI();
 }
 
@@ -1520,17 +1011,12 @@ function buildUI() {
   document.getElementById('nav-pills').innerHTML = '';
   currentSession.forEach((q, i) => {
     const p = document.createElement('button');
-    p.className = 'pill' + (i === 0 ? ' current' : '');
-    p.textContent = i + 1;
-    p.id = 'pill-' + i;
-    p.onclick = () => goTo(i);
-    document.getElementById('nav-pills').appendChild(p);
-
+    p.className = 'pill' + (i === 0 ? ' current' : ''); p.textContent = i + 1; p.id = 'pill-' + i;
+    p.onclick = () => goTo(i); document.getElementById('nav-pills').appendChild(p);
     const tc = q.type === 'fausse' ? 'tag-fausse' : q.type === 'vraie' ? 'tag-vraie' : 'tag-direct';
     const tt = q.type === 'fausse' ? '❌ LAQUELLE EST FAUSSE ?' : q.type === 'vraie' ? '✅ LAQUELLE EST VRAIE ?' : '❓ QUESTION DIRECTE';
     const card = document.createElement('div');
-    card.className = 'qcard' + (i === 0 ? ' active' : '');
-    card.id = 'qcard-' + i;
+    card.className = 'qcard' + (i === 0 ? ' active' : ''); card.id = 'qcard-' + i;
     card.innerHTML = `
       <div class="chapitre-tag">${escapeHtml(q.ch)} — ${escapeHtml(q.label)}</div>
       <div class="qtag ${tc}">${tt}</div>
@@ -1598,20 +1084,14 @@ function submitExam() {
 
 function showResults() {
   let resultsEl = document.getElementById('results');
-  if (!resultsEl) {
-    resultsEl = document.createElement('div');
-    resultsEl.id = 'results';
-    document.body.appendChild(resultsEl);
-  }
+  if (!resultsEl) { resultsEl = document.createElement('div'); resultsEl.id = 'results'; document.body.appendChild(resultsEl); }
   resultsEl.style.display = 'block';
-
   try {
     let correct = 0, wrong = 0, skipped = 0;
     const elapsedMs = Date.now() - startTime;
     const timeUsed = Math.max(0, Math.floor(elapsedMs / 1000));
     const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
     let corrHTML = '';
-
     (Array.isArray(currentSession) ? currentSession : []).forEach((q, i) => {
       const item = q || {};
       const opts = Array.isArray(shuffledOpts[i]) ? shuffledOpts[i] : [];
@@ -1631,7 +1111,6 @@ function showResults() {
         <div style="margin-top:8px"><button onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:.7rem;font-weight:700">🚩 Signaler cette question</button></div>
       </div>`;
     });
-
     const sessionSize = Math.max(1, Array.isArray(currentSession) ? currentSession.length : 1);
     const raw = Math.max(0, (correct * correctPoints - wrong * wrongPoints));
     const rawScore = raw.toFixed(2);
@@ -1642,42 +1121,12 @@ function showResults() {
     const finalNote = finalNoteValue.toFixed(2);
     const emoji = finalNoteValue >= 7 ? '🏆' : finalNoteValue >= 5 ? '👍' : finalNoteValue >= 4 ? '📖' : '💪';
     const resultDate = buildResultTimestamp();
-
-    try {
-      recordLeaderboardResult({
-        date: resultDate,
-        subject: SUBJECT_NAME,
-        user: currentUser || 'Invité',
-        score: finalNote,
-        max: 20,
-        pct
-      });
-    } catch (persistError) {
-      console.warn('Enregistrement classement impossible', persistError);
-    }
-
-    try {
-      saveResultForCurrentUser({
-        date: resultDate,
-        subject: SUBJECT_NAME,
-        score: finalNote,
-        max: 20,
-        pct
-      });
-    } catch (persistError) {
-      console.warn('Enregistrement historique utilisateur impossible', persistError);
-    }
-
+    try { recordLeaderboardResult({ date: resultDate, subject: SUBJECT_NAME, user: currentUser || 'Invité', score: finalNote, max: 20, pct }); } catch (e) { console.warn(e); }
+    try { saveResultForCurrentUser({ date: resultDate, subject: SUBJECT_NAME, score: finalNote, max: 20, pct }); } catch (e) { console.warn(e); }
     const qcHTML = (Array.isArray(currentQC) ? currentQC : []).map((qc, i) => {
       const item = qc || {};
-      return `
-      <div class="qc-item">
-        <div class="qc-q">Q${i + 1}. ${escapeHtml(item.q || 'Question courte')}</div>
-        <button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button>
-        <div class="qc-r" id="qcr-${i}">${escapeHtml(item.r || 'Réponse indisponible')}</div>
-      </div>`;
+      return `<div class="qc-item"><div class="qc-q">Q${i + 1}. ${escapeHtml(item.q || 'Question courte')}</div><button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button><div class="qc-r" id="qcr-${i}">${escapeHtml(item.r || 'Réponse indisponible')}</div></div>`;
     }).join('');
-
     resultsEl.innerHTML = `
     <div class="score-card">
       <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
@@ -1690,10 +1139,7 @@ function showResults() {
         <div class="sc-box">⏱ ${mu}min ${su.toString().padStart(2, '0')}s</div>
       </div>
     </div>
-    <div id="qc-section">
-      <h2>📝 QUESTIONS COURTES — Rédige d'abord, puis dévoile</h2>
-      ${qcHTML}
-    </div>
+    <div id="qc-section"><h2>📝 QUESTIONS COURTES — Rédige d'abord, puis dévoile</h2>${qcHTML}</div>
     <div style="margin-top:14px">
       <h3 style="color:#e74c3c;margin-bottom:10px;font-size:.92rem">📋 CORRECTIONS DÉTAILLÉES</h3>
       ${corrHTML || '<div class="corr-item skipped">Aucune correction disponible.</div>'}
@@ -1703,38 +1149,24 @@ function showResults() {
       <div style="color:#8fb3a8;font-size:.78rem;margin-bottom:10px">${currentUser ? `Résultat enregistré sur le compte: ${currentUser}` : 'Connecte-toi avec un compte local pour sauvegarder tes résultats.'}</div>
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
     </div>`;
-    resultsEl.style.display = 'block';
-    window.scrollTo(0, 0);
+    resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   } catch (error) {
     console.error('showResults sandbox failed', error);
-    resultsEl.innerHTML = `
-      <div class="score-card">
-        <div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div>
-        <div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement. Réessaie un nouveau partiel.</div>
-      </div>
-      <div style="text-align:center;padding:20px">
-        <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button>
-      </div>`;
-    resultsEl.style.display = 'block';
-    window.scrollTo(0, 0);
+    resultsEl.innerHTML = `<div class="score-card"><div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div><div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement.</div></div><div style="text-align:center;padding:20px"><button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button></div>`;
+    resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   }
 }
 
 function toggleR(i) {
-  const el = document.getElementById('qcr-' + i);
-  const btn = document.getElementById('sbtn-' + i);
+  const el = document.getElementById('qcr-' + i); const btn = document.getElementById('sbtn-' + i);
   const hidden = el.style.display === 'none' || el.style.display === '';
-  el.style.display = hidden ? 'block' : 'none';
-  btn.textContent = hidden ? 'Masquer' : 'Voir la réponse';
+  el.style.display = hidden ? 'block' : 'none'; btn.textContent = hidden ? 'Masquer' : 'Voir la réponse';
 }
 
-function newExam() {
-  goHome();
-}
+function newExam() { goHome(); }
 
 function goHome() {
-  stopTimer();
-  examFinished = false;
+  stopTimer(); examFinished = false;
   const floatingClearBtn = document.getElementById('floating-clear-btn');
   if (floatingClearBtn) floatingClearBtn.style.display = 'none';
   document.getElementById('results').style.display = 'none';
@@ -1747,17 +1179,7 @@ function goHome() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    try {
-      initSandboxPage();
-    } catch (error) {
-      showFatalInitError(error);
-    }
-  });
+  document.addEventListener('DOMContentLoaded', () => { try { initSandboxPage(); } catch (error) { showFatalInitError(error); } });
 } else {
-  try {
-    initSandboxPage();
-  } catch (error) {
-    showFatalInitError(error);
-  }
+  try { initSandboxPage(); } catch (error) { showFatalInitError(error); }
 }

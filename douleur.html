@@ -1013,7 +1013,7 @@ function buildUI(){
       </div>
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
-        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer</button>
+        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer la sélection</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
       </div>`;
