@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+<head><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦴</text></svg>">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Banque Partiel — Anat (295 questions)</title>
@@ -90,7 +90,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="home-btn" type="button" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'">Retour</button>
       <button class="home-btn" type="button" onclick="window.location.href='index.html'">Accueil</button>
     </div>
-    <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
+    <div style="font-size:2.5rem;margin-bottom:8px">🦴</div>
     <h2 id="home-title">Bac à sable Anat</h2>
     <p id="home-desc">Anatomie.<br>Anat  <strong id="total-q-count">295</strong> questions disponibles.</p>
     <div class="module-tabs">
@@ -219,3 +219,6 @@ if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
 <script src="sandbox.js"></script>
 </body>
 </html>
+var EXTRA_Q = [];
+var EXTRA_Q2 = [];
+var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
