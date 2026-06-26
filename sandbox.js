@@ -1075,6 +1075,7 @@ function updateProgress() {
 function submitExam() {
   if (examFinished) return;
   examFinished = true;
+   stopTimer();
   document.getElementById('main').style.display = 'none';
   document.getElementById('nav-pills').style.display = 'none';
   const floatingClearBtn = document.getElementById('floating-clear-btn');
