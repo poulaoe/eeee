@@ -92,7 +92,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
     <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
     <h2 id="home-title">Bac à sable Anat</h2>
-    <p id="home-desc">Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.<br>Banque de <strong id="total-q-count">295</strong> questions disponibles.</p>
+    <p id="home-desc">Anatomie.<br>Anat  <strong id="total-q-count">295</strong> questions disponibles.</p>
     <div class="module-tabs">
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
@@ -107,10 +107,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     <div class="module-panel active" id="module-sandbox">
       <label for="exam-size">Nombre de QCM</label>
       <select id="exam-size" style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff">
-        <option value="10">10 QCM</option>
-        <option value="15">15 QCM</option>
-        <option value="20">20 QCM</option>
-        <option value="25" selected>25 QCM</option>
+        <option value="50" selected>50 QCM</option>
       </select>
       <label for="chapter-filter" style="margin-top:10px">Chapitres (plusieurs possibles)</label>
       <select id="chapter-filter" multiple style="width:100%;padding:10px;border-radius:10px;border:1px solid #2d2d50;background:#0f3460;color:#fff;min-height:120px"></select>
@@ -121,10 +118,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
         <div>
           <label for="partiel-size">Nombre de QCM</label>
           <select id="partiel-size">
-            <option value="20">20 QCM</option>
-            <option value="25" selected>25 QCM (standard)</option>
-            <option value="30">30 QCM</option>
-            <option value="40">40 QCM</option>
+            <option value="50" selected>50 QCM</option>
           </select>
         </div>
         <div>
@@ -163,7 +157,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <!-- Chat content loaded by renderChatPanel() -->
     </div>    <div class="stat-grid">
       <div class="stat"><span id="sc1">0</span>Chapitres</div>
-      <div class="stat"><span id="question-count">25</span>QCM / partiel</div>
+      <div class="stat"><span id="question-count">50</span>QCM / partiel</div>
       <div class="stat"><span>45'</span>Timer</div>
       <div class="stat"><span>∞</span>Partiels possibles</div>
     </div>
@@ -184,7 +178,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <div id="main" style="display:none">
   <div id="questions-zone"></div>
   <div id="submit-zone" style="display:none">
-    <p>Répondues : <span id="answered-count">0</span>/25 — Questions non répondues = 0 point</p>
+    <p>Répondues : <span id="answered-count">0</span>/50 — Questions non répondues = 0 point</p>
     <button class="btn btn-submit" onclick="submitExam()">✅ Terminer l'examen</button>
   </div>
 </div>

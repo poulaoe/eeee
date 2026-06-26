@@ -35,13 +35,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .opt{background:#0f3460;border:2px solid #2d2d50;border-radius:8px;padding:11px 15px;cursor:pointer;font-size:.88rem;color:#ccd;transition:all .2s;text-align:left;font-weight:400}
 .opt:hover{border-color:#c0392b;background:#1a1a2e;color:#fff}
 .opt.selected{border-color:#3498db;background:rgba(52,152,219,.15);color:#fff}
-.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:8px}
+.clear-row{display:flex;justify-content:flex-end;margin-top:10px}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:8px;flex-wrap:wrap}
+@media (max-width: 720px){
+  .qnav{justify-content:center}
+}
 .btn{padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.83rem;font-weight:700;transition:all .2s}
 .btn-prev{background:#2d2d50;color:#aaa}.btn-prev:hover{background:#3d3d70;color:#fff}
 .btn-prev:disabled{opacity:.3;cursor:default}
 .btn-skip{background:transparent;border:2px solid #555;color:#999}.btn-skip:hover{border-color:#aaa;color:#ccc}
 .btn-next{background:#c0392b;color:#fff}.btn-next:hover{background:#e74c3c}
 .btn-submit{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;padding:12px 30px;font-size:.95rem}
+.floating-clear-btn{position:fixed;right:16px;bottom:16px;z-index:1200;background:#16213e;border:2px solid #e74c3c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.floating-clear-btn:hover{background:#1f2b4d}
+#submit-zone{text-align:center;padding:22px;background:#16213e;border-radius:12px;border:1px solid #2d2d50;margin-top:6px}
 #submit-zone{text-align:center;padding:22px;background:#16213e;border-radius:12px;border:1px solid #2d2d50;margin-top:6px}
 #submit-zone p{color:#aaa;margin-bottom:14px;font-size:.88rem}
 /* ACCUEIL */
@@ -125,6 +132,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
         <option value="15">15 QCM</option>
         <option value="20" selected>20 QCM</option>
         <option value="25">25 QCM</option>
+         <option value="50">50 QCM</option>
       </select>
       <label style="margin-top:10px" for="chapter-filter">Chapitre</label>
       <select id="chapter-filter">
@@ -141,6 +149,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
             <option value="20">20 QCM</option>
             <option value="25" selected>25 QCM</option>
             <option value="30">30 QCM</option>
+             <option value="50">50 QCM</option>
           </select>
         </div>
         <div>
@@ -208,6 +217,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     <button class="btn btn-submit" onclick="submitExam()">✅ Terminer l'examen</button>
   </div>
 </div>
+<button id="floating-clear-btn" class="floating-clear-btn" type="button" style="display:none" onclick="clearOpt(currentQ)">Effacer la sélection</button>
 <div id="results"></div>
 <div id="report-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:999;justify-content:center;align-items:center;padding:20px">
   <div style="background:#16213e;border-radius:12px;padding:24px;max-width:400px;width:100%;border:1px solid #2d2d50">
@@ -1103,12 +1113,109 @@ let examFinished = false;
 let activeModule = 'sandbox';
 let currentExamSize = 25;
 let selectedChapterQuick = null;
+let lastSessionSignature = '';
+let lastDrawQuestionKeys = [];
 let examDurationMinutes = 45;
 let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 
+function normalizeQuestionText(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeOptionKey(value) {
+  return normalizeQuestionText(value).toLowerCase();
+}
+
+function questionKey(item) {
+  const q = item || {};
+  return `${normalizeQuestionText(q.ch).toLowerCase()}::${normalizeQuestionText(q.q).toLowerCase()}`;
+}
+
+function sanitizeQuestionEntry(entry) {
+  const source = entry || {};
+  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+  const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
+  const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
+  const correctText = originalOptions[safeAnswerIndex];
+  const uniqueOptions = [];
+  const seenOptions = new Set();
+
+  originalOptions.forEach((option) => {
+    const raw = String(option == null ? '' : option);
+    const key = normalizeOptionKey(raw);
+    if (!key || seenOptions.has(key)) return;
+    seenOptions.add(key);
+    uniqueOptions.push(raw);
+  });
+
+  let nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
+  if (nextAnswerIndex < 0) {
+    if (correctText != null && normalizeOptionKey(correctText)) {
+      uniqueOptions.unshift(String(correctText));
+      nextAnswerIndex = 0;
+    } else {
+      nextAnswerIndex = 0;
+    }
+  }
+  if (!uniqueOptions.length) {
+    uniqueOptions.push('Option indisponible');
+    nextAnswerIndex = 0;
+  }
+
+  return {
+    ...source,
+    q: String(source.q || ''),
+    opts: uniqueOptions,
+    a: nextAnswerIndex
+  };
+}
+
+function prepareQuestionPool(pool) {
+  const uniqueQuestions = [];
+  const seenQuestions = new Set();
+  (Array.isArray(pool) ? pool : []).forEach((entry) => {
+    const sanitized = sanitizeQuestionEntry(entry);
+    const key = questionKey(sanitized);
+    if (!key || seenQuestions.has(key)) return;
+    seenQuestions.add(key);
+    uniqueQuestions.push(sanitized);
+  });
+  return uniqueQuestions;
+}
+
+function getPreparedBank() {
+  return prepareQuestionPool(BANK);
+}
+
+function ensureShuffleLaunchButton() {
+  const startBtn = document.querySelector('.btn-start');
+  if (!startBtn || document.getElementById('shuffle-launch-btn')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'launch-actions';
+  wrap.style.display = 'flex';
+  wrap.style.justifyContent = 'center';
+  wrap.style.gap = '10px';
+  wrap.style.flexWrap = 'wrap';
+  wrap.style.marginTop = '8px';
+  startBtn.parentNode.insertBefore(wrap, startBtn);
+  wrap.appendChild(startBtn);
+
+  const shuffleBtn = document.createElement('button');
+  shuffleBtn.id = 'shuffle-launch-btn';
+  shuffleBtn.type = 'button';
+  shuffleBtn.className = 'btn-start';
+  shuffleBtn.textContent = '🔀 Nouveau tirage';
+  shuffleBtn.style.background = 'linear-gradient(135deg,#1f6fb2,#3498db)';
+  shuffleBtn.onclick = () => {
+    lastSessionSignature = '';
+    startExam({ forceDifferent: true });
+  };
+  wrap.appendChild(shuffleBtn);
+}
+
 // Init count sur l'écran d'accueil
-document.getElementById('total-q-count').textContent = BANK.length;
+document.getElementById('total-q-count').textContent = getPreparedBank().length;
 populateChapterControls();
 initPartielSettings();
 
@@ -1379,7 +1486,7 @@ function switchModule(mode) {
 }
 
 function getUniqueChapters() {
-  return [...new Set(BANK.map(q => q.ch))].sort((a, b) => a.localeCompare(b, 'fr'));
+  return [...new Set(getPreparedBank().map(q => q.ch))].sort((a, b) => a.localeCompare(b, 'fr'));
 }
 
 function populateChapterControls() {
@@ -1411,10 +1518,13 @@ function populateChapterControls() {
   });
 }
 
-function pickQuestionsWithRepeats(pool, count) {
-  if (!pool.length) return [];
+ensureShuffleLaunchButton();
 
-  // Melange plus homogene: repartition par chapitre en round-robin.
+function getBalancedDraw(pool, count) {
+  const wanted = Math.min(count, pool.length);
+  if (wanted <= 0) return [];
+  if (wanted >= pool.length) return shuffle(pool).slice(0, wanted);
+
   const byChapter = new Map();
   pool.forEach((q) => {
     const chapter = q && q.ch ? q.ch : 'Sans chapitre';
@@ -1427,51 +1537,63 @@ function pickQuestionsWithRepeats(pool, count) {
     questions: shuffle(byChapter.get(chapter))
   }));
 
-  const result = [];
-  let guard = 0;
-  while (result.length < count && guard < count * 10) {
-    guard += 1;
-    let addedOnPass = false;
-
+  const picked = [];
+  while (picked.length < wanted) {
+    let added = false;
     for (const bucket of buckets) {
-      if (result.length >= count) break;
-
-      // Rechargement du chapitre quand vide pour permettre repetition,
-      // tout en conservant une alternance inter-chapitres.
-      if (!bucket.questions.length) {
-        bucket.questions = shuffle(byChapter.get(bucket.chapter));
+      if (picked.length >= wanted) break;
+      if (bucket.questions.length) {
+        picked.push(bucket.questions.pop());
+        added = true;
       }
-
-      if (!bucket.questions.length) continue;
-
-      const next = bucket.questions.pop();
-      const prev = result[result.length - 1];
-      if (prev && next && prev.q === next.q && bucket.questions.length) {
-        // Evite de poser exactement la meme question deux fois de suite.
-        bucket.questions.unshift(next);
-        result.push(bucket.questions.pop());
-      } else {
-        result.push(next);
-      }
-      addedOnPass = true;
     }
-
-    if (!addedOnPass) break;
+    if (!added) break;
   }
 
-  return result.slice(0, count);
+  return shuffle(picked).slice(0, wanted);
 }
 
-function startExam() {
+function getVariedBalancedDraw(pool, count, options) {
+  const wanted = Math.min(count, pool.length);
+  if (wanted <= 0) return [];
+  const config = options || {};
+  let candidatePool = pool;
+
+  if (config.forceDifferent && lastDrawQuestionKeys.length && pool.length > wanted) {
+    const previousSet = new Set(lastDrawQuestionKeys);
+    const fresh = pool.filter((q) => !previousSet.has(questionKey(q)));
+    if (fresh.length >= wanted) candidatePool = fresh;
+  }
+
+  const tries = 8;
+  for (let i = 0; i < tries; i++) {
+    const draw = getBalancedDraw(candidatePool, wanted);
+    const signature = draw.map(questionKey).sort().join('||');
+    if (signature !== lastSessionSignature || candidatePool.length <= wanted) {
+      lastSessionSignature = signature;
+      lastDrawQuestionKeys = draw.map(questionKey);
+      return draw;
+    }
+  }
+
+  const fallback = getBalancedDraw(candidatePool, wanted);
+  lastSessionSignature = fallback.map(questionKey).sort().join('||');
+  lastDrawQuestionKeys = fallback.map(questionKey);
+  return fallback;
+}
+
+function startExam(options) {
+  const config = options || {};
   stopTimer();
   let requestedCount = 25;
   let durationMinutes = 45;
-  let sourcePool = [...BANK];
+  const questionBank = getPreparedBank();
+  let sourcePool = [...questionBank];
 
   if (activeModule === 'sandbox') {
     requestedCount = Number(document.getElementById('exam-size')?.value || 20);
     const chapter = document.getElementById('chapter-filter')?.value || 'all';
-    if (chapter !== 'all') sourcePool = BANK.filter(q => q.ch === chapter);
+    if (chapter !== 'all') sourcePool = questionBank.filter(q => q.ch === chapter);
   }
   if (activeModule === 'partiel') {
     requestedCount = Number(document.getElementById('partiel-size')?.value || 25);
@@ -1485,7 +1607,7 @@ function startExam() {
   if (activeModule === 'chapitres') {
     requestedCount = Number(document.getElementById('exam-size')?.value || 20);
     const chapter = selectedChapterQuick || document.getElementById('chapter-filter')?.value || 'all';
-    if (chapter !== 'all') sourcePool = BANK.filter(q => q.ch === chapter);
+    if (chapter !== 'all') sourcePool = questionBank.filter(q => q.ch === chapter);
   }
 
   // Garde-fou simulation/chapitres: éviter un tirage vide si la valeur UI est invalide.
@@ -1495,13 +1617,16 @@ function startExam() {
   requestedCount = Math.floor(requestedCount);
 
   if (!Array.isArray(sourcePool) || sourcePool.length === 0) {
-    sourcePool = [...BANK];
+    sourcePool = [...questionBank];
   }
 
   currentExamSize = requestedCount;
 
-  // Tirage aléatoire avec répétition si nécessaire
-  currentSession = pickQuestionsWithRepeats(sourcePool, requestedCount);
+  if (sourcePool.length < requestedCount) {
+    alert(`Seulement ${sourcePool.length} question(s) unique(s) disponible(s) pour cette sélection. Le quiz utilisera toutes les questions disponibles.`);
+  }
+
+  currentSession = getVariedBalancedDraw(sourcePool, requestedCount, config);
   if (!currentSession.length) {
     alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
     return;
@@ -1535,6 +1660,7 @@ function startExam() {
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('nav-pills').style.display = 'flex';
   document.getElementById('main').style.display = 'block';
+  document.getElementById('floating-clear-btn').style.display = 'inline-flex';
 
   buildUI();
   startTimer();
@@ -1564,8 +1690,12 @@ function buildUI() {
       <div class="opts" id="opts-${i}">
         ${shuffledOpts[i].map((o, oi) => `<button class="opt" id="opt-${i}-${oi}" onclick="selectOpt(${i},${oi})">${String.fromCharCode(65 + oi)}. ${o}</button>`).join('')}
       </div>
+      <div class="clear-row">
+        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer la sélection</button>
+      </div>
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
+        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer la sélection</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
         <button class="report-btn" onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:700;margin-left:auto">🚩 Signaler</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
@@ -1582,6 +1712,15 @@ function selectOpt(qi, oi) {
   answers[qi] = oi;
   document.querySelectorAll(`#opts-${qi} .opt`).forEach((b, i) => b.classList.toggle('selected', i === oi));
   document.getElementById('pill-' + qi).classList.add('answered');
+  updateProgress();
+}
+
+function clearOpt(qi) {
+  if (examFinished) return;
+  if (qi < 0 || qi >= answers.length) return;
+  answers[qi] = null;
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach((button) => button.classList.remove('selected'));
+  document.getElementById('pill-' + qi).classList.remove('answered');
   updateProgress();
 }
 
@@ -1640,6 +1779,7 @@ function submitExam() {
   stopTimer();
   document.getElementById('main').style.display = 'none';
   document.getElementById('nav-pills').style.display = 'none';
+  document.getElementById('floating-clear-btn').style.display = 'none';
   showResults();
 }
 
@@ -1797,6 +1937,7 @@ function goHome() {
   document.getElementById('progress-bar').style.display = 'none';
   document.getElementById('main').style.display = 'none';
   document.getElementById('nav-pills').style.display = 'none';
+  document.getElementById('floating-clear-btn').style.display = 'none';
   document.getElementById('timer').className = '';
   document.getElementById('home').style.display = 'block';
   examFinished = false;

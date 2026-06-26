@@ -17,9 +17,11 @@ let correctPoints = 0.25;
 let wrongPoints = 0.083;
 let currentUser = null;
 let lastSessionSignature = '';
+let lastDrawQuestionKeys = [];
 let activeModule = 'sandbox';
 let selectedChapterQuick = [];
 const RECENT_QUESTIONS_STORAGE_PREFIX = 'qcm_recent_questions_v1::';
+const IS_ANAT_SUBJECT = () => String(SUBJECT_NAME || '').toLowerCase() === 'anat';
 
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
@@ -82,6 +84,11 @@ function safeCssEscape(value) {
     return window.CSS.escape(value);
   }
   return String(value).replace(/(["'\\.#:\[\](),>+~*^$|=\s])/g, '\\$1');
+}
+
+function setMessageZone(text) {
+  const zone = document.getElementById('message-zone');
+  if (zone) zone.textContent = text || '';
 }
 
 function showFatalInitError(error) {
@@ -205,6 +212,91 @@ function normalizeStoredResult(result) {
 
 function getSelectedQuickChapter() {
   return Array.isArray(selectedChapterQuick) ? [...selectedChapterQuick] : [];
+}
+
+function normalizeQuestionText(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeOptionKey(value) {
+  return normalizeQuestionText(value).toLowerCase();
+}
+
+function sanitizeQuestionEntry(entry) {
+  const source = entry || {};
+  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+  const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
+  const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
+  const correctText = originalOptions[safeAnswerIndex];
+  const uniqueOptions = [];
+  const seenOptions = new Set();
+  let removedOptionCount = 0;
+
+  originalOptions.forEach((option) => {
+    const raw = String(option == null ? '' : option);
+    const key = normalizeOptionKey(raw);
+    if (!key) {
+      removedOptionCount += 1;
+      return;
+    }
+    if (seenOptions.has(key)) {
+      removedOptionCount += 1;
+      return;
+    }
+    seenOptions.add(key);
+    uniqueOptions.push(raw);
+  });
+
+  let nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
+  if (nextAnswerIndex < 0) {
+    if (correctText != null && normalizeOptionKey(correctText)) {
+      uniqueOptions.unshift(String(correctText));
+      nextAnswerIndex = 0;
+    } else {
+      nextAnswerIndex = 0;
+    }
+  }
+  if (!uniqueOptions.length) {
+    uniqueOptions.push('Option indisponible');
+    nextAnswerIndex = 0;
+  }
+
+  return {
+    entry: {
+      ...source,
+      q: String(source.q || ''),
+      opts: uniqueOptions,
+      a: nextAnswerIndex
+    },
+    removedOptionCount
+  };
+}
+
+function prepareQuestionPool(pool) {
+  const uniqueQuestions = [];
+  const seenQuestions = new Set();
+  let duplicateQuestionCount = 0;
+  let duplicateOptionCount = 0;
+
+  (Array.isArray(pool) ? pool : []).forEach((entry) => {
+    const sanitized = sanitizeQuestionEntry(entry);
+    const key = questionKey(sanitized.entry);
+    if (!key) return;
+    if (seenQuestions.has(key)) {
+      duplicateQuestionCount += 1;
+      duplicateOptionCount += sanitized.removedOptionCount;
+      return;
+    }
+    seenQuestions.add(key);
+    duplicateOptionCount += sanitized.removedOptionCount;
+    uniqueQuestions.push(sanitized.entry);
+  });
+
+  return {
+    questions: uniqueQuestions,
+    duplicateQuestionCount,
+    duplicateOptionCount
+  };
 }
 
 function syncChapterFilterSelection(chapters) {
@@ -796,26 +888,37 @@ function initSandboxPage() {
     throw new Error('Structure HTML incomplète: un ou plusieurs éléments requis sont absents.');
   }
 
+  const prepared = prepareQuestionPool(BANK);
+  const questionBank = prepared.questions;
+
   const customHomeTitle = window.HOME_TITLE || '';
   homeTitle.textContent = customHomeTitle || `Bac à sable ${SUBJECT_NAME}`;
-  homeDesc.innerHTML = `${SUBJECT_DESC}<br>Banque de <strong id="total-q-count">${BANK.length}</strong> questions disponibles.`;
-  chapterCount.textContent = Array.from(new Set(BANK.map(q => q.ch))).length;
-  questionCount.textContent = 25;
+  homeDesc.innerHTML = `${SUBJECT_DESC}<br>Banque de <strong id="total-q-count">${questionBank.length}</strong> questions disponibles.`;
+  chapterCount.textContent = Array.from(new Set(questionBank.map(q => q.ch))).length;
+  questionCount.textContent = IS_ANAT_SUBJECT() ? 50 : 25;
   const statGrid = document.querySelector('.stat-grid');
   if (statGrid && !document.getElementById('bank-total-count')) {
     const stat = document.createElement('div');
     stat.className = 'stat';
-    stat.innerHTML = `<span id="bank-total-count">${BANK.length}</span>QCM dans la banque`;
+    stat.innerHTML = `<span id="bank-total-count">${questionBank.length}</span>QCM dans la banque`;
     statGrid.appendChild(stat);
   }
-  messageZone.textContent = BANK.length ? '' : 'Aucune question disponible pour cette matière. Ajoute des questions dans la variable BANK de ce fichier.';
+  messageZone.textContent = questionBank.length ? '' : 'Aucune question disponible pour cette matière. Ajoute des questions dans la variable BANK de ce fichier.';
 
   populateChapterOptions();
   styleOptionsPanel();
+  ensureShuffleLaunchButton();
   injectAccountPanel();
   renderAccountPanel();
   renderChapterList();
   refreshExamSizeFromFilters();
+  if (IS_ANAT_SUBJECT()) {
+    const partielSizeSelect = document.getElementById('partiel-size');
+    if (partielSizeSelect) {
+      partielSizeSelect.innerHTML = '<option value="50">50 QCM</option>';
+      partielSizeSelect.value = '50';
+    }
+  }
   examSize.addEventListener('change', function() {
     questionCount.textContent = this.value;
   });
@@ -866,13 +969,15 @@ function initSandboxPage() {
 
 function populateChapterOptions() {
   const filter = document.getElementById('chapter-filter');
+  const prepared = prepareQuestionPool(BANK);
+  const questionBank = prepared.questions;
   filter.innerHTML = '';
   const defaultOption = document.createElement('option');
   defaultOption.value = 'all';
   defaultOption.textContent = 'Tous les chapitres';
   filter.appendChild(defaultOption);
 
-  const chapters = Array.from(new Set(BANK.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
+  const chapters = Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
   chapters.forEach(ch => {
     const option = document.createElement('option');
     option.value = ch;
@@ -885,6 +990,8 @@ function renderChapterList() {
   const modulePanel = document.getElementById('module-chapitres');
   const quickList = document.getElementById('chapter-quick-list');
   if (!modulePanel || !quickList) return;
+  const prepared = prepareQuestionPool(BANK);
+  const questionBank = prepared.questions;
 
   quickList.innerHTML = '';
 
@@ -897,7 +1004,7 @@ function renderChapterList() {
   }
   preview.innerHTML = '';
 
-  const chapters = Array.from(new Set(BANK.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
+  const chapters = Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr'));
   if (chapters.length === 0) {
     preview.innerHTML = '<div style="color:#aaa;font-size:.9rem">Pas de chapitres disponibles.</div>';
     return;
@@ -934,7 +1041,7 @@ function renderChapterList() {
     list.style.borderTop = '1px solid #2d2d50';
     list.style.paddingTop = '8px';
     list.innerHTML = `<div style="color:#e6eefc;font-weight:700;margin-bottom:8px">${escapeHtml(ch)}</div>`;
-    const items = BANK.filter(q => q.ch === ch).slice(0, 6);
+    const items = questionBank.filter(q => q.ch === ch).slice(0, 6);
     items.forEach(q => {
       const qi = document.createElement('div');
       qi.style.padding = '8px';
@@ -1083,9 +1190,15 @@ function syncExamSizeSelect(selectId, maxCount, presetValues, preferredDefault) 
 
 function refreshExamSizeFromFilters() {
   const filter = document.getElementById('chapter-filter');
+  const prepared = prepareQuestionPool(BANK);
+  const questionBank = prepared.questions;
   const selectedChapters = getSelectedQuickChapter().length ? getSelectedQuickChapter() : getSelectedChapters(filter);
-  const pool = selectedChapters.length ? BANK.filter(q => selectedChapters.includes(q.ch)) : BANK;
-  syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
+  const pool = selectedChapters.length ? questionBank.filter(q => selectedChapters.includes(q.ch)) : questionBank;
+  if (IS_ANAT_SUBJECT()) {
+    syncExamSizeSelect('exam-size', pool.length, [50], 50);
+  } else {
+    syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
+  }
   const questionCount = document.getElementById('question-count');
   const examSize = document.getElementById('exam-size');
   if (questionCount && examSize) questionCount.textContent = examSize.value;
@@ -1097,7 +1210,9 @@ function examSignature(questions) {
 
 function questionKey(item) {
   const q = item || {};
-  return `${String(q.ch || '')}::${String(q.q || '')}`;
+  const chapter = normalizeQuestionText(q.ch).toLowerCase();
+  const question = normalizeQuestionText(q.q).toLowerCase();
+  return chapter || question ? `${chapter}::${question}` : '';
 }
 
 function loadRecentQuestionKeys(subjectName) {
@@ -1125,9 +1240,10 @@ function saveRecentQuestionKeys(subjectName, keys) {
   safeSetItem(key, JSON.stringify(unique.slice(0, 500)));
 }
 
-function pickSessionWithHistory(pool, totalCount) {
+function pickSessionWithHistory(pool, totalCount, options) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
+  const config = options || {};
 
   const recent = loadRecentQuestionKeys(SUBJECT_NAME);
   const recentWindow = Math.max(wanted * 3, 60);
@@ -1144,6 +1260,17 @@ function pickSessionWithHistory(pool, totalCount) {
     }
   }
 
+  if (config.forceDifferent && lastDrawQuestionKeys.length && candidatePool.length > wanted) {
+    const previousSet = new Set(lastDrawQuestionKeys);
+    const fresh = candidatePool.filter((q) => !previousSet.has(questionKey(q)));
+    if (fresh.length >= wanted) {
+      candidatePool = fresh;
+    } else if (fresh.length > 0) {
+      const older = shuffle(candidatePool.filter((q) => previousSet.has(questionKey(q))));
+      candidatePool = fresh.concat(older.slice(0, wanted - fresh.length));
+    }
+  }
+
   let draw = getVariedBalancedDraw(candidatePool, wanted);
   if (draw.length < wanted) {
     const used = new Set(draw.map(questionKey));
@@ -1152,6 +1279,7 @@ function pickSessionWithHistory(pool, totalCount) {
   }
 
   saveRecentQuestionKeys(SUBJECT_NAME, draw.map(questionKey).concat(recent));
+  lastDrawQuestionKeys = draw.map(questionKey);
   return draw;
 }
 
@@ -1172,7 +1300,6 @@ function getBalancedDraw(pool, totalCount) {
     questions: shuffle(byChapter.get(ch))
   }));
 
-  // Round-robin draw: keeps chapter counts as balanced as possible (difference <= 1 when feasible).
   const picked = [];
   while (picked.length < wanted) {
     let added = false;
@@ -1206,15 +1333,54 @@ function getVariedBalancedDraw(pool, totalCount) {
   return fallback;
 }
 
-function startExam() {
-  if (!BANK.length) {
+function startFreshShuffleExam() {
+  lastSessionSignature = '';
+  startExam({ forceDifferent: true });
+}
+
+function ensureShuffleLaunchButton() {
+  const homeCard = document.querySelector('.home-card');
+  const startBtn = homeCard ? homeCard.querySelector('.btn-start') : null;
+  if (!homeCard || !startBtn) return;
+
+  let actions = document.getElementById('launch-actions');
+  if (!actions) {
+    actions = document.createElement('div');
+    actions.id = 'launch-actions';
+    actions.style.display = 'flex';
+    actions.style.justifyContent = 'center';
+    actions.style.gap = '10px';
+    actions.style.flexWrap = 'wrap';
+    actions.style.marginTop = '8px';
+    startBtn.parentNode.insertBefore(actions, startBtn);
+    actions.appendChild(startBtn);
+  }
+
+  if (!document.getElementById('shuffle-launch-btn')) {
+    const shuffleBtn = document.createElement('button');
+    shuffleBtn.id = 'shuffle-launch-btn';
+    shuffleBtn.type = 'button';
+    shuffleBtn.className = 'btn-start';
+    shuffleBtn.textContent = '🔀 Nouveau tirage';
+    shuffleBtn.style.background = 'linear-gradient(135deg,#1f6fb2,#3498db)';
+    shuffleBtn.onclick = startFreshShuffleExam;
+    actions.appendChild(shuffleBtn);
+  }
+}
+
+function startExam(options) {
+  const config = options || {};
+  const prepared = prepareQuestionPool(BANK);
+  const questionBank = prepared.questions;
+
+  if (!questionBank.length) {
     alert('Aucune question disponible pour cette matière.');
     return;
   }
   const filter = document.getElementById('chapter-filter');
   const quickSelected = getSelectedQuickChapter();
   const sandboxSelectedChapters = quickSelected.length ? quickSelected : getSelectedChapters(filter);
-  const sandboxPool = sandboxSelectedChapters.length === 0 ? BANK : BANK.filter(q => sandboxSelectedChapters.includes(q.ch));
+  const sandboxPool = sandboxSelectedChapters.length === 0 ? questionBank : questionBank.filter(q => sandboxSelectedChapters.includes(q.ch));
 
   let pool = sandboxPool;
   let requestedCount = parseInt(document.getElementById('exam-size')?.value || '25', 10);
@@ -1228,13 +1394,12 @@ function startExam() {
     const customCount = parseInt(document.getElementById('partiel-size-custom')?.value || '', 10);
     requestedCount = Number.isFinite(customCount) ? customCount : presetCount;
     requestedCount = Math.max(5, requestedCount || 25);
-    pool = BANK;
+    pool = questionBank;
   } else {
     correctPoints = 0.25;
     wrongPoints = 0.083;
   }
 
-  // Timer peut être défini dans tous les modes, pas juste 'partiel'
   const timerValue = document.getElementById('global-timer')?.value || document.getElementById('partiel-timer')?.value;
   const timerParsed = parseInt(String(timerValue || '').trim(), 10);
   timerMins = Number.isFinite(timerParsed) && timerParsed > 0 ? timerParsed : 0;
@@ -1246,6 +1411,9 @@ function startExam() {
   if (!Number.isFinite(requestedCount) || requestedCount < 1) {
     requestedCount = 25;
   }
+  if (IS_ANAT_SUBJECT()) {
+    requestedCount = 50;
+  }
   requestedCount = Math.floor(requestedCount);
 
   if (pool.length === 0) {
@@ -1254,13 +1422,24 @@ function startExam() {
   }
 
   const selectedCount = Math.min(requestedCount, pool.length);
-  currentSession = pickSessionWithHistory(pool, selectedCount);
+  currentSession = pickSessionWithHistory(pool, selectedCount, config);
   if (!currentSession.length) {
     alert('Impossible de générer un questionnaire. Réessaie avec d\'autres options.');
     return;
   }
   if (pool.length < requestedCount) {
     alert(`Les chapitres choisis contiennent seulement ${pool.length} questions. Le quiz utilisera toutes les questions disponibles.`);
+  }
+
+  if (prepared.duplicateQuestionCount || prepared.duplicateOptionCount) {
+    const details = [];
+    if (prepared.duplicateQuestionCount) details.push(`${prepared.duplicateQuestionCount} question(s) en double ignorée(s)`);
+    if (prepared.duplicateOptionCount) details.push(`${prepared.duplicateOptionCount} réponse(s) en double retirée(s)`);
+    setMessageZone(details.join(' • '));
+  } else if (config.forceDifferent) {
+    setMessageZone('Nouveau tirage généré avec une préférence pour des questions différentes.');
+  } else {
+    setMessageZone('');
   }
 
   const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
@@ -1300,65 +1479,6 @@ function startExam() {
   buildUI();
 }
 
-function attachTimerToHeader(){
-  const header = document.getElementById('header');
-  if (!header) return;
-  let t = document.getElementById('timer');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'timer';
-    t.style.marginLeft = '12px';
-    t.style.fontSize = '1.1rem';
-    t.style.fontWeight = '800';
-    t.style.background = 'rgba(0,0,0,.2)';
-    t.style.padding = '6px 10px';
-    t.style.borderRadius = '18px';
-    header.appendChild(t);
-  }
-  t.style.display = 'inline-block';
-  updateTimerDisplay();
-}
-
-function goBack() {
-  if (examFinished) {
-    goHome();
-    return;
-  }
-  if (currentQ > 0) {
-    goTo(currentQ - 1);
-    return;
-  }
-  goHome();
-}
-
-function updateTimerDisplay(){
-  const t = document.getElementById('timer');
-  if (!t) return;
-  const m = Math.floor(remainingSeconds / 60);
-  const s = remainingSeconds % 60;
-  t.textContent = `${m}:${String(s).padStart(2,'0')}`;
-  t.className = '';
-  if (remainingSeconds <= 30) t.className = 'danger';
-  else if (remainingSeconds <= 120) t.className = 'warn';
-}
-
-function startTimer(){
-  stopTimer();
-  timerInterval = setInterval(()=>{
-    remainingSeconds -= 1;
-    updateTimerDisplay();
-    if (remainingSeconds <= 0) {
-      stopTimer();
-      alert('Temps écoulé — le partiel est soumis automatiquement.');
-      submitExam();
-    }
-  }, 1000);
-}
-
-function stopTimer(){
-  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-}
-
 function buildUI() {
   document.getElementById('questions-zone').innerHTML = '';
   document.getElementById('nav-pills').innerHTML = '';
@@ -1384,6 +1504,7 @@ function buildUI() {
       </div>
       <div class="qnav">
         <button class="btn btn-prev" onclick="goTo(${i - 1})" ${i === 0 ? 'disabled' : ''}>← Précédent</button>
+        <button class="btn btn-skip" onclick="clearOpt(${i})">Effacer la sélection</button>
         <button class="btn btn-skip" onclick="goTo(${i < currentSession.length - 1 ? i + 1 : i})">Passer →</button>
         <button class="report-btn" onclick="openReportModal(${i})" style="background:transparent;border:1px solid #e74c3c;color:#e74c3c;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:700;margin-left:auto">🚩 Signaler</button>
         ${i < currentSession.length - 1 ? `<button class="btn btn-next" onclick="goTo(${i + 1})">Suivant →</button>` : '<span></span>'}
@@ -1399,6 +1520,15 @@ function selectOpt(qi, oi) {
   answers[qi] = oi;
   document.querySelectorAll(`#opts-${qi} .opt`).forEach((b, i) => b.classList.toggle('selected', i === oi));
   document.getElementById('pill-' + qi).classList.add('answered');
+  updateProgress();
+}
+
+function clearOpt(qi) {
+  if (examFinished) return;
+  if (qi < 0 || qi >= answers.length) return;
+  answers[qi] = null;
+  document.querySelectorAll(`#opts-${qi} .opt`).forEach((button) => button.classList.remove('selected'));
+  document.getElementById('pill-' + qi).classList.remove('answered');
   updateProgress();
 }
 
@@ -1472,7 +1602,7 @@ function showResults() {
     const maxScore = maxScoreValue.toFixed(2);
     const finalNoteValue = maxScoreValue > 0 ? (raw / maxScoreValue) * 20 : 0;
     const finalNote = finalNoteValue.toFixed(2);
-    const emoji = finalNoteValue >= 14 ? '🏆' : finalNoteValue >= 10 ? '👍' : finalNoteValue >= 8 ? '📖' : '💪';
+    const emoji = finalNoteValue >= 7 ? '🏆' : finalNoteValue >= 5 ? '👍' : finalNoteValue >= 4 ? '📖' : '💪';
     const resultDate = buildResultTimestamp();
 
     try {
