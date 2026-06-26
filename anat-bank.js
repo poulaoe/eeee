@@ -431,7 +431,7 @@ var EXTRA_Q3 = [
   {c:"26",l:"Chap. 2.6",q:"L'articulation talo-crurale réalise EXCLUSIVEMENT :",o:["Flexion plantaire et dorsale uniquement", "Inversion + éversion uniquement", "Rotation + flexion plantaire", "Flexion/extension + inversion/éversion"],a:0,e:"Talo-crurale = articulation très fermée → FLEXION PLANTAIRE + DORSALE EXCLUSIVEMENT. L'inversion/éversion = articulation SOUS-TALIENNE."},
   {c:"5",l:"Chap. 5",q:"L'ATM permet combien de types de mouvements ?",o:["6", "3", "4", "5"],a:3,e:"ATM permet 5 mouvements : DESCENTE + ASCENSION + PROPULSION + RÉTROPULSION + LATÉRALITÉ (diduction)."},
   {c:"7",l:"Chap. 7",q:"Les muscles larges de l'abdomen participent à :",o:["Soutien viscères + presse abdominale + respiration + toux + défécation + accouchement", "Uniquement soutien des viscères et flexion", "Soutien viscères + rotation uniquement", "Soutien viscères + extension"],a:0,e:"Muscles larges : soutien viscères + PRESSE ABDOMINALE + respiration + toux + défécation + accouchement."},
-  {c:"3",l:"Chap. 3",q:"Les muscles sous-occipitaux sont tous innervés par :",o:["Nerf hypoglosse XII", "Branche post. C1", "Nerf grand occipital d'Arnold", "Branche post. C2"],a:1,e:"Les 4 sous-occipitaux = branche POST. de C1. Le nerf d'Arnold (C2) = SENSITIF uniquement (cuir chevelu post.)."}
+  {c:"3",l:"Chap. 3",q:"Les muscles  sous-occipitaux sont tous innervés par :",o:["Nerf hypoglosse XII", "Branche post. C1", "Nerf grand occipital d'Arnold", "Branche post. C2"],a:1,e:"Les 4 sous-occipitaux = branche POST. de C1. Le nerf d'Arnold (C2) = SENSITIF uniquement (cuir chevelu post.)."}
 ];
 
 window.ANAT_BANK = ALL_Q.map(function(item) {
