@@ -25,14 +25,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .stat{background:#0f3460;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#aac}
 .stat span{display:block;font-size:1.4rem;font-weight:800;color:#e74c3c}
 .btn-start,.restart-btn{border:none;cursor:pointer;font-weight:800}
-.btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;font-size:1rem;letter-spacing:.5px}
+.btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;font-size:1rem;varter-spacing:.5px}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,57,43,.4)}
 .home-btn{padding:7px 10px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:9px;cursor:pointer;font-size:.8rem;font-weight:700;margin-left:8px}
 .home-btn:hover{background:rgba(0,0,0,.35)}
 .toggle-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #2d2d50;border-radius:8px;background:#0f3460;color:#dbe4f5}
 .toggle-row input{width:16px;height:16px}
 #header{background:linear-gradient(135deg,#c0392b,#922b21);padding:14px 22px;display:none;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.5);gap:10px;flex-wrap:wrap}
-#header h1{font-size:.9rem;font-weight:700;letter-spacing:.5px;line-height:1.3}
+#header h1{font-size:.9rem;font-weight:700;varter-spacing:.5px;line-height:1.3}
 #timer{font-size:1.25rem;font-weight:800;background:rgba(0,0,0,.3);padding:6px 14px;border-radius:20px;min-width:76px;text-align:center;transition:color .3s,background .3s;flex-shrink:0}
 #timer.warn{color:#f39c12;background:rgba(243,156,18,.2)}
 #timer.danger{color:#e74c3c;background:rgba(231,76,60,.3);animation:blink 1s infinite}
@@ -49,12 +49,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .qcard{display:none;background:#16213e;border-radius:12px;padding:22px;margin-bottom:14px;border:1px solid #2d2d50}
 .qcard.active{display:block;animation:fadein .25s ease}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.qtag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:800;letter-spacing:1px;margin-bottom:8px}
+.qtag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:800;varter-spacing:1px;margin-bottom:8px}
 .tag-neuro{background:rgba(192,57,43,.25);color:#e74c3c;border:1px solid rgba(192,57,43,.4)}
 .tag-clinique{background:rgba(52,152,219,.2);color:#3498db;border:1px solid rgba(52,152,219,.4)}
 .tag-physio{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
 .tag-psycho{background:rgba(241,196,15,.18);color:#f1c40f;border:1px solid rgba(241,196,15,.35)}
-.chapitre-tag{font-size:.62rem;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.chapitre-tag{font-size:.62rem;color:#666;margin-bottom:5px;text-transform:uppercase;varter-spacing:.5px}
 .qtext{font-size:.97rem;line-height:1.6;font-weight:500;margin-bottom:18px;color:#dde}
 .opts{display:flex;flex-direction:column;gap:9px}
 .opt{background:#0f3460;border:2px solid #2d2d50;border-radius:8px;padding:11px 15px;cursor:pointer;font-size:.88rem;color:#ccd;transition:all .2s;text-align:left;font-weight:400}
@@ -248,7 +248,7 @@ const BANK = window.DOULEUR_BANK || [];
 const QC_BANK = window.DOULEUR_QC_BANK || [];
 function shuffle(arr){
   const a=[...arr];
-  for(let i=a.length-1;i>0;i--){
+  for(var i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [a[i],a[j]]=[a[j],a[i]];
   }
@@ -294,7 +294,7 @@ function sanitizeQuestionEntry(entry){
     uniqueOptions.push(raw);
   });
 
-  let nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
+  var nextAnswerIndex = uniqueOptions.findIndex((option) => normalizeOptionKey(option) === normalizeOptionKey(correctText));
   if (nextAnswerIndex < 0) {
     if (correctText != null && normalizeOptionKey(correctText)) {
       uniqueOptions.unshift(String(correctText));
@@ -334,30 +334,30 @@ function getPreparedBank(){
   return prepareQuestionPool(BANK);
 }
 
-const QUESTIONS = shuffle(BANK.map((raw, idx) => {
+var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
   return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
 
-let currentSession = [];
-let currentQC = [];
-let answers = [];
-let shuffledOpts = [];
-let shuffledCorrects = [];
-let currentQ = 0;
-let remainingSeconds = 45 * 60;
-let timerInterval = null;
-let examFinished = false;
-let activeModule = 'sandbox';
-let examDurationMinutes = 45;
-let timerEnabled = true;
-let gradingMode = 'bac';
-let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
-let lastPartielSignature = '';
-let lastDrawQuestionKeys = [];
+var currentSession = [];
+var currentQC = [];
+var answers = [];
+var shuffledOpts = [];
+var shuffledCorrects = [];
+var currentQ = 0;
+var remainingSeconds = 45 * 60;
+var timerInterval = null;
+var examFinished = false;
+var activeModule = 'sandbox';
+var examDurationMinutes = 45;
+var timerEnabled = true;
+var gradingMode = 'bac';
+var gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+var lastPartielSignature = '';
+var lastDrawQuestionKeys = [];
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
-let currentUser = null;
+var currentUser = null;
 const memoryStorageFallback = {};
 const windowNameStoragePrefix = 'QCM_STATE::';
 
@@ -406,6 +406,7 @@ function safeRemoveItem(key){
   } catch (e) {
     delete memoryStorageFallback[key];
     const persisted = readWindowNameStorage();
+    delete memoryStorageFallback[key];
     delete persisted[key];
     writeWindowNameStorage(persisted);
   }
@@ -669,7 +670,7 @@ function initHomeModules(){
   }
 }
 function switchModule(moduleId){
-  activeModule = moduleId;
+  var activeModule = moduleId;
   ['sandbox','partiel','chapitres'].forEach(id => {
     const tab = document.getElementById(`tab-${id}`);
     const panel = document.getElementById(`module-${id}`);
@@ -741,7 +742,7 @@ function getBalancedDraw(pool, totalCount){
 
   const chosen = [];
   while (chosen.length < wanted) {
-    let added = false;
+    var added = false;
     for (const bucket of chapters) {
       if (chosen.length >= wanted) break;
       if (bucket.questions.length > 0) {
@@ -1019,13 +1020,13 @@ function submitExam(){
   showResults();
 }
 function showResults(){
-  let correct = 0, wrong = 0, skipped = 0;
+  var correct = 0, wrong = 0, skipped = 0;
   const timeUsed = timerEnabled ? (examDurationMinutes * 60 - remainingSeconds) : 0;
   const mu = Math.floor(timeUsed / 60), su = timeUsed % 60;
-  let corrHTML = '';
+  var corrHTML = '';
   currentSession.forEach((q, i) => {
     const ua = answers[i], ca = shuffledCorrects[i];
-    let cls;
+    var cls;
     if (ua === null) { cls = 'skipped'; skipped++; }
     else if (ua === ca) { correct++; }
     else { cls = 'wrong'; wrong++; }
