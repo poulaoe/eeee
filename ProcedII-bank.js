@@ -358,12 +358,12 @@ var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
 
 window.ANAT_BANK = ALL_Q.map(function(item) {
   return {
-    ch: item.l,
-    label: 'QCM anatomie',
+    ch: item.ch,
+    label: 'Proced II - ' + item.ch,
     type: 'direct',
     q: item.q,
-    opts: item.o,
-    a: item.a,
+    opts: item.opts,
+    a: item.ans,
     e: item.e
   };
 });
