@@ -293,7 +293,13 @@ function ensureHeaderControls() {
     const homeBtn = document.createElement('button');
     homeBtn.id = 'header-home-btn'; homeBtn.type = 'button'; homeBtn.className = 'home-btn';
     homeBtn.textContent = 'Accueil'; homeBtn.onclick = goHome; controls.appendChild(homeBtn);
+  }function goBack() {
+  if (window.history.length > 1) {
+    history.back();
+  } else {
+    window.location.href = 'index.html';
   }
+}
 }
 
 function injectAccountPanel() {
