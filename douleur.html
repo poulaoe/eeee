@@ -241,7 +241,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
   </div>
 </div>
-<script src="remote-config.js"></script>
+<script src="sandbox.js"></script>
 <script src="douleur-bank.js"></script>
 <script>
 const BANK = window.DOULEUR_BANK || [];
@@ -1034,7 +1034,7 @@ function showResults(){
     const ut = ua !== null ? shuffledOpts[i][ua] : '—';
     const ct = (ca >= 0 && ca < shuffledOpts[i].length)
       ? shuffledOpts[i][ca]
-      : (q.opts[(Number.isInteger(q.ans) ? q.ans : (Number.isInteger(q.a) ? q.a : 0))] || 'Réponse indisponible');
+      : (q.o[(Number.isInteger(q.ans) ? q.ans : (Number.isInteger(q.a) ? q.a : 0))] || 'Réponse indisponible');
     corrHTML += `<div class="corr-item ${cls}">
       <div class="ch-badge">${escapeHtml(q.ch)}</div>
       <div class="corr-q">${escapeHtml(q.q)}</div>
