@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>💬 Chat - QCM Quiz</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💔</text></svg>">
   <style>
     * {
       margin: 0;
@@ -226,6 +225,11 @@
       margin-right: 4px;
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
     @media (max-width: 600px) {
       .chat-container {
         height: calc(100vh - 32px);
@@ -246,7 +250,13 @@
 <body>
   <div class="chat-container">
     <div class="chat-header">
-      <h1>💬 Chat public QCM</h1>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <h1 style="margin:0">💬 Chat public QCM</h1>
+      <div style="display:flex;gap:8px">
+        <button onclick="window.history.length>1?history.back():window.location.href='index.html'" style="padding:6px 12px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700">← Retour</button>
+        <button onclick="window.location.href='index.html'" style="padding:6px 12px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700">🏠 Accueil</button>
+      </div>
+    </div>
       <div class="chat-stats">
         <div class="chat-stats-item">
           <span>Messages:</span>
@@ -259,6 +269,7 @@
         <div class="chat-stats-item">
           <span>Auto-refresh:</span>
           <span id="refresh-status">✓ Actif</span>
+        <span id="new-msg-badge" style="display:none;background:#e74c3c;color:#fff;padding:2px 8px;border-radius:12px;font-weight:700;font-size:.75rem;animation:pulse 1s infinite">🔔 <span id="new-msg-count">0</span> nouveau(x)</span>
         </div>
       </div>
     </div>
@@ -313,6 +324,21 @@
       return users.size;
     }
 
+    function updateNotificationBadge(count) {
+      // Favicon avec bulle
+      if (count > 0) {
+        document.title = '(' + count + ') 💬 Chat - QCM Quiz';
+      } else {
+        document.title = '💬 Chat - QCM Quiz';
+      }
+      // Bulle sur le bouton refresh
+      const badge = document.getElementById('new-msg-badge');
+      if (badge) {
+        badge.textContent = count > 0 ? count : '';
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      }
+    }
+
     function renderChatMessages() {
       const container = document.getElementById('chat-messages');
       const messageCount = document.getElementById('message-count');
@@ -364,9 +390,15 @@
         }
 
         const messages = await window.QCM_REMOTE.fetchChatMessages(subject, 100);
+        const newCount = Math.max(0, (messages || []).length - allMessages.length);
         allMessages = messages || [];
         document.getElementById('error-zone').innerHTML = '';
         renderChatMessages();
+        if (newCount > 0 && document.hidden) {
+          updateNotificationBadge(newCount);
+        } else {
+          updateNotificationBadge(0);
+        }
       } catch (error) {
         console.error('Erreur chargement:', error);
         const errorZone = document.getElementById('error-zone');
