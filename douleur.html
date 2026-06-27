@@ -560,11 +560,9 @@ function getPreparedBank(){
 }
 
 const QUESTIONS = shuffle(BANK.map((raw, idx) => {
-  const allOpts = [raw.a, ...raw.w];
-  const opts = shuffle(allOpts);
-  return { id: idx, ch: raw.ch, label: raw.label || '', type: raw.type || 'direct', q: raw.q, opts, ans: opts.indexOf(raw.a), e: raw.exp };
+  const opts = shuffle(raw.opts);
+  return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
-
 let currentSession = [];
 let currentQC = [];
 let answers = [];
