@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ Bataille Royale — QCM</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:radial-gradient(circle at top,#1a0a2e,#0d0d1a);color:#e8e8f0;min-height:100vh;padding:20px}
+.wrap{max-width:700px;margin:0 auto}
+.home-btn{padding:7px 12px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.2);color:#fff;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;text-decoration:none;display:inline-block}
+.home-btn:hover{background:rgba(0,0,0,.4)}
+.card{background:rgba(20,10,40,.8);border:1px solid #3a1a6e;border-radius:16px;padding:24px;margin-bottom:16px}
+h1{font-size:1.8rem;color:#c084fc;margin-bottom:6px;text-align:center}
+h2{font-size:1.1rem;color:#a78bfa;margin-bottom:14px}
+.subtitle{color:#9ca3af;font-size:.9rem;text-align:center;margin-bottom:24px}
+input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #4a1e8e;background:#0f0820;color:#fff;font-size:.9rem;margin-bottom:10px}
+input:focus,select:focus{outline:none;border-color:#a78bfa}
+.btn{display:block;width:100%;padding:13px;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-secondary{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff}
+.btn-secondary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff}
+.btn-danger:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.room-code{font-size:2.5rem;font-weight:900;color:#c084fc;letter-spacing:.3em;text-align:center;padding:16px;background:rgba(124,58,237,.1);border:2px dashed #7c3aed;border-radius:12px;margin:12px 0}
+.players-zone{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.player-card{padding:14px;border-radius:10px;text-align:center;border:2px solid}
+.player-card.p1{border-color:#a855f7;background:rgba(168,85,247,.1)}
+.player-card.p2{border-color:#3b82f6;background:rgba(59,130,246,.1)}
+.player-name{font-weight:800;font-size:1rem;margin-bottom:4px}
+.player-score{font-size:2rem;font-weight:900}
+.player-status{font-size:.75rem;color:#9ca3af;margin-top:4px}
+.waiting-dot{display:inline-block;width:8px;height:8px;background:#fbbf24;border-radius:50%;animation:blink 1s infinite;margin-right:6px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.q-card{background:rgba(15,8,32,.9);border:1px solid #4a1e8e;border-radius:14px;padding:22px}
+.q-text{font-size:1.1rem;line-height:1.6;font-weight:500;margin-bottom:20px;color:#e2d9f3}
+.q-num{font-size:.75rem;color:#9ca3af;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.opts-grid{display:flex;flex-direction:column;gap:10px}
+.opt-btn{padding:13px 16px;border:2px solid #3a1a6e;border-radius:10px;background:rgba(30,15,60,.8);color:#d4c5f0;cursor:pointer;font-size:.9rem;text-align:left;transition:all .2s;font-weight:500}
+.opt-btn:hover:not(:disabled){border-color:#a855f7;background:rgba(168,85,247,.15);color:#fff}
+.opt-btn.correct{border-color:#22c55e!important;background:rgba(34,197,94,.15)!important;color:#86efac!important}
+.opt-btn.wrong{border-color:#ef4444!important;background:rgba(239,68,68,.15)!important;color:#fca5a5!important}
+.opt-btn.reveal{border-color:#22c55e;background:rgba(34,197,94,.1);color:#86efac}
+.opt-btn:disabled{cursor:default}
+.timer-bar-wrap{height:6px;background:#1a0a2e;border-radius:3px;margin-bottom:16px;overflow:hidden}
+.timer-bar{height:100%;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:3px;transition:width .1s linear}
+.timer-bar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.timer-bar.danger{background:linear-gradient(90deg,#ef4444,#f87171)}
+.speed-bonus{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:800;margin-left:8px}
+.speed-fast{background:rgba(34,197,94,.2);color:#86efac}
+.speed-slow{background:rgba(239,68,68,.2);color:#fca5a5}
+.result-card{text-align:center;padding:28px}
+.result-emoji{font-size:4rem;margin-bottom:12px}
+.result-title{font-size:1.6rem;font-weight:900;margin-bottom:8px}
+.result-scores{display:flex;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap}
+.r-score{padding:12px 20px;border-radius:10px;text-align:center;min-width:120px}
+.r-score.winner{border:2px solid #a855f7;background:rgba(168,85,247,.15)}
+.r-score.loser{border:2px solid #374151;background:rgba(0,0,0,.2)}
+.r-score-name{font-size:.8rem;color:#9ca3af;margin-bottom:4px}
+.r-score-val{font-size:2.2rem;font-weight:900}
+.log{max-height:200px;overflow-y:auto;margin-top:12px}
+.log-item{font-size:.78rem;padding:6px 8px;border-radius:6px;margin-bottom:4px;display:flex;justify-content:space-between}
+.log-item.correct{background:rgba(34,197,94,.1);border-left:3px solid #22c55e}
+.log-item.wrong{background:rgba(239,68,68,.1);border-left:3px solid #ef4444}
+.log-item.skip{background:rgba(107,114,128,.1);border-left:3px solid #6b7280}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.72rem;font-weight:800}
+.badge-waiting{background:rgba(251,191,36,.2);color:#fbbf24}
+.badge-playing{background:rgba(34,197,94,.2);color:#86efac}
+.badge-done{background:rgba(168,85,247,.2);color:#c084fc}
+#screen-lobby,#screen-waiting,#screen-game,#screen-result{display:none}
+#screen-lobby{display:block}
+.vs-divider{text-align:center;font-size:1.4rem;font-weight:900;color:#7c3aed;display:flex;align-items:center;justify-content:center}
+.subject-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.subject-chip{padding:5px 12px;border:1px solid #4a1e8e;border-radius:999px;cursor:pointer;font-size:.78rem;color:#a78bfa;transition:all .2s}
+.subject-chip.active{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.copy-btn{background:transparent;border:1px solid #7c3aed;color:#a78bfa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.72rem;margin-left:8px}
+.copy-btn:hover{background:#7c3aed;color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <a href="index.html" class="home-btn">🏠 Accueil</a>
+    <div id="user-display" style="font-size:.82rem;color:#9ca3af"></div>
+  </div>
+
+  <!-- LOBBY -->
+  <div id="screen-lobby">
+    <div class="card" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">⚔️</div>
+      <h1>Bataille Royale</h1>
+      <p class="subtitle">Affronte un autre joueur en temps réel.<br>Plus tu réponds vite, plus tu marques de points !</p>
+    </div>
+    <div class="card">
+      <h2>Ton pseudo</h2>
+      <input id="pseudo-input" type="text" placeholder="ex: Paul" maxlength="20">
+      <h2>Matière</h2>
+      <div class="subject-chips" id="subject-chips">
+        <div class="subject-chip active" data-val="General">💬 Général</div>
+        <div class="subject-chip" data-val="Douleur">😣 Douleur</div>
+        <div class="subject-chip" data-val="Anat">🦴 Anatomie</div>
+        <div class="subject-chip" data-val="ProcedII">📋 Proced II</div>
+        <div class="subject-chip" data-val="Patho">🏥 Patho</div>
+      </div>
+      <h2>Nombre de questions</h2>
+      <select id="q-count-select">
+        <option value="5">5 questions</option>
+        <option value="10" selected>10 questions</option>
+        <option value="15">15 questions</option>
+        <option value="20">20 questions</option>
+      </select>
+      <button class="btn btn-primary" onclick="createRoom()">⚔️ Créer une partie</button>
+      <div style="text-align:center;color:#6b7280;margin:8px 0;font-size:.85rem">— ou —</div>
+      <input id="join-code-input" type="text" placeholder="Code de la partie (ex: AB12)" maxlength="4" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:.2em">
+      <button class="btn btn-secondary" onclick="joinRoom()">🎮 Rejoindre</button>
+    </div>
+  </div>
+
+  <!-- WAITING -->
+  <div id="screen-waiting">
+    <div class="card" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">⏳</div>
+      <h1 style="font-size:1.3rem">En attente d'un adversaire</h1>
+      <p style="color:#9ca3af;font-size:.85rem;margin:8px 0">Partage ce code avec ton adversaire</p>
+      <div class="room-code" id="display-room-code">----<button class="copy-btn" onclick="copyCode()">📋 Copier</button></div>
+      <div class="players-zone">
+        <div class="player-card p1">
+          <div class="player-name" id="wait-p1-name">—</div>
+          <div class="player-status"><span class="badge badge-playing">✓ Prêt</span></div>
+        </div>
+        <div class="player-card p2">
+          <div class="player-name" id="wait-p2-name">En attente...</div>
+          <div class="player-status"><span class="waiting-dot"></span>Connexion...</div>
+        </div>
+      </div>
+      <button class="btn btn-danger" onclick="cancelRoom()" style="margin-top:8px;width:auto;padding:8px 20px">Annuler</button>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="screen-game">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div id="game-subject-badge" class="badge badge-playing"></div>
+      <div id="game-q-counter" style="color:#9ca3af;font-size:.82rem"></div>
+    </div>
+    <div class="players-zone" style="margin-bottom:12px">
+      <div class="player-card p1">
+        <div class="player-name" id="game-p1-name">—</div>
+        <div class="player-score" id="game-p1-score" style="color:#a855f7">0</div>
+        <div class="player-status" id="game-p1-status"></div>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="player-card p2">
+        <div class="player-name" id="game-p2-name">—</div>
+        <div class="player-score" id="game-p2-score" style="color:#3b82f6">0</div>
+        <div class="player-status" id="game-p2-status"></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%"></div></div>
+      <div class="q-num" id="q-num-label">Question 1/10</div>
+      <div class="q-text" id="q-text">Chargement...</div>
+      <div class="opts-grid" id="opts-zone"></div>
+      <div id="answer-feedback" style="margin-top:12px;font-size:.85rem;min-height:24px"></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result">
+    <div class="card result-card">
+      <div class="result-emoji" id="result-emoji">🏆</div>
+      <div class="result-title" id="result-title">Victoire !</div>
+      <div class="result-scores" id="result-scores"></div>
+      <div class="log" id="result-log"></div>
+      <button class="btn btn-primary" onclick="backToLobby()" style="margin-top:16px">🔄 Rejouer</button>
+      <a href="index.html" class="btn btn-secondary" style="margin-top:8px;display:block;text-decoration:none;text-align:center;padding:13px;border-radius:10px">🏠 Accueil</a>
+    </div>
+  </div>
+</div>
+
+<script src="remote-config.js"></script>
+<script src="remote-sync.js"></script>
+<script>
+// ============ CONFIG ============
+const SUPABASE_URL = window.QCM_SUPABASE.url;
+const ANON_KEY = window.QCM_SUPABASE.anonKey;
+const Q_TIME = 15; // secondes par question
+
+// ============ STATE ============
+var myPseudo = '';
+var myRole = ''; // 'p1' ou 'p2'
+var roomCode = '';
+var roomId = null;
+var battleQuestions = [];
+var currentQIdx = 0;
+var myScore = 0;
+var oppScore = 0;
+var answered = false;
+var timerInterval = null;
+var timerLeft = Q_TIME;
+var pollInterval = null;
+var questionStartTime = null;
+var myAnswers = [];
+var selectedSubject = 'General';
+var qCount = 10;
+
+// ============ INIT ============
+window.addEventListener('load', function() {
+  const saved = localStorage.getItem('qcm_signed_user');
+  if (saved) {
+    document.getElementById('pseudo-input').value = saved;
+    document.getElementById('user-display').textContent = '👤 ' + saved;
+  }
+
+  // Subject chips
+  document.querySelectorAll('.subject-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('.subject-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      selectedSubject = this.dataset.val;
+    });
+  });
+
+  document.getElementById('join-code-input').addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+  });
+});
+
+// ============ SUPABASE HELPERS ============
+async function sbFetch(path, method, body) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method: method || 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': ANON_KEY,
+      'Authorization': 'Bearer ' + ANON_KEY,
+      'Prefer': method === 'POST' ? 'return=representation' : 'return=representation'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function getRoom(code) {
+  const data = await sbFetch('battles?room_code=eq.' + code + '&order=id.desc&limit=1');
+  return data && data.length ? data[0] : null;
+}
+
+async function updateRoom(id, patch) {
+  await sbFetch('battles?id=eq.' + id, 'PATCH', patch);
+}
+
+// ============ QUESTIONS ============
+function getQuestionsForSubject(subject, count) {
+  var bank = [];
+  if (subject === 'Douleur' && window.DOULEUR_BANK) bank = window.DOULEUR_BANK;
+  else if (subject === 'Anat' && window.ANAT_BANK) bank = window.ANAT_BANK;
+  else if (subject === 'ProcedII' && window.ProcedII_BANK) bank = window.ProcedII_BANK;
+  else if (subject === 'Patho' && window.PATHO_BANK) bank = window.PATHO_BANK;
+
+  if (!bank.length) {
+    // Questions de secours génériques
+    return [
+      {q:"Quel est le rôle principal du kinésithérapeute ?",o:["Rééducation fonctionnelle","Prescription médicamenteuse","Chirurgie orthopédique"],a:0,e:"Le kiné rééduque la fonction motrice."},
+      {q:"La douleur chronique dure plus de :",o:["3 mois","1 mois","6 semaines"],a:0,e:"3 mois est le seuil de chronicité."},
+      {q:"Le système nerveux central comprend :",o:["Cerveau et moelle épinière","Nerfs périphériques","Les deux"],a:0,e:"SNC = cerveau + moelle."},
+      {q:"L'articulation du genou est de type :",o:["Ginglyme (charnière)","Énarthrose (sphéroïde)","Arthrodie (plane)"],a:0,e:"Le genou est une charnière modifiée."},
+      {q:"La marche normale a combien de phases ?",o:["2","4","6"],a:0,e:"Appui et oscillation = 2 phases."},
+    ].slice(0, count);
+  }
+
+  // Mélanger et prendre count questions
+  var shuffled = bank.slice().sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, shuffled.length)).map(function(q) {
+    var opts = q.opts || q.o || [];
+    var a = typeof q.a === 'number' ? q.a : 0;
+    var correct = opts[a];
+    var shuffledOpts = opts.slice().sort(() => Math.random() - 0.5);
+    return {
+      q: q.q,
+      opts: shuffledOpts,
+      a: shuffledOpts.indexOf(correct),
+      e: q.e || ''
+    };
+  });
+}
+
+// ============ ROOM CODE ============
+function generateCode() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(roomCode).then(function() {
+    var btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Copié !';
+    setTimeout(function() { btn.textContent = '📋 Copier'; }, 2000);
+  });
+}
+
+// ============ CREATE / JOIN ============
+async function createRoom() {
+  var pseudo = document.getElementById('pseudo-input').value.trim();
+  if (!pseudo) { alert('Entre ton pseudo !'); return; }
+  myPseudo = pseudo;
+  myRole = 'p1';
+  qCount = parseInt(document.getElementById('q-count-select').value) || 10;
+
+  var questions = getQuestionsForSubject(selectedSubject, qCount);
+  roomCode = generateCode();
+
+  try {
+    var data = await sbFetch('battles', 'POST', {
+      room_code: roomCode,
+      player1: pseudo,
+      player2: null,
+      status: 'waiting',
+      subject: selectedSubject,
+      current_question: 0,
+      scores: JSON.stringify({p1: 0, p2: 0}),
+      questions: JSON.stringify(questions),
+      answers: JSON.stringify({})
+    });
+
+    roomId = data && data[0] ? data[0].id : null;
+    battleQuestions = questions;
+
+    showScreen('waiting');
+    document.getElementById('display-room-code').innerHTML = roomCode + '<button class="copy-btn" onclick="copyCode()">📋 Copier</button>';
+    document.getElementById('wait-p1-name').textContent = pseudo;
+
+    startWaitingPoll();
+  } catch(e) {
+    alert('Erreur création: ' + e.message);
+  }
+}
+
+async function joinRoom() {
+  var pseudo = document.getElementById('pseudo-input').value.trim();
+  var code = document.getElementById('join-code-input').value.trim().toUpperCase();
+  if (!pseudo) { alert('Entre ton pseudo !'); return; }
+  if (!code || code.length !== 4) { alert('Entre un code valide (4 caractères) !'); return; }
+  myPseudo = pseudo;
+  myRole = 'p2';
+  roomCode = code;
+
+  try {
+    var room = await getRoom(code);
+    if (!room) { alert('Partie introuvable. Vérifie le code !'); return; }
+    if (room.status !== 'waiting') { alert('Cette partie est déjà en cours ou terminée.'); return; }
+    if (room.player2) { alert('Cette partie est déjà complète.'); return; }
+
+    roomId = room.id;
+    battleQuestions = JSON.parse(room.questions || '[]');
+    selectedSubject = room.subject || 'General';
+
+    await updateRoom(roomId, { player2: pseudo, status: 'playing' });
+    startGame(room.player1, pseudo);
+  } catch(e) {
+    alert('Erreur rejoindre: ' + e.message);
+  }
+}
+
+// ============ WAITING POLL ============
+function startWaitingPoll() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async function() {
+    try {
+      var room = await getRoom(roomCode);
+      if (!room) return;
+      if (room.status === 'playing' && room.player2) {
+        clearInterval(pollInterval);
+        roomId = room.id;
+        battleQuestions = JSON.parse(room.questions || '[]');
+        document.getElementById('wait-p2-name').textContent = room.player2;
+        setTimeout(function() { startGame(room.player1, room.player2); }, 500);
+      }
+    } catch(e) {}
+  }, 1500);
+}
+
+async function cancelRoom() {
+  if (roomId) {
+    try { await updateRoom(roomId, {status: 'cancelled'}); } catch(e) {}
+  }
+  clearInterval(pollInterval);
+  backToLobby();
+}
+
+// ============ GAME ============
+function startGame(p1Name, p2Name) {
+  clearInterval(pollInterval);
+  currentQIdx = 0;
+  myScore = 0;
+  oppScore = 0;
+  myAnswers = [];
+  answered = false;
+
+  var isP1 = myRole === 'p1';
+  document.getElementById('game-p1-name').textContent = p1Name;
+  document.getElementById('game-p2-name').textContent = p2Name;
+  document.getElementById('game-p1-score').textContent = '0';
+  document.getElementById('game-p2-score').textContent = '0';
+  document.getElementById('game-subject-badge').textContent = '⚔️ ' + selectedSubject;
+
+  showScreen('game');
+  loadQuestion();
+  startOpponentPoll();
+}
+
+function loadQuestion() {
+  if (currentQIdx >= battleQuestions.length) {
+    endGame();
+    return;
+  }
+
+  answered = false;
+  timerLeft = Q_TIME;
+  questionStartTime = Date.now();
+
+  var q = battleQuestions[currentQIdx];
+  document.getElementById('q-num-label').textContent = 'Question ' + (currentQIdx + 1) + '/' + battleQuestions.length;
+  document.getElementById('game-q-counter').textContent = (currentQIdx + 1) + '/' + battleQuestions.length;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('answer-feedback').textContent = '';
+
+  var optsZone = document.getElementById('opts-zone');
+  optsZone.innerHTML = '';
+  (q.opts || []).forEach(function(opt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = String.fromCharCode(65 + i) + '. ' + opt;
+    btn.onclick = function() { selectAnswer(i); };
+    optsZone.appendChild(btn);
+  });
+
+  // Reset timer bar
+  var bar = document.getElementById('timer-bar');
+  bar.style.width = '100%';
+  bar.className = 'timer-bar';
+
+  startQuestionTimer();
+  updatePlayerStatuses('', '');
+}
+
+function startQuestionTimer() {
+  clearInterval(timerInterval);
+  var bar = document.getElementById('timer-bar');
+  timerInterval = setInterval(function() {
+    timerLeft -= 0.1;
+    var pct = Math.max(0, (timerLeft / Q_TIME) * 100);
+    bar.style.width = pct + '%';
+    if (pct < 30) bar.className = 'timer-bar danger';
+    else if (pct < 60) bar.className = 'timer-bar warn';
+    if (timerLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!answered) timeOut();
+    }
+  }, 100);
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  var elapsed = (Date.now() - questionStartTime) / 1000;
+  var q = battleQuestions[currentQIdx];
+  var isCorrect = idx === q.a;
+  var speedBonus = Math.max(0, Math.round((Q_TIME - elapsed) / Q_TIME * 100));
+  var points = isCorrect ? (100 + speedBonus) : 0;
+
+  myScore += points;
+  myAnswers.push({idx: currentQIdx, correct: isCorrect, points: points, time: elapsed.toFixed(1)});
+
+  // Affichage
+  var btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(function(btn, i) {
+    btn.disabled = true;
+    if (i === q.a) btn.classList.add('correct');
+    else if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  var feedback = document.getElementById('answer-feedback');
+  if (isCorrect) {
+    feedback.innerHTML = '✅ Correct ! <span class="badge speed-fast">+' + points + ' pts</span>';
+  } else {
+    feedback.innerHTML = '❌ Raté. <span class="badge speed-slow">0 pt</span> — ' + (q.e || '');
+  }
+
+  updateScores();
+  saveMyAnswer(idx, points);
+
+  setTimeout(function() { nextQuestion(); }, 2000);
+}
+
+function timeOut() {
+  answered = true;
+  var q = battleQuestions[currentQIdx];
+  var btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(function(btn, i) {
+    btn.disabled = true;
+    if (i === q.a) btn.classList.add('reveal');
+  });
+  document.getElementById('answer-feedback').innerHTML = '⏱ Temps écoulé ! <span class="badge speed-slow">0 pt</span>';
+  myAnswers.push({idx: currentQIdx, correct: false, points: 0, time: Q_TIME.toString()});
+  saveMyAnswer(-1, 0);
+  setTimeout(function() { nextQuestion(); }, 2000);
+}
+
+function nextQuestion() {
+  currentQIdx++;
+  if (currentQIdx >= battleQuestions.length) {
+    endGame();
+  } else {
+    loadQuestion();
+  }
+}
+
+function updateScores() {
+  var isP1 = myRole === 'p1';
+  document.getElementById(isP1 ? 'game-p1-score' : 'game-p2-score').textContent = myScore;
+}
+
+function updatePlayerStatuses(p1Status, p2Status) {
+  document.getElementById('game-p1-status').textContent = p1Status;
+  document.getElementById('game-p2-status').textContent = p2Status;
+}
+
+// ============ SUPABASE SYNC ============
+async function saveMyAnswer(answerIdx, points) {
+  if (!roomId) return;
+  try {
+    var room = await getRoom(roomCode);
+    if (!room) return;
+    var answers = JSON.parse(room.answers || '{}');
+    if (!answers[myRole]) answers[myRole] = {};
+    answers[myRole]['q' + currentQIdx] = {a: answerIdx, p: points, t: ((Date.now() - questionStartTime)/1000).toFixed(1)};
+
+    var scores = JSON.parse(room.scores || '{}');
+    scores[myRole] = myScore;
+
+    await updateRoom(roomId, {
+      answers: JSON.stringify(answers),
+      scores: JSON.stringify(scores),
+      current_question: currentQIdx
+    });
+  } catch(e) {}
+}
+
+var oppPollInterval = null;
+function startOpponentPoll() {
+  if (oppPollInterval) clearInterval(oppPollInterval);
+  oppPollInterval = setInterval(async function() {
+    try {
+      var room = await getRoom(roomCode);
+      if (!room) return;
+      var scores = JSON.parse(room.scores || '{}');
+      var oppRole = myRole === 'p1' ? 'p2' : 'p1';
+      oppScore = scores[oppRole] || 0;
+      var isP1 = myRole === 'p1';
+      document.getElementById(isP1 ? 'game-p2-score' : 'game-p1-score').textContent = oppScore;
+
+      if (room.status === 'finished') {
+        clearInterval(oppPollInterval);
+      }
+    } catch(e) {}
+  }, 2000);
+}
+
+// ============ END GAME ============
+async function endGame() {
+  clearInterval(timerInterval);
+  clearInterval(oppPollInterval);
+
+  // Attendre un peu pour que l'adversaire finisse aussi
+  try {
+    await updateRoom(roomId, {status: 'finished', scores: JSON.stringify({p1: myRole==='p1'?myScore:oppScore, p2: myRole==='p2'?myScore:oppScore})});
+  } catch(e) {}
+
+  setTimeout(function() { showResults(); }, 1000);
+}
+
+function showResults() {
+  clearInterval(oppPollInterval);
+  var isP1 = myRole === 'p1';
+  var myName = myPseudo;
+  var oppName = document.getElementById(isP1 ? 'game-p2-name' : 'game-p1-name').textContent;
+
+  var iWon = myScore > oppScore;
+  var isDraw = myScore === oppScore;
+
+  document.getElementById('result-emoji').textContent = iWon ? '🏆' : isDraw ? '🤝' : '💪';
+  document.getElementById('result-title').textContent = iWon ? 'Victoire !' : isDraw ? 'Égalité !' : 'Défaite...';
+  document.getElementById('result-title').style.color = iWon ? '#c084fc' : isDraw ? '#fbbf24' : '#ef4444';
+
+  document.getElementById('result-scores').innerHTML = `
+    <div class="r-score ${iWon ? 'winner' : 'loser'}">
+      <div class="r-score-name">👤 ${escapeHtml(myName)}</div>
+      <div class="r-score-val" style="color:${isP1?'#a855f7':'#3b82f6'}">${myScore}</div>
+    </div>
+    <div style="display:flex;align-items:center;font-size:1.2rem;color:#6b7280">VS</div>
+    <div class="r-score ${!iWon && !isDraw ? 'winner' : 'loser'}">
+      <div class="r-score-name">🎮 ${escapeHtml(oppName)}</div>
+      <div class="r-score-val" style="color:${isP1?'#3b82f6':'#a855f7'}">${oppScore}</div>
+    </div>
+  `;
+
+  // Log des réponses
+  var logHTML = '';
+  myAnswers.forEach(function(ans, i) {
+    var q = battleQuestions[ans.idx];
+    if (!q) return;
+    logHTML += `<div class="log-item ${ans.correct ? 'correct' : 'skip'}">
+      <span>Q${i+1}. ${q.q.slice(0,50)}…</span>
+      <span>${ans.correct ? '+'+ans.points+'pts ('+ans.time+'s)' : '0 pt'}</span>
+    </div>`;
+  });
+  document.getElementById('result-log').innerHTML = logHTML;
+
+  showScreen('result');
+}
+
+// ============ UTILS ============
+function showScreen(name) {
+  ['lobby','waiting','game','result'].forEach(function(s) {
+    document.getElementById('screen-' + s).style.display = s === name ? 'block' : 'none';
+  });
+}
+
+function backToLobby() {
+  clearInterval(timerInterval);
+  clearInterval(pollInterval);
+  clearInterval(oppPollInterval);
+  roomId = null;
+  roomCode = '';
+  myRole = '';
+  showScreen('lobby');
+}
+
+function escapeHtml(v) {
+  return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
