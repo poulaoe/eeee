@@ -1,8 +1,7 @@
 // Banque Douleur — format sandbox.js
 // o: tableau des options, a: index de la bonne réponse, e: explication
 
-window.DOULEUR_BANK = [
-  {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"Le locus coeruleus (LC) dans la douleur neuropathique chronique :",o:["Inhibe son activité — effet antinociceptif","N'a aucun rôle dans la douleur neuropathique","Augmente son activité — projections noradrénergiques ascendantes pro-nociceptives"],a:2,e:"LC = neurones noradrénergiques. Dans douleur neuropathique à long terme : ↑ activité LC + projections ascendantes → rôle pro-nociceptif."},
+window.DOULEUR_BANK=[
 {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"L'activation du récepteur NMDA provoque une entrée de :",o:["Ca²⁺, na⁺ et sortie de k⁺","Uniquement cl⁻","Uniquement na⁺"],a:0,e:"NMDA-R activé → afflux Ca²⁺ + Na⁺ + efflux K⁺. L'entrée de Ca²⁺ est cruciale pour la LTP et la sensibilisation centrale."},
   {ch:"Facteurs psychosociaux",label:"Facteurs psychosociaux",type:"direct",q:"La prévalence mondiale de la douleur chronique en fait :",o:["La principale cause d'invalidité dans le monde","La principale cause de consultation en psychiatrie","La 3ème cause de mortalité mondiale"],a:0,e:"Douleur chronique = 1ère cause d'invalidité mondiale (Roberts NL et al. 2018, Lancet). > 30% population mondiale (Cohen 2021, Lancet). Principale raison de consultation médicale."},
   {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"Quel ion est particulièrement crucial dans le déclenchement de la LTP spinale ?",o:["Na⁺ (sodium via Nav)","Ca²⁺ (calcium intracellulaire via NMDA-R)","Cl⁻ (chlorure via GABA-A)"],a:1,e:"NMDA-R activé → entrée Ca²⁺ → activation PKC + CaMKII → phosphorylation AMPA-R → ↑ conductance → LTP. L'entrée de Ca²⁺ est le déclencheur clé."},
@@ -213,9 +212,16 @@ window.DOULEUR_BANK = [
 {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"La PAG est impliquée dans :",o:["La transduction périphérique","La transmission spinothalamique","La modulation descendante de la douleur"],a:2,e:"PAG = centre de la modulation descendante. Fait partie du système PAG-RVM."}
 ];
 
-window.DOULEUR_QC_BANK = [
-  {q:"Définissez la sensibilisation centrale.",r:"Augmentation de la réactivité des neurones nociceptifs du système nerveux central, qui amplifie les signaux douloureux."},
-  {q:"Différence entre hyperalgésie primaire et secondaire.",r:"Primaire : sur le site de la lésion. Secondaire : en dehors du site, signe de sensibilisation centrale."},
-  {q:"Rôle du CPFdl dans la douleur chronique.",r:"Il participe à la modulation descendante et à l'aspect cognitif de la douleur. Son volume peut diminuer dans la douleur chronique."},
-  {q:"Pourquoi l'exercice peut réduire la douleur ?",r:"Il augmente les endorphines, les endocannabinoïdes, la sérotonine et la noradrénaline, favorisant la modulation descendante inhibitrice."}
-];
+
+var ALL_Q = MAIN_Q.
+window.DOULEUR_BANK = ALL_Q.map(function(item) {
+  return {
+    ch: item.l,
+    label: 'QCM douleur',
+    type: 'direct',
+    q: item.q,
+    opts: item.o,
+    a: item.a,
+    e: item.e
+  };
+});
