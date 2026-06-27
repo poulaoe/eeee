@@ -991,8 +991,7 @@ requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCoun
   answers = new Array(currentSession.length).fill(null);
   shuffledOpts = []; shuffledCorrects = [];
   currentSession.forEach(q => {
-    const correctText = q.option[q.a]; const sh = shuffle(q.Options);
-    shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
+const correctText = (q.opts || q.o)[q.a]; const sh = shuffle(q.opts || q.o);    shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
   });
 
   currentQ = 0; examFinished = false; startTime = Date.now();
