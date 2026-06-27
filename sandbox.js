@@ -351,20 +351,7 @@ function createLocalAccount() {
   const accounts = loadAccounts();
   if (accounts[username]) { alert('Ce compte existe déjà. Utilise "Se connecter".'); return; }
   accounts[username] = { pin, history: [] };
-  saveAccounts(accounts); setSignedUser(username); 
-  // Enregistrer sur Supabase
-if (window.QCM_REMOTE && typeof window.QCM_REMOTE.pushResult === 'function') {
-  fetch(`${window.QCM_SUPABASE.url}/rest/v1/users`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': window.QCM_SUPABASE.anonKey,
-      'Authorization': 'Bearer ' + window.QCM_SUPABASE.anonKey,
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({ username: username })
-  }).catch(() => {});
-}renderAccountPanel();
+  saveAccounts(accounts); setSignedUser(username); renderAccountPanel();
 }
 
 function loginLocalAccount() {
@@ -643,10 +630,10 @@ function populateChapterOptions() {
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
   filter.innerHTML = '';
-  const defaultOption = document.createElement('o'); defaultOption.value = 'all'; defaultOption.textContent = 'Tous les chapitres';
+  const defaultOption = document.createElement('option'); defaultOption.value = 'all'; defaultOption.textContent = 'Tous les chapitres';
   filter.appendChild(defaultOption);
   Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr')).forEach(ch => {
-    const option = document.createElement('o'); option.value = ch; option.textContent = ch; filter.appendChild(option);
+    const option = document.createElement('option'); option.value = ch; option.textContent = ch; filter.appendChild(option);
   });
 }
 
@@ -776,8 +763,8 @@ function refreshExamSizeFromFilters() {
   const questionBank = prepared.questions;
   const selectedChapters = getSelectedQuickChapter().length ? getSelectedQuickChapter() : getSelectedChapters(filter);
   const pool = selectedChapters.length ? questionBank.filter(q => selectedChapters.includes(q.ch)) : questionBank;
-  if (IS_ANAT_SUBJECT()) syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25, 30, 40,50], 50);
-  else syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25, 30, 40, 50,], 50);
+  if (IS_ANAT_SUBJECT()) syncExamSizeSelect('exam-size', pool.length, [50], 50);
+  else syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
   const questionCount = document.getElementById('question-count');
   const examSize = document.getElementById('exam-size');
   if (questionCount && examSize) questionCount.textContent = examSize.value;
@@ -952,9 +939,8 @@ function startExam(options) {
     const gradingConfig = getCurrentGradingConfig();
     correctPoints = gradingConfig.good; wrongPoints = gradingConfig.bad;
     const presetCount = parseInt(document.getElementById('partiel-size')?.value || '25', 10);
-const customInput = document.getElementById('partiel-size-custom');
-const customCount = customInput ? parseInt(customInput.value || '', 10) : NaN;
-requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCount : presetCount;
+    const customCount = parseInt(document.getElementById('partiel-size-custom')?.value || '', 10);
+    requestedCount = Number.isFinite(customCount) ? customCount : presetCount;
     requestedCount = Math.max(5, requestedCount || 25);
     pool = questionBank;
   } else {
@@ -967,6 +953,7 @@ requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCoun
 
   if (activeModule === 'chapitres') pool = sandboxPool;
   if (!Number.isFinite(requestedCount) || requestedCount < 1) requestedCount = 25;
+  if (IS_ANAT_SUBJECT()) requestedCount = 50;
   requestedCount = Math.floor(requestedCount);
 
   if (pool.length === 0) { alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.'); return; }
@@ -991,7 +978,8 @@ requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCoun
   answers = new Array(currentSession.length).fill(null);
   shuffledOpts = []; shuffledCorrects = [];
   currentSession.forEach(q => {
-const correctText = (q.opts || q.o)[q.a]; const sh = shuffle(q.opts || q.o);    shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
+    const correctText = q.opts[q.a]; const sh = shuffle(q.opts);
+    shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
   });
 
   currentQ = 0; examFinished = false; startTime = Date.now();
@@ -1087,7 +1075,6 @@ function updateProgress() {
 function submitExam() {
   if (examFinished) return;
   examFinished = true;
-   stopTimer();
   document.getElementById('main').style.display = 'none';
   document.getElementById('nav-pills').style.display = 'none';
   const floatingClearBtn = document.getElementById('floating-clear-btn');
@@ -1195,10 +1182,169 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => { try { initSandboxPage(); } catch (error) { showFatalInitError(error); } });
 } else {
   try { initSandboxPage(); } catch (error) { showFatalInitError(error); }
-}function goBack() {
-  if (window.history.length > 1) {
-    history.back();
-  } else {
-    window.location.href = 'index.html';
-  }
 }
+
+// ============================================================
+// BULLE CHAT GLOBALE — notification + mini-panel réponse
+// ============================================================
+(function initChatBubble() {
+  if (!window.QCM_REMOTE || typeof window.QCM_REMOTE.fetchChatMessages !== 'function') {
+    setTimeout(initChatBubble, 2000);
+    return;
+  }
+
+  // Styles
+  const style = document.createElement('style');
+  style.textContent = `
+    #chat-bubble-btn {
+      position:fixed;bottom:60px;right:16px;z-index:2000;
+      background:linear-gradient(135deg,#27ae60,#229954);
+      color:#fff;border:none;border-radius:50%;width:52px;height:52px;
+      font-size:1.4rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);
+      display:flex;align-items:center;justify-content:center;
+      transition:transform .2s;
+    }
+    #chat-bubble-btn:hover{transform:scale(1.1)}
+    #chat-bubble-badge {
+      position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;
+      border-radius:999px;padding:1px 6px;font-size:.68rem;font-weight:800;
+      display:none;animation:chatPulse .8s infinite;
+    }
+    @keyframes chatPulse{0%,100%{opacity:1}50%{opacity:.5}}
+    #chat-mini-panel {
+      position:fixed;bottom:120px;right:16px;z-index:2000;
+      width:300px;background:linear-gradient(180deg,#0f3460,#0d2847);
+      border:1px solid #29507a;border-radius:12px;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;
+      flex-direction:column;overflow:hidden;
+    }
+    #chat-mini-panel.open{display:flex}
+    #chat-mini-header {
+      padding:10px 14px;background:#1a4d7a;
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    #chat-mini-header span{color:#a8d8ff;font-weight:700;font-size:.88rem}
+    #chat-mini-close {
+      background:transparent;border:none;color:#fff;cursor:pointer;font-size:1rem;
+    }
+    #chat-mini-messages {
+      max-height:180px;overflow-y:auto;padding:10px;
+      display:flex;flex-direction:column;gap:6px;font-size:.78rem;
+    }
+    .chat-mini-msg {
+      background:rgba(255,255,255,.06);border-radius:6px;padding:7px;
+      border-left:2px solid #27ae60;
+    }
+    .chat-mini-msg.own{border-left-color:#3498db;background:rgba(52,152,219,.1)}
+    .chat-mini-msg-user{font-weight:700;color:#a8d8ff;font-size:.72rem;margin-bottom:3px}
+    .chat-mini-msg-text{color:#d4e4f7}
+    #chat-mini-input-zone {
+      padding:8px;border-top:1px solid #29507a;
+      display:flex;gap:6px;
+    }
+    #chat-mini-input {
+      flex:1;background:#0a1e38;border:1px solid #29507a;border-radius:6px;
+      color:#fff;padding:6px 8px;font-size:.78rem;resize:none;
+      font-family:inherit;min-height:32px;max-height:60px;
+    }
+    #chat-mini-send {
+      background:#27ae60;color:#fff;border:none;border-radius:6px;
+      padding:6px 10px;cursor:pointer;font-weight:700;font-size:.75rem;
+    }
+    #chat-mini-link {
+      text-align:center;padding:6px;border-top:1px solid #29507a;
+    }
+    #chat-mini-link a {
+      color:#6bb6ff;font-size:.74rem;text-decoration:none;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Bouton bulle
+  const btn = document.createElement('button');
+  btn.id = 'chat-bubble-btn';
+  btn.innerHTML = '💬<span id="chat-bubble-badge"></span>';
+  document.body.appendChild(btn);
+
+  // Mini panel
+  const panel = document.createElement('div');
+  panel.id = 'chat-mini-panel';
+  panel.innerHTML = `
+    <div id="chat-mini-header">
+      <span>💬 Chat</span>
+      <button id="chat-mini-close" onclick="document.getElementById('chat-mini-panel').classList.remove('open')">✕</button>
+    </div>
+    <div id="chat-mini-messages"><div style="color:#888;text-align:center;padding:10px">⏳ Chargement...</div></div>
+    <div id="chat-mini-input-zone">
+      <textarea id="chat-mini-input" placeholder="Répondre..." maxlength="500"></textarea>
+      <button id="chat-mini-send" onclick="sendMiniChatMessage()">→</button>
+    </div>
+    <div id="chat-mini-link"><a href="chat.html" target="_blank">Ouvrir le chat complet ↗</a></div>
+  `;
+  document.body.appendChild(panel);
+
+  btn.onclick = () => {
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      loadMiniChatMessages();
+      document.getElementById('chat-bubble-badge').style.display = 'none';
+    }
+  };
+
+  let lastMiniCount = 0;
+
+  async function loadMiniChatMessages() {
+    const container = document.getElementById('chat-mini-messages');
+    if (!container) return;
+    try {
+      const messages = await window.QCM_REMOTE.fetchChatMessages('General', 20);
+      if (!Array.isArray(messages)) return;
+      const badge = document.getElementById('chat-bubble-badge');
+      if (messages.length > lastMiniCount && lastMiniCount > 0) {
+        const diff = messages.length - lastMiniCount;
+        badge.textContent = '+' + diff;
+        badge.style.display = 'inline-block';
+      }
+      lastMiniCount = messages.length;
+      if (messages.length === 0) {
+        container.innerHTML = '<div style="color:#888;text-align:center;padding:10px">Aucun message</div>';
+        return;
+      }
+      const user = (typeof currentUser !== 'undefined' && currentUser) || localStorage.getItem('qcm_signed_user') || 'Invité';
+      container.innerHTML = messages.slice(0, 15).map(msg => {
+        const isOwn = msg.user === user;
+        const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) : '';
+        return `<div class="chat-mini-msg ${isOwn ? 'own' : ''}">
+          <div class="chat-mini-msg-user">${isOwn ? '👤 Toi' : msg.user} <span style="color:#555;font-weight:400">${time}</span></div>
+          <div class="chat-mini-msg-text">${String(msg.message || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        </div>`;
+      }).join('');
+      container.scrollTop = container.scrollHeight;
+    } catch (e) { console.warn('Mini chat error:', e); }
+  }
+
+  window.sendMiniChatMessage = async function() {
+    const input = document.getElementById('chat-mini-input');
+    const text = input.value.trim();
+    if (!text) return;
+    try {
+      const user = (typeof currentUser !== 'undefined' && currentUser) || localStorage.getItem('qcm_signed_user') || 'Invité';
+      await window.QCM_REMOTE.pushChatMessage({ user, subject: 'General', message: text });
+      input.value = '';
+      await loadMiniChatMessages();
+    } catch (e) { alert('Erreur envoi: ' + e.message); }
+  };
+
+  // Entrée pour envoyer
+  document.addEventListener('keydown', e => {
+    const input = document.getElementById('chat-mini-input');
+    if (document.activeElement === input && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      window.sendMiniChatMessage();
+    }
+  });
+
+  // Poll toutes les 10s
+  loadMiniChatMessages();
+  setInterval(loadMiniChatMessages, 10000);
+})();
