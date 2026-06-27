@@ -206,7 +206,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <p>Connecte-toi pour enregistrer l'historique de tes scores sur cet appareil.</p>
       <div id="account-content"></div>
     </div>
-    <button class="btn-start" onclick="startExam()">🚀 Lancer un partiel</button>
+<button class="home-btn" type="button" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'">Retour</button>
+      <button class="home-btn" type="button" onclick="window.location.href='index.html'">Accueil</button>    
   </div>
 </div>
 
@@ -336,7 +337,6 @@ var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
   return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
-
 var currentSession = [];
 var currentQC = [];
 var answers = [];

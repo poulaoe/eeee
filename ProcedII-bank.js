@@ -352,9 +352,8 @@ var MAIN_Q = [
  
 ]; // end questions
 
-var ALL_Q = MAIN_Q;
  
-window.ProcedII_BANK = ALL_Q.map(function(item) {
+window.ProcedII_BANK = MAin_Q.map(function(item) {
   return {
     ch: item.ch,
     label: 'Proced II - ' + item.ch,
@@ -365,3 +364,4 @@ window.ProcedII_BANK = ALL_Q.map(function(item) {
     e: item.e || item.e || ''
   };
 });
+
