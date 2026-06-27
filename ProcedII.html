@@ -242,10 +242,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <script src="remote-config.js"></script>
-<script src="procedII-bank.js"></script>
+<script src="ProcedII-bank.js"></script>
 <script>
-const BANK = window.procedII_BANK || [];
-const QC_BANK = window.procedII_QC_BANK || [];
+var BANK = window.ProcedII_BANK || [];
+var QC_BANK = window.ProcedII_QC_BANK || [];
 function shuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
@@ -334,25 +334,25 @@ function getPreparedBank(){
   return prepareQuestionPool(BANK);
 }
 
-const QUESTIONS = shuffle(BANK.map((raw, idx) => {
+var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
   return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
 
-let currentSession = [];
-let currentQC = [];
-let answers = [];
-let shuffledOpts = [];
-let shuffledCorrects = [];
-let currentQ = 0;
-let remainingSeconds = 45 * 60;
-let timerInterval = null;
-let examFinished = false;
-let activeModule = 'sandbox';
-let examDurationMinutes = 45;
-let timerEnabled = true;
-let gradingMode = 'bac';
-let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+var currentSession = [];
+var currentQC = [];
+var answers = [];
+var shuffledOpts = [];
+var shuffledCorrects = [];
+var currentQ = 0;
+var remainingSeconds = 45 * 60;
+var timerInterval = null;
+var examFinished = false;
+var activeModule = 'sandbox';
+var examDurationMinutes = 45;
+var timerEnabled = true;
+var gradingMode = 'bac';
+var gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
 let lastPartielSignature = '';
 let lastDrawQuestionKeys = [];
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
