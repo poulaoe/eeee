@@ -241,10 +241,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
   </div>
 </div>
-<script src="remote-config.js"></script>
 <script src="ProcedII-bank.js"></script>
+<script src="remote-config.js"></script>
+<script src="remote-sync.js"></script>
 <script>
-var BANK = window.ProcedII_BANK || [];
+var BANK = window.ProcedII_BANK || window.ANAT_BANK || [];
 var QC_BANK = window.ProcedII_QC_BANK || [];
 function shuffle(arr){
   const a=[...arr];
@@ -279,7 +280,7 @@ function questionKey(item){
 
 function sanitizeQuestionEntry(entry){
   const source = entry || {};
-  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+const originalOptions = Array.isArray(source.opts) ? source.opts : (Array.isArray(source.o) ? source.o : []);
   const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
   const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
@@ -335,8 +336,9 @@ function getPreparedBank(){
 }
 
 var QUESTIONS = shuffle(BANK.map((raw, idx) => {
-  const opts = shuffle(raw.opts);
-  return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
+  const rawOpts = raw.opts || raw.o || [];
+const opts = shuffle(rawOpts);
+return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(rawOpts[raw.a]), e: raw.e };a]), e: raw.e };
 }));
 
 var currentSession = [];
