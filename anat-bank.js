@@ -433,11 +433,7 @@ var EXTRA_Q3 = [
   {c:"7",l:"Chap. 7",q:"Les muscles larges de l'abdomen participent à :",o:["Soutien viscères + presse abdominale + respiration + toux + défécation + accouchement", "Uniquement soutien des viscères et flexion", "Soutien viscères + rotation uniquement", "Soutien viscères + extension"],a:0,e:"Muscles larges : soutien viscères + PRESSE ABDOMINALE + respiration + toux + défécation + accouchement."},
  {c:"3",l:"Chap. 3",q:"Les muscles sous-occipitaux sont tous innervés par :",o:["Nerf hypoglosse XII", "Branche post. C1", "Nerf grand occipital d'Arnold", "Branche post. C2"],a:1,e:"Les 4 sous-occipitaux = branche POST. de C1. Le nerf d'Arnold (C2) = SENSITIF uniquement (cuir chevelu post.)."}
 ];
-var EXTRA_Q = [];
-var EXTRA_Q2 = [];
-var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
-var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);
-
+var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2).concat(EXTRA_Q3);
 window.ANAT_BANK = ALL_Q.map(function(item) {
   return {
     ch: item.l,
