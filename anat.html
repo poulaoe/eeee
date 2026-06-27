@@ -213,7 +213,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 window.SUBJECT_NAME = 'Anat';
 window.SUBJECT_DESC = 'Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
 window.BANK = window.ANAT_BANK || [];
-window.QC_BANK = window.QC_BANK || [];
+window.QC_BANK = window.ANAT_QC_BANK || [];
 
 if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
   const desc = document.getElementById('home-desc');
@@ -232,6 +232,3 @@ if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
 <script src="sandbox.js"></script>
 </body>
 </html>
-var EXTRA_Q = [];
-var EXTRA_Q2 = [];
-var ALL_Q = MAIN_Q.concat(EXTRA_Q).concat(EXTRA_Q2);

@@ -1050,7 +1050,7 @@ function showResults(){
 
   recordLeaderboardResult({
     date: dateLabel,
-    subject: 'Proced',
+    subject: 'proced',
     user: currentUser || 'Invité',
     score,
     max: maxScore,
@@ -1059,7 +1059,8 @@ function showResults(){
 
   saveResultForCurrentUser({
     date: dateLabel,
-    subject: 'Proced',
+    subject: 'proced',
+    user: currentUser || 'Invité',
     score,
     max: maxScore,
     pct
@@ -1137,14 +1138,14 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerProced = document.getElementById('global-timer');
-const partielTimerProced = document.getElementById('partiel-timer');
-if (globalTimerProced && partielTimerProced) {
-  globalTimerProced.addEventListener('change', (e) => {
-    partielTimerProced.value = e.target.value;
+const globalTimerproced = document.getElementById('global-timer');
+const partielTimerproced = document.getElementById('partiel-timer');
+if (globalTimerproced && partielTimerproced) {
+  globalTimerproced.addEventListener('change', (e) => {
+    partielTimerproced.value = e.target.value;
   });
-  partielTimerProced.addEventListener('change', (e) => {
-    globalTimerProced.value = e.target.value;
+  partielTimerproced.addEventListener('change', (e) => {
+    globalTimerproced.value = e.target.value;
   });
 }
 </script>

@@ -352,7 +352,6 @@ var MAIN_Q = [
  
 ]; // end questions
 
-]; // end questions
 var ALL_Q = MAIN_Q;
  
 window.ProcedII_BANK = ALL_Q.map(function(item) {

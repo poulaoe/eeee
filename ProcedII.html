@@ -242,10 +242,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <script src="remote-config.js"></script>
-<script src="ProcedII-bank.js"></script>
+<script src="procedII-bank.js"></script>
 <script>
-const BANK = window.ProcedII_BANK || [];
-const QC_BANK = window.ProcedII_QC_BANK || [];
+const BANK = window.procedII_BANK || [];
+const QC_BANK = window.procedII_QC_BANK || [];
 function shuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
@@ -1050,7 +1050,7 @@ function showResults(){
 
   recordLeaderboardResult({
     date: dateLabel,
-    subject: 'Proces II',
+    subject: 'procedII',
     user: currentUser || 'Invité',
     score,
     max: maxScore,
@@ -1059,7 +1059,7 @@ function showResults(){
 
   saveResultForCurrentUser({
     date: dateLabel,
-    subject: 'Proces II',
+    subject: 'procedII',
     score,
     max: maxScore,
     pct
@@ -1137,14 +1137,14 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerProcedII = document.getElementById('global-timer');
-const partielTimerProcedII = document.getElementById('partiel-timer');
-if (globalTimerProcedII && partielTimerProcedII) {
-  globalTimerProcedII.addEventListener('change', (e) => {
-    partielTimerProcedII.value = e.target.value;
+const globalTimerprocedII = document.getElementById('global-timer');
+const partielTimerprocedII = document.getElementById('partiel-timer');
+if (globalTimerprocedII && partielTimerprocedII) {
+  globalTimerprocedII.addEventListener('change', (e) => {
+    partielTimerprocedII.value = e.target.value;
   });
-  partielTimerProcedII.addEventListener('change', (e) => {
-    globalTimerProcedII.value = e.target.value;
+  partielTimerprocedII.addEventListener('change', (e) => {
+    globalTimerprocedII.value = e.target.value;
   });
 }
 </script>
