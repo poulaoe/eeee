@@ -643,10 +643,10 @@ function populateChapterOptions() {
   const prepared = prepareQuestionPool(BANK);
   const questionBank = prepared.questions;
   filter.innerHTML = '';
-  const defaultOption = document.createElement('option'); defaultOption.value = 'all'; defaultOption.textContent = 'Tous les chapitres';
+  const defaultOption = document.createElement('o'); defaultOption.value = 'all'; defaultOption.textContent = 'Tous les chapitres';
   filter.appendChild(defaultOption);
   Array.from(new Set(questionBank.map(q => q.ch))).sort((a, b) => a.localeCompare(b, 'fr')).forEach(ch => {
-    const option = document.createElement('option'); option.value = ch; option.textContent = ch; filter.appendChild(option);
+    const option = document.createElement('o'); option.value = ch; option.textContent = ch; filter.appendChild(option);
   });
 }
 
@@ -991,7 +991,7 @@ requestedCount = (Number.isFinite(customCount) && customCount >= 5) ? customCoun
   answers = new Array(currentSession.length).fill(null);
   shuffledOpts = []; shuffledCorrects = [];
   currentSession.forEach(q => {
-    const correctText = q.opts[q.a]; const sh = shuffle(q.opts);
+    const correctText = q.option[q.a]; const sh = shuffle(q.Options);
     shuffledOpts.push(sh); shuffledCorrects.push(sh.indexOf(correctText));
   });
 

@@ -3,7 +3,7 @@
 <head><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💔</text></svg>">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banque Partiel — Proced (150 questions)</title>
+<title>Banque Partiel — Proces II (150 questions)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
@@ -108,11 +108,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <div id="home">
   <div class="home-card">
     <div class="home-actions">
-      <button class="home-btn" type="button" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'">Retour</button>
       <button class="home-btn" type="button" onclick="window.location.href='index.html'">Accueil</button>
     </div>
     <div style="font-size:2.5rem;margin-bottom:8px">📋</div>
-    <h2>Banque Partiel — Proced </h2>
+    <h2>Banque Partiel — Proces II</h2>
     <p>Banque locale au format Patho avec modules, partiel et chapitres.<br>
     Les partiels tirent un sous-ensemble de questions et affichent un timer 45 min si activé.</p>
     <div class="module-tabs">
@@ -212,7 +211,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 </div>
 
 <div id="header">
-  <h1>📋 PARTIEL BLANC — Proced  (tirage aléatoire)</h1>
+  <h1>📋 PARTIEL BLANC — Proces II (tirage aléatoire)</h1>
   <div style="display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end">
     <div id="timer">45:00</div>
     <button class="home-btn" type="button" onclick="goBack()">Retour</button>
@@ -241,11 +240,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
   </div>
 </div>
+  <script src="ProcedII-bank.js"></script>
 <script src="remote-config.js"></script>
-<script src="Proced-bank.js"></script>
+<script src="remote-sync.js"></script>
 <script>
-const BANK = window.Proced_BANK || [];
-const QC_BANK = window.Proced_QC_BANK || [];
+var BANK = window.ProcedII_BANK || [];
+var QC_BANK = window.ProcedII_QC_BANK || [];
 function shuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
@@ -279,9 +279,7 @@ function questionKey(item){
 
 function sanitizeQuestionEntry(entry){
   const source = entry || {};
-  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
-  const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
-  const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
+const originalOptions = Array.isArray(source.opts) ? source.opts : (Array.isArray(source.o) ? source.o : []);  const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
   const uniqueOptions = [];
   const seenOptions = new Set();
@@ -334,25 +332,25 @@ function getPreparedBank(){
   return prepareQuestionPool(BANK);
 }
 
-const QUESTIONS = shuffle(BANK.map((raw, idx) => {
+var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
   return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
 
-let currentSession = [];
-let currentQC = [];
-let answers = [];
-let shuffledOpts = [];
-let shuffledCorrects = [];
-let currentQ = 0;
-let remainingSeconds = 45 * 60;
-let timerInterval = null;
-let examFinished = false;
-let activeModule = 'sandbox';
-let examDurationMinutes = 45;
-let timerEnabled = true;
-let gradingMode = 'bac';
-let gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+var currentSession = [];
+var currentQC = [];
+var answers = [];
+var shuffledOpts = [];
+var shuffledCorrects = [];
+var currentQ = 0;
+var remainingSeconds = 45 * 60;
+var timerInterval = null;
+var examFinished = false;
+var activeModule = 'sandbox';
+var examDurationMinutes = 45;
+var timerEnabled = true;
+var gradingMode = 'bac';
+var gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
 let lastPartielSignature = '';
 let lastDrawQuestionKeys = [];
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
@@ -596,7 +594,7 @@ function bootstrapPage(){
     initHomeModules();
     renderAccountPanel();
   } catch (error) {
-    console.error('Erreur au démarrage de Proced', error);
+    console.error('Erreur au démarrage de Proces II', error);
     const accountContent = document.getElementById('account-content');
     if(accountContent){
       accountContent.innerHTML = '<div class="history-item">La page a chargé, mais une erreur a bloqué l’initialisation du menu. Ouvre la console pour le détail.</div>';
@@ -1050,7 +1048,7 @@ function showResults(){
 
   recordLeaderboardResult({
     date: dateLabel,
-    subject: 'proced',
+    subject: 'procedII',
     user: currentUser || 'Invité',
     score,
     max: maxScore,
@@ -1059,8 +1057,7 @@ function showResults(){
 
   saveResultForCurrentUser({
     date: dateLabel,
-    subject: 'proced',
-    user: currentUser || 'Invité',
+    subject: 'procedII',
     score,
     max: maxScore,
     pct
@@ -1138,14 +1135,14 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerproced = document.getElementById('global-timer');
-const partielTimerproced = document.getElementById('partiel-timer');
-if (globalTimerproced && partielTimerproced) {
-  globalTimerproced.addEventListener('change', (e) => {
-    partielTimerproced.value = e.target.value;
+const globalTimerprocedII = document.getElementById('global-timer');
+const partielTimerprocedII = document.getElementById('partiel-timer');
+if (globalTimerprocedII && partielTimerprocedII) {
+  globalTimerprocedII.addEventListener('change', (e) => {
+    partielTimerprocedII.value = e.target.value;
   });
-  partielTimerproced.addEventListener('change', (e) => {
-    globalTimerproced.value = e.target.value;
+  partielTimerprocedII.addEventListener('change', (e) => {
+    globalTimerprocedII.value = e.target.value;
   });
 }
 </script>
