@@ -437,7 +437,7 @@ function loadQuestion() {
 
   var optsZone = document.getElementById('opts-zone');
   optsZone.innerHTML = '';
-  (q.opts || []).forEach(function(opt, i) {
+  (q.opts || q.o || []).forEach(function(opt, i) {
     var btn = document.createElement('button');
     btn.className = 'opt-btn';
     btn.textContent = String.fromCharCode(65 + i) + '. ' + opt;
