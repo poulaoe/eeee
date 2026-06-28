@@ -1097,6 +1097,21 @@ function showResults(){
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
       <button class="restart-btn" style="margin-left:8px;background:#2d2d50" onclick="goHome()">🏠 Accueil</button>
     </div>`;
+// Sauvegarder les erreurs
+(function saveErrors() {
+  var errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
+  currentSession.forEach(function(q, i) {
+    var ua = answers[i], ca = shuffledCorrects[i];
+    if (ua !== ca) {
+      var key = (q.ch||'') + '::' + (q.q||'').slice(0,80);
+      var exists = errors.findIndex(function(e) { return e.key === key; });
+      var entry = {key: key, q: q.q, o: shuffledOpts[i], a: ca, e: q.e, ch: q.ch, count: 1};
+      if (exists >= 0) { errors[exists].count = (errors[exists].count||1) + 1; }
+      else { errors.unshift(entry); }
+    }
+  });
+  localStorage.setItem('qcm_erreurs', JSON.stringify(errors.slice(0, 200)));
+})();
   document.getElementById('results').style.display = 'block';
   window.scrollTo(0, 0);
 }

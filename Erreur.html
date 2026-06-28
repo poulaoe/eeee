@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>❌ Mes Erreurs</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❌</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh;padding:20px}
+.wrap{max-width:820px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+h1{color:#e74c3c;font-size:1.4rem}
+.home-btn{padding:7px 12px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;text-decoration:none}
+.home-btn:hover{background:rgba(0,0,0,.4)}
+.stats{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stat{background:#0f3460;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#aac}
+.stat span{display:block;font-size:1.4rem;font-weight:800;color:#e74c3c}
+.controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:700}
+.btn-primary{background:#c0392b;color:#fff}
+.btn-secondary{background:#2d2d50;color:#aaa}
+.btn-green{background:#27ae60;color:#fff}
+select{padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460;color:#fff;font-size:.82rem}
+.empty{text-align:center;padding:60px;color:#6b7280}
+.error-card{background:#16213e;border-radius:12px;padding:18px;margin-bottom:10px;border-left:4px solid #e74c3c}
+.error-ch{font-size:.68rem;color:#e74c3c;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.error-q{font-size:.9rem;font-weight:600;color:#dde;margin-bottom:12px;line-height:1.5}
+.error-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.opt-btn{padding:10px 14px;border:2px solid #2d2d50;border-radius:8px;background:#0f3460;color:#ccd;cursor:pointer;font-size:.85rem;text-align:left;transition:all .2s}
+.opt-btn:hover:not(:disabled){border-color:#3498db}
+.opt-btn.correct{border-color:#27ae60;background:rgba(39,174,96,.15);color:#86efac}
+.opt-btn.wrong{border-color:#e74c3c;background:rgba(231,76,60,.15);color:#fca5a5}
+.opt-btn:disabled{cursor:default}
+.error-expl{font-size:.78rem;color:#9fb0c8;line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid #2d2d50;display:none}
+.error-count{font-size:.72rem;color:#6b7280;margin-top:8px}
+.show-expl-btn{background:transparent;border:1px solid #3498db;color:#3498db;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.72rem;margin-top:6px}
+.mode-quiz #error-list{display:none}
+#quiz-zone{display:none}
+.quiz-card{background:#16213e;border-radius:12px;padding:22px;margin-bottom:14px}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:16px;gap:8px}
+.score-card{background:linear-gradient(135deg,#0f3460,#16213e);border-radius:16px;padding:28px;text-align:center;margin-bottom:20px}
+.score-num{font-size:3rem;font-weight:900;color:#2ecc71}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>❌ Mes Erreurs</h1>
+    <div style="display:flex;gap:8px">
+      <a href="index.html" class="home-btn">🏠 Accueil</a>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span id="total-errors">0</span>Questions ratées</div>
+    <div class="stat"><span id="total-seen">0</span>Fois revues</div>
+  </div>
+
+  <div class="controls">
+    <select id="filter-ch">
+      <option value="all">Tous les chapitres</option>
+    </select>
+    <button class="btn btn-green" onclick="startQuiz()">🎯 Réviser mes erreurs</button>
+    <button class="btn btn-secondary" onclick="clearErrors()">🗑 Effacer tout</button>
+  </div>
+
+  <div id="error-list"></div>
+  <div id="quiz-zone" style="display:none"></div>
+</div>
+
+<script>
+var errors = [];
+var quizSession = [];
+var quizIdx = 0;
+var quizAnswers = [];
+var quizShuffled = [];
+var quizCorrects = [];
+
+function loadErrors() {
+  try {
+    errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
+  } catch(e) { errors = []; }
+}
+
+function saveErrors() {
+  localStorage.setItem('qcm_erreurs', JSON.stringify(errors));
+}
+
+function escapeHtml(v) {
+  return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length-1; i > 0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function render() {
+  loadErrors();
+  var ch = document.getElementById('filter-ch').value;
+  var filtered = ch === 'all' ? errors : errors.filter(function(e){return e.ch===ch;});
+
+  document.getElementById('total-errors').textContent = errors.length;
+  var totalSeen = errors.reduce(function(s,e){return s+(e.count||1);},0);
+  document.getElementById('total-seen').textContent = totalSeen;
+
+  // Populate chapter filter
+  var chs = Array.from(new Set(errors.map(function(e){return e.ch;}))).sort();
+  var sel = document.getElementById('filter-ch');
+  var current = sel.value;
+  sel.innerHTML = '<option value="all">Tous les chapitres</option>';
+  chs.forEach(function(c){
+    var opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    if (c === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  var list = document.getElementById('error-list');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">🎉 Aucune erreur enregistrée !<br><small>Lance un partiel pour commencer à collecter tes erreurs.</small></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(err, idx) {
+    var opts = Array.isArray(err.o) ? err.o : [];
+    var optsHtml = opts.map(function(o, oi){
+      var cls = oi === err.a ? 'opt-btn correct' : 'opt-btn';
+      return '<button class="'+cls+'" disabled>'+String.fromCharCode(65+oi)+'. '+escapeHtml(o)+'</button>';
+    }).join('');
+    return '<div class="error-card">'+
+      '<div class="error-ch">'+escapeHtml(err.ch)+'</div>'+
+      '<div class="error-q">'+escapeHtml(err.q)+'</div>'+
+      '<div class="error-opts">'+optsHtml+'</div>'+
+      '<button class="show-expl-btn" onclick="toggleExpl(this)">💡 Voir l\'explication</button>'+
+      '<div class="error-expl">'+escapeHtml(err.e)+'</div>'+
+      '<div class="error-count">Raté '+(err.count||1)+' fois</div>'+
+      '</div>';
+  }).join('');
+}
+
+function toggleExpl(btn) {
+  var expl = btn.nextElementSibling;
+  var hidden = expl.style.display === 'none' || expl.style.display === '';
+  expl.style.display = hidden ? 'block' : 'none';
+  btn.textContent = hidden ? '💡 Masquer' : '💡 Voir l\'explication';
+}
+
+function startQuiz() {
+  loadErrors();
+  var ch = document.getElementById('filter-ch').value;
+  var pool = ch === 'all' ? errors : errors.filter(function(e){return e.ch===ch;});
+  if (!pool.length) { alert('Aucune erreur à réviser !'); return; }
+
+  quizSession = shuffle(pool).slice(0, Math.min(20, pool.length));
+  quizIdx = 0;
+  quizAnswers = new Array(quizSession.length).fill(null);
+  quizShuffled = [];
+  quizCorrects = [];
+
+  quizSession.forEach(function(q) {
+    var opts = Array.isArray(q.o) ? q.o : [];
+    var correct = opts[q.a];
+    var sh = shuffle(opts);
+    quizShuffled.push(sh);
+    quizCorrects.push(sh.indexOf(correct));
+  });
+
+  document.getElementById('error-list').style.display = 'none';
+  document.querySelector('.controls').style.display = 'none';
+  document.querySelector('.stats').style.display = 'none';
+  document.getElementById('quiz-zone').style.display = 'block';
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  var q = quizSession[quizIdx];
+  var opts = quizShuffled[quizIdx];
+  var zone = document.getElementById('quiz-zone');
+  zone.innerHTML = '<div class="quiz-card">'+
+    '<div style="font-size:.75rem;color:#9ca3af;margin-bottom:8px">Question '+(quizIdx+1)+'/'+quizSession.length+' • '+escapeHtml(q.ch)+'</div>'+
+    '<div class="error-q">'+escapeHtml(q.q)+'</div>'+
+    '<div class="error-opts" id="quiz-opts">'+
+      opts.map(function(o,oi){
+        return '<button class="opt-btn" onclick="quizSelect('+oi+')">'+String.fromCharCode(65+oi)+'. '+escapeHtml(o)+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div id="quiz-feedback" style="min-height:20px;margin-top:8px;font-size:.85rem"></div>'+
+    '<div class="quiz-nav">'+
+      '<button class="btn btn-secondary" onclick="endQuiz()">Terminer</button>'+
+      (quizIdx < quizSession.length-1 ?
+        '<button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none">Suivant →</button>' :
+        '<button class="btn btn-green" id="next-btn" onclick="showQuizResults()" style="display:none">Voir les résultats</button>')+
+    '</div>'+
+  '</div>';
+}
+
+function quizSelect(oi) {
+  if (quizAnswers[quizIdx] !== null) return;
+  quizAnswers[quizIdx] = oi;
+  var ca = quizCorrects[quizIdx];
+  var btns = document.querySelectorAll('#quiz-opts .opt-btn');
+  btns.forEach(function(b,i){
+    b.disabled = true;
+    if (i === ca) b.classList.add('correct');
+    else if (i === oi && oi !== ca) b.classList.add('wrong');
+  });
+  var fb = document.getElementById('quiz-feedback');
+  if (oi === ca) {
+    fb.innerHTML = '<span style="color:#86efac">✅ Correct !</span>';
+  } else {
+    fb.innerHTML = '<span style="color:#fca5a5">❌ Raté</span> — <em style="color:#9fb0c8">'+escapeHtml(quizSession[quizIdx].e)+'</em>';
+  }
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  quizIdx++;
+  renderQuizQuestion();
+}
+
+function showQuizResults() {
+  var correct = quizAnswers.filter(function(a,i){return a===quizCorrects[i];}).length;
+  var zone = document.getElementById('quiz-zone');
+  zone.innerHTML = '<div class="score-card">'+
+    '<div style="font-size:2rem;margin-bottom:8px">'+(correct>=quizSession.length*0.7?'🏆':'💪')+'</div>'+
+    '<div class="score-num">'+correct+'/'+quizSession.length+'</div>'+
+    '<div style="color:#aaa;margin-top:8px">'+Math.round(correct/quizSession.length*100)+'% de bonnes réponses</div>'+
+    '</div>'+
+    '<div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+    '<button class="btn btn-green" onclick="startQuiz()">🔄 Recommencer</button>'+
+    '<button class="btn btn-secondary" onclick="endQuiz()">← Retour à la liste</button>'+
+    '</div>';
+}
+
+function endQuiz() {
+  document.getElementById('error-list').style.display = 'block';
+  document.querySelector('.controls').style.display = 'flex';
+  document.querySelector('.stats').style.display = 'flex';
+  document.getElementById('quiz-zone').style.display = 'none';
+  render();
+}
+
+function clearErrors() {
+  if (!confirm('Effacer toutes les erreurs ?')) return;
+  localStorage.removeItem('qcm_erreurs');
+  errors = [];
+  render();
+}
+
+document.getElementById('filter-ch').addEventListener('change', render);
+render();
+</script>
+</body>
+</html>

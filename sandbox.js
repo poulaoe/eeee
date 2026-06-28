@@ -1088,11 +1088,11 @@ function submitExam() {
   showResults();
 }
 
-function showResults() {
+function showResults() {}
   let resultsEl = document.getElementById('results');
   if (!resultsEl) { resultsEl = document.createElement('div'); resultsEl.id = 'results'; document.body.appendChild(resultsEl); }
   resultsEl.style.display = 'block';
-  try {
+  try { stopTimer(); } catch (e) { console.warn(e); }
     let correct = 0, wrong = 0, skipped = 0;
     const elapsedMs = Date.now() - startTime;
     const timeUsed = Math.max(0, Math.floor(elapsedMs / 1000));
@@ -1156,7 +1156,6 @@ function showResults() {
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
     </div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
-    });
     localStorage.setItem('qcm_erreurs', JSON.stringify(errors.slice(0, 200)));
   // Sauvegarder les erreurs
 (function saveErrors() {
@@ -1174,17 +1173,12 @@ function showResults() {
       }
     });
     localStorage.setItem('qcm_erreurs', JSON.stringify(errors.slice(0, 200)));
-  } catch(err) {}
-})();
-  } catch(error) {}
-})();
   } catch (error) {
     console.error('showResults sandbox failed', error);
     resultsEl.innerHTML = `<div class="score-card"><div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div><div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement.</div></div><div style="text-align:center;padding:20px"><button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button></div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   }
-}
-
+})
 function toggleR(i) {
   const el = document.getElementById('qcr-' + i); const btn = document.getElementById('sbtn-' + i);
   const hidden = el.style.display === 'none' || el.style.display === '';
@@ -1371,8 +1365,4 @@ if (document.readyState === 'loading') {
       window.sendMiniChatMessage();
     }
   });
-
-  // Poll toutes les 10s
-  loadMiniChatMessages();
-  setInterval(loadMiniChatMessages, 10000);
 })();
