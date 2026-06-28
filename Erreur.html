@@ -79,12 +79,12 @@ var quizCorrects = [];
 
 function loadErrors() {
   try {
-    errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
+    errors = JSON.parse(localStorage.getItem('Erreur') || '[]');
   } catch(e) { errors = []; }
 }
 
 function saveErrors() {
-  localStorage.setItem('qcm_erreurs', JSON.stringify(errors));
+  localStorage.setItem('Erreur', JSON.stringify(errors));
 }
 
 function escapeHtml(v) {
@@ -248,7 +248,7 @@ function endQuiz() {
 
 function clearErrors() {
   if (!confirm('Effacer toutes les erreurs ?')) return;
-  localStorage.removeItem('qcm_erreurs');
+  localStorage.removeItem('Erreur');
   errors = [];
   render();
 }
