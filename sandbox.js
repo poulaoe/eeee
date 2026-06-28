@@ -1156,23 +1156,23 @@ function showResults() {}
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
     </div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
-    localStorage.setItem('qcm_erreurs', JSON.stringify(errors.slice(0, 200)));
+    localStorage.setItem('qcm_erreurs', JSON.stringify(qcmErrors.slice(0, 200)));
   // Sauvegarder les erreurs
 (function saveErrors() {
   try {
-    var errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
+    var qcmErrors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
     (Array.isArray(currentSession) ? currentSession : []).forEach(function(q, i) {
       var ua = answers[i], ca = shuffledCorrects[i];
       if (ua !== ca) {
         var key = (q.ch||'') + '::' + (q.q||'').slice(0,80);
-        var exists = errors.findIndex(function(e) { return e.key === key; });
+        var exists = qcmErrors.findIndex(function(e) { return e.key === key; });
         var opts = Array.isArray(shuffledOpts[i]) ? shuffledOpts[i] : [];
         var entry = {key:key, q:q.q, o:opts, a:ca, e:q.e||'', ch:q.ch, count:1};
-        if (exists >= 0) errors[exists].count = (errors[exists].count||1) + 1;
-        else errors.unshift(entry);
+        if (exists >= 0) qcmErrors[exists].count = (qcmErrors[exists].count||1) + 1;
+        else qcmErrors.unshift(entry);
       }
     });
-    localStorage.setItem('qcm_erreurs', JSON.stringify(errors.slice(0, 200)));
+    localStorage.setItem('qcm_erreurs', JSON.stringify(qcmErrors.slice(0, 200)));
   } catch (error) {
     console.error('showResults sandbox failed', error);
     resultsEl.innerHTML = `<div class="score-card"><div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div><div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement.</div></div><div style="text-align:center;padding:20px"><button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button></div>`;
