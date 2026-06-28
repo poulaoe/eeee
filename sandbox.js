@@ -1157,7 +1157,7 @@ function showResults() {
     </div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   // Sauvegarder les erreurs
-function saveErrors() {
+;(function saveErrors() {
   try {
     var qcmErrors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
     (Array.isArray(currentSession) ? currentSession : []).forEach(function(q, i) {
@@ -1166,15 +1166,15 @@ function saveErrors() {
         var key = (q.ch||'') + '::' + (q.q||'').slice(0,80);
         var exists = qcmErrors.findIndex(function(e) { return e.key === key; });
         var opts = Array.isArray(shuffledOpts[i]) ? shuffledOpts[i] : [];
-        var entry = {key:key, q:q.q, o:opts, a:ca, e:q.e||'', ch:q.ch, count:1};
+        var entry = {key:key, q:q.q, o:o, a:a, e:q.e||'', ch:q.ch, count:1};
         if (exists >= 0) qcmErrors[exists].count = (qcmErrors[exists].count||1) + 1;
         else qcmErrors.unshift(entry);
       }
     });
     localStorage.setItem('qcm_erreurs', JSON.stringify(qcmErrors.slice(0, 200)));
-  } catch(err) {}
-})();
-}
+  } catch(e) {}
+};
+
 function toggleR(i) {
   const el = document.getElementById('qcr-' + i); const btn = document.getElementById('sbtn-' + i);
   const hidden = el.style.display === 'none' || el.style.display === '';
