@@ -1176,9 +1176,7 @@ function showResults() {
     console.error('showResults sandbox failed', error);
     resultsEl.innerHTML = `<div class="score-card"><div style="font-size:1.3rem;color:#f39c12">⚠️ Résultats partiels</div><div style="margin-top:8px;color:#cdd">Le détail n'a pas pu être affiché complètement.</div></div><div style="text-align:center;padding:20px"><button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel</button></div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
-  }
-})
-} catch(err) {}
+  } catch(err) {}
 })();
 }
 function toggleR
