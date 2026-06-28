@@ -280,7 +280,7 @@ function questionKey(item){
 
 function sanitizeQuestionEntry(entry){
   const source = entry || {};
-  const originalOptions = Array.isArray(source.opts) ? source.opts : (Array.isArray(source.o) ? source.o : []);
+  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
   const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
   const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
@@ -337,7 +337,7 @@ function getPreparedBank(){
 
 var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts);
-  return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, o: opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
+  return { id: idx, ch: raw.ch, label: raw.label, type: raw.type, q: raw.q, opts, ans: opts.indexOf(raw.opts[raw.a]), e: raw.e };
 }));
 
 var currentSession = [];
@@ -353,9 +353,9 @@ var activeModule = 'sandbox';
 var examDurationMinutes = 45;
 var timerEnabled = true;
 var gradingMode = 'bac';
-var gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' }
-var lastPartielSignature = '';
-var lastDrawQuestionKeys = [];
+var gradingConfig = { good: 0.25, bad: 0.083, label: 'Bac (+0,25 / -0,083)' };
+let lastPartielSignature = '';
+let lastDrawQuestionKeys = [];
 const LEADERBOARD_STORAGE_KEY = 'qcm_leaderboard_v1';
 const ACCOUNTS_STORAGE_KEY = 'qcm_local_accounts_v1';
 let currentUser = null;
@@ -1051,7 +1051,7 @@ function showResults(){
 
   recordLeaderboardResult({
     date: dateLabel,
-    subject: 'ProcedII',
+    subject: 'procedII',
     user: currentUser || 'Invité',
     score,
     max: maxScore,
@@ -1060,7 +1060,7 @@ function showResults(){
 
   saveResultForCurrentUser({
     date: dateLabel,
-    subject: 'ProcedII',
+    subject: 'procedII',
     score,
     max: maxScore,
     pct
@@ -1138,17 +1138,16 @@ function goHome(){
 }
 
 // Synchroniser global-timer et partiel-timer
-const globalTimerProcedII = document.getElementById('global-timer');
-const partielTimerProcedII = document.getElementById('partiel-timer');
-if (globalTimerProcedII && partielTimerProcedII) {
-  globalTimerProcedII.addEventListener('change', (e) => {
-    partielTimerProcedII.value = e.target.value;
+const globalTimerprocedII = document.getElementById('global-timer');
+const partielTimerprocedII = document.getElementById('partiel-timer');
+if (globalTimerprocedII && partielTimerprocedII) {
+  globalTimerprocedII.addEventListener('change', (e) => {
+    partielTimerprocedII.value = e.target.value;
   });
-  partielTimerProcedII.addEventListener('change', (e) => {
-    globalTimerProcedII.value = e.target.value;
+  partielTimerprocedII.addEventListener('change', (e) => {
+    globalTimerprocedII.value = e.target.value;
   });
 }
-
 </script>
 <script src="chat-bubble.js"></script>
 </body>
