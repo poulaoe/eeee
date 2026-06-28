@@ -1157,7 +1157,7 @@ function showResults() {
     </div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   // Sauvegarder les erreurs
-(function saveErrors() {
+function saveErrors() {
   try {
     var qcmErrors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
     (Array.isArray(currentSession) ? currentSession : []).forEach(function(q, i) {
