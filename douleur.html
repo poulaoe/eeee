@@ -278,7 +278,7 @@ function questionKey(item){
 
 function sanitizeQuestionEntry(entry){
   const source = entry || {};
-  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+  const originalOptions = Array.isArray(source.opts) ? source.opts : (Array.isArray(source.o) ? source.o : []);
   const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
   const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
