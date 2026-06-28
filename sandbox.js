@@ -1088,7 +1088,7 @@ function submitExam() {
   showResults();
 }
 
-function showResults() {}
+function showResults() {
   let resultsEl = document.getElementById('results');
   if (!resultsEl) { resultsEl = document.createElement('div'); resultsEl.id = 'results'; document.body.appendChild(resultsEl); }
   resultsEl.style.display = 'block';
@@ -1156,7 +1156,6 @@ function showResults() {}
       <button class="restart-btn" onclick="newExam()">🔄 Nouveau partiel (tirage différent)</button>
     </div>`;
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
-    localStorage.setItem('qcm_erreurs', JSON.stringify(qcmErrors.slice(0, 200)));
   // Sauvegarder les erreurs
 (function saveErrors() {
   try {
@@ -1179,7 +1178,10 @@ function showResults() {}
     resultsEl.style.display = 'block'; window.scrollTo(0, 0);
   }
 })
-function toggleR(i) {
+} catch(err) {}
+})();
+}
+function toggleR
   const el = document.getElementById('qcr-' + i); const btn = document.getElementById('sbtn-' + i);
   const hidden = el.style.display === 'none' || el.style.display === '';
   el.style.display = hidden ? 'block' : 'none'; btn.textContent = hidden ? 'Masquer' : 'Voir la réponse';
