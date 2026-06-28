@@ -213,7 +213,7 @@ window.DOULEUR_BANK=[
 ];
 
 
-var ALL_Q = MAIN_Q=MAIN_Q.
+var ALL_Q = MAIN_Q;
 window.DOULEUR_BANK = ALL_Q.map(function(item) {
   return {
     ch: item.l,
