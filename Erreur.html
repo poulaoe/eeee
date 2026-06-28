@@ -180,7 +180,7 @@ function startQuiz() {
 
 function renderQuizQuestion() {
   var q = quizSession[quizIdx];
-  var opts = quizShuffled[quizIdx];
+  var o = quizShuffled[quizIdx];
   var zone = document.getElementById('quiz-zone');
   zone.innerHTML = '<div class="quiz-card">'+
     '<div style="font-size:.75rem;color:#9ca3af;margin-bottom:8px">Question '+(quizIdx+1)+'/'+quizSession.length+' • '+escapeHtml(q.ch)+'</div>'+
@@ -203,15 +203,16 @@ function renderQuizQuestion() {
 function quizSelect(oi) {
   if (quizAnswers[quizIdx] !== null) return;
   quizAnswers[quizIdx] = oi;
-  var ca = quizCorrects[quizIdx];
+  var a = quizCorrects[quizIdx];
+  var o = quizShuffled[quizIdx];
   var btns = document.querySelectorAll('#quiz-opts .opt-btn');
   btns.forEach(function(b,i){
     b.disabled = true;
-    if (i === ca) b.classList.add('correct');
-    else if (i === oi && oi !== ca) b.classList.add('wrong');
+    if (i === a) b.classList.add('correct');
+    else if (i === o && oi !== a) b.classList.add('wrong');
   });
   var fb = document.getElementById('quiz-feedback');
-  if (oi === ca) {
+  if (oi ===a) {
     fb.innerHTML = '<span style="color:#86efac">✅ Correct !</span>';
   } else {
     fb.innerHTML = '<span style="color:#fca5a5">❌ Raté</span> — <em style="color:#9fb0c8">'+escapeHtml(quizSession[quizIdx].e)+'</em>';
