@@ -895,9 +895,9 @@ function startExam(options){
   shuffledCorrects = [];
   currentSession.forEach(q => {
     const rawIndex = Number.isInteger(q.ans) ? q.ans : (Number.isInteger(q.a) ? q.a : 0);
-    const safeIndex = rawIndex >= 0 && rawIndex < q.opts.length ? rawIndex : 0;
-    const correctText = q.opts[safeIndex];
-    const sh = shuffle(q.opts);
+    const safeIndex = rawIndex >= 0 && rawIndex < ( q.opts || q.o || []).length ? rawIndex : 0;
+    const correctText = (q.opts || q.o || [])[safeIndex];
+    const sh = shuffle(q.opts || q.o || []);
     shuffledOpts.push(sh);
     shuffledCorrects.push(sh.indexOf(correctText));
   });
