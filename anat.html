@@ -3,7 +3,7 @@
 <head><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦴</text></svg>">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partiel — Anat (295 questions)</title>
+<title>Partiel — Anat (500 questions)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
@@ -91,7 +91,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
       <button class="home-btn" type="button" onclick="window.location.href='index.html'">Accueil</button>
     </div>
     <div style="font-size:2.5rem;margin-bottom:8px">🦴</div>
-    <h2 id="home-title">Bac à sable Anat</h2> 
+    <h2 id="home-title">Bac à sable Anat</h2>
+            <p id="home-desc"></p> 
     <div class="module-tabs">
       <button class="module-tab active" id="tab-sandbox" type="button" onclick="switchModule('sandbox')">Bac à sable</button>
       <button class="module-tab" id="tab-partiel" type="button" onclick="switchModule('partiel')">Partiel</button>
@@ -211,10 +212,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <script>
 window.SUBJECT_NAME = 'Anat';
 window.SUBJECT_DESC = 'Banque Anatomie au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
-window.BANK = window.ANAT_BANK || [];
-window.QC_BANK = window.ANAT_QC_BANK || [];
+window.ANAT_BANK = window.ANAT_BANK || [];
 
-if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 0) {
+if (!Array.isArray(window.ANAT_BANK) || window.ANAT_BANK.length === 1) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
