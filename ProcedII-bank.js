@@ -353,7 +353,7 @@ var MAIN_Q = [
 ]; // end questions
 
  
-window.ProcedII_BANK = MAin_Q.map(function(item) {
+window.ProcedII_BANK = MAIN_Q.map(function(item) {
   return {
     ch: item.ch,
     label: 'Proced II - ' + item.ch,
