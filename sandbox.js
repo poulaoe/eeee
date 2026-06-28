@@ -1173,8 +1173,8 @@ function showResults() {
     });
     localStorage.setItem('qcm_erreurs', JSON.stringify(qcmErrors.slice(0, 200)));
   } catch(e) {}
-};
-
+})();
+}
 function toggleR(i) {
   const el = document.getElementById('qcr-' + i); const btn = document.getElementById('sbtn-' + i);
   const hidden = el.style.display === 'none' || el.style.display === '';
