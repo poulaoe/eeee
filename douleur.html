@@ -25,7 +25,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 .stat{background:#0f3460;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#aac}
 .stat span{display:block;font-size:1.4rem;font-weight:800;color:#e74c3c}
 .btn-start,.restart-btn{border:none;cursor:pointer;font-weight:800}
-.btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;font-size:1rem;varter-spacing:.5px}
+.btn-start{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:14px 36px;border-radius:10px;font-size:1rem;letter-spacing:.5px}
 .btn-start:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,57,43,.4)}
 .home-btn{padding:7px 10px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.22);color:#fff;border-radius:9px;cursor:pointer;font-size:.8rem;font-weight:700;margin-left:8px}
 .home-btn:hover{background:rgba(0,0,0,.35)}
@@ -242,6 +242,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
   </div>
 </div>
 <script src="douleur-bank.js"></script>
+<script src="sandbox.js"></script>
 <script>
 const BANK = window.DOULEUR_BANK || [];
 const QC_BANK = window.DOULEUR_QC_BANK || [];
@@ -1149,5 +1150,6 @@ if (globalTimerDouleur && partielTimerDouleur) {
   });
 }
 </script>
+  <script src="chat-bubble.js"></script>
 </body>
 </html>
