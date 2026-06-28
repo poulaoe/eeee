@@ -511,3 +511,17 @@ window.ANAT_BANK=[
 
 
 
+
+// Mapping pour sandbox.js
+window.ANAT_BANK = window.ANAT_BANK.map(function(item) {
+  return {
+    ch: item.l,
+    label: item.l,
+    type: 'direct',
+    q: item.q,
+    opts: item.o,
+    a: item.a,
+    e: item.e
+  };
+});
+window.BANK = window.ANAT_BANK;
