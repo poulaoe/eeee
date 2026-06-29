@@ -346,8 +346,10 @@ window.DOULEUR_BANK = MAIN_Q.map(function(item) {
     label: item.label || item.ch,
     type: item.type || "direct",
     q: item.q,
-    opts: item.o,
+    opts: item.o || item.opts || [],
+    o: item.o || item.opts || [],
     a: item.a,
-    e: item.e
+    ans: item.a,
+    e: item.e || ""
   };
 });
