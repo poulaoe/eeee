@@ -346,7 +346,10 @@ window.DOULEUR_BANK_V2 = [
 ];
 
 
-window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item) {
+window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item) 
+Window.DOULEUR_BANK_V2 = window.DOULEUR_BANK.map(function(item)
+
+{
   return {
     ch: item.l,
     label: item.l,
