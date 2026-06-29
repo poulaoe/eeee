@@ -1,6 +1,6 @@
 // Banque Douleur — format sandbox.js
 // o: tableau des options, a: index de la bonne réponse, e: explication
-window.DOULEUR_BANK=[
+var MAIN_Q=[
 {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"L'activation du récepteur NMDA provoque une entrée de :",o:["Ca²⁺, na⁺ et sortie de k⁺","Uniquement cl⁻","Uniquement na⁺"],a:0,e:"NMDA-R activé → afflux Ca²⁺ + Na⁺ + efflux K⁺. L'entrée de Ca²⁺ est cruciale pour la LTP et la sensibilisation centrale."},
   {ch:"Facteurs psychosociaux",label:"Facteurs psychosociaux",type:"direct",q:"La prévalence mondiale de la douleur chronique en fait :",o:["La principale cause d'invalidité dans le monde","La principale cause de consultation en psychiatrie","La 3ème cause de mortalité mondiale"],a:0,e:"Douleur chronique = 1ère cause d'invalidité mondiale (Roberts NL et al. 2018, Lancet). > 30% population mondiale (Cohen 2021, Lancet). Principale raison de consultation médicale."},
   {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"Quel ion est particulièrement crucial dans le déclenchement de la LTP spinale ?",o:["Na⁺ (sodium via Nav)","Ca²⁺ (calcium intracellulaire via NMDA-R)","Cl⁻ (chlorure via GABA-A)"],a:1,e:"NMDA-R activé → entrée Ca²⁺ → activation PKC + CaMKII → phosphorylation AMPA-R → ↑ conductance → LTP. L'entrée de Ca²⁺ est le déclencheur clé."},
@@ -340,9 +340,7 @@ window.DOULEUR_BANK=[
   {ch:"Classification",label:"Classification",type:"direct",q:"Quelle est l'implication thérapeutique de l'identification d'une douleur nociplastique prédominante ?",o:["Prescrire des AINS puissants pour traiter l'inflammation centrale","Immobiliser le patient pour ↓ les inputs nociceptifs","Cibler la sensibilisation centrale : exercice progressif + ENP + TCC/ACT + ↓ analgésiques conventionnels"],a:2,e:"Douleur nociplastique = SC prédominante → traitement : 1) exercice progressif (↓ SC) + 2) ENP (↓ catastrophisme) + 3) TCC/ACT + 4) ↓ analgésiques conventionnels (peu efficaces sur SC)."}
 ];
 
-window.DOULEUR_BANK = window.QC_BANK.map(function(item)
-
-{
+window.DOULEUR_BANK = MAIN_Q.map(function(item){
   return {
     ch: item.l,
     label: item.l,
