@@ -959,7 +959,7 @@ function startExam(options) {
 
   if (activeModule === 'chapitres') pool = sandboxPool;
   if (!Number.isFinite(requestedCount) || requestedCount < 1) requestedCount = 25;
-  if (IS_ANAT_SUBJECT()) requestedCount = 50;
+  // requestedCount libre pour anat
   requestedCount = Math.floor(requestedCount);
 
   if (pool.length === 0) { alert('Aucune question disponible pour les chapitres sélectionnés. Choisis d\'autres chapitres.'); return; }
