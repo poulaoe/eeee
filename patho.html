@@ -1823,6 +1823,7 @@ function showResults() {
 
     const scoreRaw = Math.max(0, correct * grading.good - wrong * grading.bad);
     const score = scoreRaw.toFixed(2);
+    const noteSur10 = (raw / (currentSession.length * gradingConfig.good) * 10).toFixed(2);
     const examSize = Math.max(1, Number(currentExamSize) || (Array.isArray(currentSession) ? currentSession.length : 1));
     const scoreMaxValue = examSize * grading.good;
     const scoreMax = scoreMaxValue.toFixed(2);
