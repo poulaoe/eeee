@@ -360,6 +360,8 @@ Window.DOULEUR_BANK_V2 = window.DOULEUR_BANK.map(function(item)
     e: item.e
   };
 });
-window.BANK = window.DOULEUR_BANK;
+window.BANK = window.DOULEUR_BANK_V2;
+
+
 
   
