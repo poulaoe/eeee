@@ -35,7 +35,6 @@ select{padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460
 .error-expl{font-size:.78rem;color:#9fb0c8;line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid #2d2d50;display:none}
 .error-count{font-size:.72rem;color:#6b7280;margin-top:8px}
 .show-expl-btn{background:transparent;border:1px solid #3498db;color:#3498db;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.72rem;margin-top:6px}
-.mode-quiz #error-list{display:none}
 #quiz-zone{display:none}
 .quiz-card{background:#16213e;border-radius:12px;padding:22px;margin-bottom:14px}
 .quiz-nav{display:flex;justify-content:space-between;margin-top:16px;gap:8px}
@@ -47,28 +46,25 @@ select{padding:8px;border-radius:8px;border:1px solid #2d2d50;background:#0f3460
 <div class="wrap">
   <div class="header">
     <h1>❌ Mes Erreurs</h1>
-    <div style="display:flex;gap:8px">
-      <a href="index.html" class="home-btn">🏠 Accueil</a>
-    </div>
+    <a href="index.html" class="home-btn">🏠 Accueil</a>
   </div>
-
   <div class="stats">
     <div class="stat"><span id="total-errors">0</span>Questions ratées</div>
     <div class="stat"><span id="total-seen">0</span>Fois revues</div>
   </div>
-
   <div class="controls">
+    <select id="filter-matiere">
+      <option value="all">Toutes les matières</option>
+    </select>
     <select id="filter-ch">
       <option value="all">Tous les chapitres</option>
     </select>
-    <button class="btn btn-green" onclick="startQuiz()">🎯 Réviser mes erreurs</button>
+    <button class="btn btn-green" onclick="startQuiz()">🎯 Réviser</button>
     <button class="btn btn-secondary" onclick="clearErrors()">🗑 Effacer tout</button>
   </div>
-
   <div id="error-list"></div>
-  <div id="quiz-zone" style="display:none"></div>
+  <div id="quiz-zone"></div>
 </div>
-
 <script>
 var errors = [];
 var quizSession = [];
@@ -76,6 +72,17 @@ var quizIdx = 0;
 var quizAnswers = [];
 var quizShuffled = [];
 var quizCorrects = [];
+
+// Détecte la matière depuis le ch
+function getMatiere(ch) {
+  if (!ch) return 'Autre';
+  var c = String(ch);
+  if (c.match(/Neurophysiologie|Classification|Facteurs|Approche|Douleur/i)) return 'Douleur';
+  if (c.match(/Chap\.|Thème/i)) return 'Anatomie';
+  if (c.match(/Patho|Pathologie/i)) return 'Pathologie';
+  if (c.match(/Proced/i)) return 'Procédure';
+  return 'Autre';
+}
 
 function loadErrors() {
   try {
@@ -100,41 +107,64 @@ function shuffle(arr) {
   return a;
 }
 
+function getFiltered() {
+  var mat = document.getElementById('filter-matiere').value;
+  var ch = document.getElementById('filter-ch').value;
+  return errors.filter(function(e) {
+    var matOk = mat === 'all' || getMatiere(e.ch) === mat;
+    var chOk = ch === 'all' || e.ch === ch;
+    return matOk && chOk;
+  });
+}
+
 function render() {
   loadErrors();
-  var ch = document.getElementById('filter-ch').value;
-  var filtered = ch === 'all' ? errors : errors.filter(function(e){return e.ch===ch;});
+  var filtered = getFiltered();
 
   document.getElementById('total-errors').textContent = errors.length;
   var totalSeen = errors.reduce(function(s,e){return s+(e.count||1);},0);
   document.getElementById('total-seen').textContent = totalSeen;
 
-  // Populate chapter filter
-  var chs = Array.from(new Set(errors.map(function(e){return e.ch;}))).sort();
+  // Filtre matière
+  var matieres = Array.from(new Set(errors.map(function(e){return getMatiere(e.ch);}))).sort();
+  var selMat = document.getElementById('filter-matiere');
+  var curMat = selMat.value;
+  selMat.innerHTML = '<option value="all">Toutes les matières</option>';
+  matieres.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    if (m === curMat) opt.selected = true;
+    selMat.appendChild(opt);
+  });
+
+  // Filtre chapitre (selon matière sélectionnée)
+  var mat = selMat.value;
+  var errForMat = mat === 'all' ? errors : errors.filter(function(e){return getMatiere(e.ch)===mat;});
+  var chs = Array.from(new Set(errForMat.map(function(e){return e.ch;}))).sort();
   var sel = document.getElementById('filter-ch');
-  var current = sel.value;
+  var curCh = sel.value;
   sel.innerHTML = '<option value="all">Tous les chapitres</option>';
   chs.forEach(function(c){
     var opt = document.createElement('option');
     opt.value = c; opt.textContent = c;
-    if (c === current) opt.selected = true;
+    if (c === curCh) opt.selected = true;
     sel.appendChild(opt);
   });
 
   var list = document.getElementById('error-list');
   if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty">🎉 Aucune erreur enregistrée !<br><small>Lance un partiel pour commencer à collecter tes erreurs.</small></div>';
+    list.innerHTML = '<div class="empty">🎉 Aucune erreur pour cette sélection !</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(function(err, idx) {
+  list.innerHTML = filtered.map(function(err) {
     var opts = Array.isArray(err.o) ? err.o : [];
     var optsHtml = opts.map(function(o, oi){
       var cls = oi === err.a ? 'opt-btn correct' : 'opt-btn';
       return '<button class="'+cls+'" disabled>'+String.fromCharCode(65+oi)+'. '+escapeHtml(o)+'</button>';
     }).join('');
     return '<div class="error-card">'+
-      '<div class="error-ch">'+escapeHtml(err.ch)+'</div>'+
+      '<div class="error-ch">'+escapeHtml(getMatiere(err.ch))+' — '+escapeHtml(err.ch)+'</div>'+
       '<div class="error-q">'+escapeHtml(err.q)+'</div>'+
       '<div class="error-opts">'+optsHtml+'</div>'+
       '<button class="show-expl-btn" onclick="toggleExpl(this)">💡 Voir l\'explication</button>'+
@@ -153,8 +183,7 @@ function toggleExpl(btn) {
 
 function startQuiz() {
   loadErrors();
-  var ch = document.getElementById('filter-ch').value;
-  var pool = ch === 'all' ? errors : errors.filter(function(e){return e.ch===ch;});
+  var pool = getFiltered();
   if (!pool.length) { alert('Aucune erreur à réviser !'); return; }
 
   quizSession = shuffle(pool).slice(0, Math.min(20, pool.length));
@@ -180,7 +209,7 @@ function startQuiz() {
 
 function renderQuizQuestion() {
   var q = quizSession[quizIdx];
-  var o = quizShuffled[quizIdx];
+  var opts = quizShuffled[quizIdx];
   var zone = document.getElementById('quiz-zone');
   zone.innerHTML = '<div class="quiz-card">'+
     '<div style="font-size:.75rem;color:#9ca3af;margin-bottom:8px">Question '+(quizIdx+1)+'/'+quizSession.length+' • '+escapeHtml(q.ch)+'</div>'+
@@ -203,16 +232,15 @@ function renderQuizQuestion() {
 function quizSelect(oi) {
   if (quizAnswers[quizIdx] !== null) return;
   quizAnswers[quizIdx] = oi;
-  var a = quizCorrects[quizIdx];
-  var o = quizShuffled[quizIdx];
+  var ca = quizCorrects[quizIdx];
   var btns = document.querySelectorAll('#quiz-opts .opt-btn');
   btns.forEach(function(b,i){
     b.disabled = true;
-    if (i === a) b.classList.add('correct');
-    else if (i === o && oi !== a) b.classList.add('wrong');
+    if (i === ca) b.classList.add('correct');
+    else if (i === oi && oi !== ca) b.classList.add('wrong');
   });
   var fb = document.getElementById('quiz-feedback');
-  if (oi ===a) {
+  if (oi === ca) {
     fb.innerHTML = '<span style="color:#86efac">✅ Correct !</span>';
   } else {
     fb.innerHTML = '<span style="color:#fca5a5">❌ Raté</span> — <em style="color:#9fb0c8">'+escapeHtml(quizSession[quizIdx].e)+'</em>';
@@ -235,7 +263,7 @@ function showQuizResults() {
     '</div>'+
     '<div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
     '<button class="btn btn-green" onclick="startQuiz()">🔄 Recommencer</button>'+
-    '<button class="btn btn-secondary" onclick="endQuiz()">← Retour à la liste</button>'+
+    '<button class="btn btn-secondary" onclick="endQuiz()">← Retour</button>'+
     '</div>';
 }
 
@@ -249,11 +277,16 @@ function endQuiz() {
 
 function clearErrors() {
   if (!confirm('Effacer toutes les erreurs ?')) return;
-  localStorage.removeItem('Erreur');
+  localStorage.removeItem('qcm_erreurs');
   errors = [];
   render();
 }
 
+document.getElementById('filter-matiere').addEventListener('change', function(){
+  // Reset chapitre quand matière change
+  document.getElementById('filter-ch').value = 'all';
+  render();
+});
 document.getElementById('filter-ch').addEventListener('change', render);
 render();
 </script>
