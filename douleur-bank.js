@@ -341,7 +341,14 @@ var MAIN_Q=[
 
 ];
 window.DOULEUR_BANK = MAIN_Q;{
-  return{
-  {ch:"...", label:"...", type:"direct", q:"...", o:["...","...","..."], a:0, e:"..."},
-}
-};
+window.DOULEUR_BANK = MAIN_Q.map(function(item){
+  return {
+    ch: item.ch,
+    label: 'Proced II - ' + item.ch,
+    type: 'direct',
+    q: item.q,
+    o: item.o,
+    a: item.a,
+    e: item.e || item.e || ''
+  };
+});
