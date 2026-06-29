@@ -213,7 +213,7 @@ window.DOULEUR_BANK=[
 ];
 
 
-window.ANAT_BANK = window.ANAT_BANK.map(function(item) {
+window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item) {
   return {
     ch: item.l,
     label: item.l,
@@ -224,5 +224,6 @@ window.ANAT_BANK = window.ANAT_BANK.map(function(item) {
     e: item.e
   };
 });
-window.BANK = window.ANAT_BANK;
+window.BANK = window.DOULEUR_BANK;
 
+  
