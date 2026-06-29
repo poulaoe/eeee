@@ -1,6 +1,5 @@
 // Banque Douleur — format sandbox.js
 // o: tableau des options, a: index de la bonne réponse, e: explication
-
 window.DOULEUR_BANK=[
 {ch:"Neurophysiologie",label:"Neurophysiologie",type:"direct",q:"L'activation du récepteur NMDA provoque une entrée de :",o:["Ca²⁺, na⁺ et sortie de k⁺","Uniquement cl⁻","Uniquement na⁺"],a:0,e:"NMDA-R activé → afflux Ca²⁺ + Na⁺ + efflux K⁺. L'entrée de Ca²⁺ est cruciale pour la LTP et la sensibilisation centrale."},
   {ch:"Facteurs psychosociaux",label:"Facteurs psychosociaux",type:"direct",q:"La prévalence mondiale de la douleur chronique en fait :",o:["La principale cause d'invalidité dans le monde","La principale cause de consultation en psychiatrie","La 3ème cause de mortalité mondiale"],a:0,e:"Douleur chronique = 1ère cause d'invalidité mondiale (Roberts NL et al. 2018, Lancet). > 30% population mondiale (Cohen 2021, Lancet). Principale raison de consultation médicale."},
@@ -341,7 +340,6 @@ window.DOULEUR_BANK=[
   {ch:"Classification",label:"Classification",type:"direct",q:"Quelle est l'implication thérapeutique de l'identification d'une douleur nociplastique prédominante ?",o:["Prescrire des AINS puissants pour traiter l'inflammation centrale","Immobiliser le patient pour ↓ les inputs nociceptifs","Cibler la sensibilisation centrale : exercice progressif + ENP + TCC/ACT + ↓ analgésiques conventionnels"],a:2,e:"Douleur nociplastique = SC prédominante → traitement : 1) exercice progressif (↓ SC) + 2) ENP (↓ catastrophisme) + 3) TCC/ACT + 4) ↓ analgésiques conventionnels (peu efficaces sur SC)."}
 ];
 
-
 window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item)
 
 {
@@ -354,8 +352,8 @@ window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item)
     a: item.a,
     e: item.e
   };
-}),
-window.BANK = window.DOULEUR_BANK
+})
+
 
 
 
