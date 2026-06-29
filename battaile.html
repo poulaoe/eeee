@@ -102,6 +102,8 @@ input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #4a
       <div style="text-align:center;color:#6b7280;margin:8px 0;font-size:.85rem">— ou rejoindre —</div>
       <input id="join-code-input" type="text" placeholder="Code (ex: AB12)" maxlength="4" style="text-transform:uppercase;text-align:center;font-size:1.2rem;letter-spacing:.2em">
       <button class="btn btn-secondary" onclick="joinRoom()">🎮 Rejoindre</button>
+      <div style="text-align:center;color:#6b7280;margin:8px 0;font-size:.85rem">— ou —</div>
+      <button class="btn" style="background:linear-gradient(135deg,#065f46,#059669);color:#fff" onclick="playVsAI()">🤖 Jouer contre l'IA</button>
     </div>
   </div>
 
@@ -234,8 +236,18 @@ function getQuestions(subject, count) {
     {q:"Le diaphragme est innervé par :",o:["Nerf phrénique C3-C5","Nerf vague","Nerf intercostal"],a:0,e:"C3-C5 via nerf phrénique."},
   ];
 
-  var shuffled = bank.slice().sort(function(){return Math.random()-.5;});
-  return shuffled.slice(0, Math.min(count, shuffled.length)).map(function(q) {
+  var shuffled = bank.slice();
+  for (var i = shuffled.length-1; i > 0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var t = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = t;
+  }
+  // Éviter les questions récentes
+  var lastKeys = JSON.parse(localStorage.getItem('battle_last_questions') || '[]');
+  var fresh = shuffled.filter(function(q){ return lastKeys.indexOf(q.q.slice(0,40)) === -1; });
+  if (fresh.length >= count) shuffled = fresh;
+  var picked = shuffled.slice(0, Math.min(count, shuffled.length));
+  localStorage.setItem('battle_last_questions', JSON.stringify(picked.map(function(q){return q.q.slice(0,40);})));
+  return picked.map(function(q) {
     var opts = q.opts || q.o || [];
     var correct = opts[q.a];
     var sh = opts.slice().sort(function(){return Math.random()-.5;});
@@ -416,6 +428,7 @@ function loadQuestion() {
   bar.style.width = '100%';
   bar.className = 'timer-bar';
   startQuestionTimer();
+  if (roomCode === 'IA') aiAnswer();
 }
 
 function startQuestionTimer() {
@@ -520,6 +533,15 @@ async function endGame() {
   clearInterval(timerInterval);
   clearInterval(gamePollInterval);
   await saveScore();
+  if (roomCode === 'IA') {
+    setTimeout(function() {
+      var players = {};
+      players[myPseudo] = {score: myScore};
+      players['🤖 IA'] = {score: aiScore};
+      showResults(players);
+    }, 1500);
+    return;
+  }
   setTimeout(async function() {
     var room = await getRoom(roomCode);
     var players = JSON.parse((room && room.scores) || '{}');
@@ -568,6 +590,60 @@ function showScreen(name) {
   ['lobby','waiting','game','result'].forEach(function(s){
     document.getElementById('screen-'+s).style.display = s===name?'block':'none';
   });
+}
+
+
+function playVsAI() {
+  var pseudo = document.getElementById('pseudo-input').value.trim();
+  if (!pseudo) { alert('Entre ton pseudo !'); return; }
+  myPseudo = pseudo;
+  isHost = false;
+  roomId = null;
+  roomCode = 'IA';
+  gameStarted = true;
+  qCount = parseInt(document.getElementById('q-count-select').value) || 10;
+  battleQuestions = getQuestions(selectedSubject, qCount);
+  currentQIdx = 0;
+  myScore = 0;
+  aiScore = 0;
+  document.getElementById('game-subject-badge').textContent = '⚔️ ' + selectedSubject + ' vs 🤖 IA';
+  showScreen('game');
+  loadQuestion();
+  startAIPoll();
+}
+
+var aiScore = 0;
+var aiInterval = null;
+
+function startAIPoll() {
+  if (aiInterval) clearInterval(aiInterval);
+  renderGamePlayers({
+    [myPseudo]: {score: myScore},
+    '🤖 IA': {score: aiScore}
+  });
+}
+
+var origSelectAnswer = null;
+var origTimeOut = null;
+
+function aiAnswer() {
+  // L'IA répond après un délai aléatoire entre 2 et 12s
+  var delay = 2000 + Math.random() * 10000;
+  setTimeout(function() {
+    if (answered) return; // joueur a déjà répondu
+    var q = battleQuestions[currentQIdx];
+    if (!q) return;
+    // L'IA a 60% de chance de répondre correctement
+    var correct = Math.random() < 0.6;
+    var aiAns = correct ? q.a : Math.floor(Math.random() * (q.opts||[]).length);
+    var elapsed = delay / 1000;
+    var speedBonus = Math.max(0, Math.round((Q_TIME - elapsed) / Q_TIME * 100));
+    aiScore += correct ? (100 + speedBonus) : 0;
+    renderGamePlayers({
+      [myPseudo]: {score: myScore},
+      '🤖 IA': {score: aiScore}
+    });
+  }, delay);
 }
 
 function backToLobby() {
