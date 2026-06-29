@@ -332,7 +332,8 @@ function prepareQuestionPool(pool){
 function getPreparedBank(){
   return prepareQuestionPool(BANK);
 }
-
+console.log(window.DOULEUR_BANK);
+console.log(BANK);
 var QUESTIONS = shuffle(BANK.map((raw, idx) => {
   const opts = shuffle(raw.opts || raw.o || []);
   const correctText = (raw.opts || raw.o || [])[raw.a];
