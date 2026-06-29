@@ -79,12 +79,12 @@ var quizCorrects = [];
 
 function loadErrors() {
   try {
-    errors = JSON.parse(localStorage.getItem('Erreur') || '[]');
+    errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
   } catch(e) { errors = []; }
 }
 
 function saveErrors() {
-  localStorage.setItem('Erreur', JSON.stringify(errors));
+  localStorage.setItem('qcm_erreurs', JSON.stringify(errors));
 }
 
 function escapeHtml(v) {
