@@ -339,8 +339,9 @@ var MAIN_Q=[
   {ch:"Classification",label:"Classification",type:"direct",q:"Comment différencier cliniquement une douleur neuropathique d'une douleur nociplastique ?",o:["Neuropathique : CSI ≥ 40. Nociplastique : tests neurodynamiques positifs","Elles sont identiques cliniquement — seule l'IRM les différencie","Neuropathique : distribution neuroanatomique logique + antécédents lésion nerveuse. Nociplastique : diffuse, non anatomique, CSI ≥ 40, sans lésion évidente"],a:2,e:"Différenciation : Neuropathique (cluster Shraim) = dermatomique + ATCD lésion nerveuse + neurodynamique +. Nociplastique = diffuse + disproportionnée + CSI ≥ 40. L'imagerie n'est pas le critère."},
   {ch:"Classification",label:"Classification",type:"direct",q:"Quelle est l'implication thérapeutique de l'identification d'une douleur nociplastique prédominante ?",o:["Prescrire des AINS puissants pour traiter l'inflammation centrale","Immobiliser le patient pour ↓ les inputs nociceptifs","Cibler la sensibilisation centrale : exercice progressif + ENP + TCC/ACT + ↓ analgésiques conventionnels"],a:2,e:"Douleur nociplastique = SC prédominante → traitement : 1) exercice progressif (↓ SC) + 2) ENP (↓ catastrophisme) + 3) TCC/ACT + 4) ↓ analgésiques conventionnels (peu efficaces sur SC)."}
 
-
-  {ch:"...", label:"...", type:"direct", q:"...", o:["...","...","..."], a:0, e:"..."},
-
 ];
-window.DOULEUR_BANK = MAIN_Q;
+window.DOULEUR_BANK = MAIN_Q;{
+  return{
+  {ch:"...", label:"...", type:"direct", q:"...", o:["...","...","..."], a:0, e:"..."},
+}
+};
