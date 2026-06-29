@@ -769,8 +769,7 @@ function refreshExamSizeFromFilters() {
   const questionBank = prepared.questions;
   const selectedChapters = getSelectedQuickChapter().length ? getSelectedQuickChapter() : getSelectedChapters(filter);
   const pool = selectedChapters.length ? questionBank.filter(q => selectedChapters.includes(q.ch)) : questionBank;
-  if (IS_ANAT_SUBJECT()) syncExamSizeSelect('exam-size', pool.length, [50], 50);
-  else syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25], 25);
+  syncExamSizeSelect('exam-size', pool.length, [10, 15, 20, 25, 30, 40, 50], 25);
   const questionCount = document.getElementById('question-count');
   const examSize = document.getElementById('exam-size');
   if (questionCount && examSize) questionCount.textContent = examSize.value;
