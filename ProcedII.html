@@ -1044,8 +1044,10 @@ function showResults(){
   });
   const raw = Math.max(0, (correct * gradingConfig.good - wrong * gradingConfig.bad));
   const score = raw.toFixed(2);
+  const noteSur10 = maxScoreValue > 0 ? (raw / (currentSession.length * (typeof correctPoints !== "undefined" ? correctPoints : gradingConfig.good)) * 10).toFixed(2) : (0).toFixed(2);
   const pct = Math.round(currentSession.length ? correct / currentSession.length * 100 : 0);
   const maxScore = (currentSession.length * gradingConfig.good).toFixed(2);
+  const noteSur10 = maxScore > 0 ? (raw / parseFloat(maxScore) * 10).toFixed(2) : '0.00';
   const emoji = score >= 5.5 ? '🏆' : score >= 4 ? '👍' : score >= 3 ? '📖' : '💪';
   const dateLabel = new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
 
@@ -1075,7 +1077,7 @@ function showResults(){
   document.getElementById('results').innerHTML = `
     <div class="score-card">
       <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
-      <div class="score-num" style="color:${score >= 4.5 ? '#2ecc71' : score >= 3 ? '#f39c12' : '#e74c3c'}">${score}<span style="font-size:1.4rem">/${maxScore}</span></div>
+      <div class="score-num" style="color:${score >= 4.5 ? '#2ecc71' : score >= 3 ? '#f39c12' : '#e74c3c'}">${noteSur10}<span style="font-size:1.4rem">/10</span><div style="font-size:.9rem;color:#aaa;margin-top:4px">Score brut : ${score}/${maxScore}</div></div>
       <div style="color:#aaa;font-size:.82rem;margin-top:4px">Score sur ${currentSession.length} QCM (${gradingConfig.label}) — ${pct}% de bonnes réponses</div>
       <div class="score-detail">
         <div class="sc-box" style="color:#2ecc71">✅ ${correct} correctes</div>
