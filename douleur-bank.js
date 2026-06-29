@@ -338,18 +338,9 @@ var MAIN_Q=[
   {ch:"Classification",label:"Classification",type:"direct",q:"En quoi le modèle enactif dépasse-t-il le modèle biopsychosocial ?",o:["Le modèle enactif rejette les facteurs biologiques","Le modèle enactif est plus simple — uniquement environnemental","Le modèle enactif est holiste — corps+esprit+environnement sont indissociables (pas 3 dimensions séparées)"],a:2,e:"BPS = 3 composantes qui interagissent mais restent conceptuellement séparées. Enactif = elles sont fondamentalement INDISSOCIABLES → la douleur émerge de l'INTERACTION elle-même."},
   {ch:"Classification",label:"Classification",type:"direct",q:"Comment différencier cliniquement une douleur neuropathique d'une douleur nociplastique ?",o:["Neuropathique : CSI ≥ 40. Nociplastique : tests neurodynamiques positifs","Elles sont identiques cliniquement — seule l'IRM les différencie","Neuropathique : distribution neuroanatomique logique + antécédents lésion nerveuse. Nociplastique : diffuse, non anatomique, CSI ≥ 40, sans lésion évidente"],a:2,e:"Différenciation : Neuropathique (cluster Shraim) = dermatomique + ATCD lésion nerveuse + neurodynamique +. Nociplastique = diffuse + disproportionnée + CSI ≥ 40. L'imagerie n'est pas le critère."},
   {ch:"Classification",label:"Classification",type:"direct",q:"Quelle est l'implication thérapeutique de l'identification d'une douleur nociplastique prédominante ?",o:["Prescrire des AINS puissants pour traiter l'inflammation centrale","Immobiliser le patient pour ↓ les inputs nociceptifs","Cibler la sensibilisation centrale : exercice progressif + ENP + TCC/ACT + ↓ analgésiques conventionnels"],a:2,e:"Douleur nociplastique = SC prédominante → traitement : 1) exercice progressif (↓ SC) + 2) ENP (↓ catastrophisme) + 3) TCC/ACT + 4) ↓ analgésiques conventionnels (peu efficaces sur SC)."}
-];
 
-window.DOULEUR_BANK = MAIN_Q.map(function(item) {
-  return {
-    ch: item.ch,
-    label: item.label || item.ch,
-    type: item.type || "direct",
-    q: item.q,
-    opts: item.o || item.opts || [],
-    o: item.o || item.opts || [],
-    a: item.a,
-    ans: item.a,
-    e: item.e || ""
-  };
-});
+
+  {ch:"...", label:"...", type:"direct", q:"...", o:["...","...","..."], a:0, e:"..."},
+
+];
+window.DOULEUR_BANK = MAIN_Q;
