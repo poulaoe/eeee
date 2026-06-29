@@ -340,7 +340,7 @@ window.DOULEUR_BANK=[
   {ch:"Classification",label:"Classification",type:"direct",q:"Quelle est l'implication thérapeutique de l'identification d'une douleur nociplastique prédominante ?",o:["Prescrire des AINS puissants pour traiter l'inflammation centrale","Immobiliser le patient pour ↓ les inputs nociceptifs","Cibler la sensibilisation centrale : exercice progressif + ENP + TCC/ACT + ↓ analgésiques conventionnels"],a:2,e:"Douleur nociplastique = SC prédominante → traitement : 1) exercice progressif (↓ SC) + 2) ENP (↓ catastrophisme) + 3) TCC/ACT + 4) ↓ analgésiques conventionnels (peu efficaces sur SC)."}
 ];
 
-window.DOULEUR_BANK = window.DOULEUR_BANK.map(function(item)
+window.DOULEUR_BANK = window.QC_BANK.map(function(item)
 
 {
   return {
