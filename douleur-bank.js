@@ -351,4 +351,4 @@ window.DOULEUR_BANK = MAIN_Q.map(function(item){
     a: item.a,
     e: item.e || item.e || ''
   };
-})
+
