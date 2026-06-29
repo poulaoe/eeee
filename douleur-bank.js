@@ -213,16 +213,16 @@ window.DOULEUR_BANK=[
 ];
 
 
-var ALL_Q = MAIN_Q;
-window.DOULEUR_BANK = ALL_Q.map(function(item) {
+window.ANAT_BANK = window.ANAT_BANK.map(function(item) {
   return {
     ch: item.l,
-    label: 'QCM douleur',
+    label: item.l,
     type: 'direct',
     q: item.q,
     opts: item.o,
     a: item.a,
     e: item.e
-  }
-}
-) 
+  };
+});
+window.BANK = window.ANAT_BANK;
+
