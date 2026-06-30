@@ -1044,7 +1044,6 @@ function showResults(){
   });
   const raw = Math.max(0, (correct * gradingConfig.good - wrong * gradingConfig.bad));
   const score = raw.toFixed(2);
-  const noteSur10 = maxScoreValue > 0 ? (raw / (currentSession.length * (typeof correctPoints !== "undefined" ? correctPoints : gradingConfig.good)) * 10).toFixed(2) : (0).toFixed(2);
   const pct = Math.round(currentSession.length ? correct / currentSession.length * 100 : 0);
   const maxScore = (currentSession.length * gradingConfig.good).toFixed(2);
   const noteSur10 = maxScore > 0 ? (raw / parseFloat(maxScore) * 10).toFixed(2) : '0.00';
