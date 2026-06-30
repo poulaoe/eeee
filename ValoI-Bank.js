@@ -161,7 +161,7 @@ window.VALOI_BANK=[
 window.VALOI_BANK = window.VALOI_BANK.map(function(item) {
   return {
     ch: item.ch,
-    label: item.l,
+    label: item.ch,
     type: 'direct',
     q: item.q,
     opts: item.o,
@@ -169,4 +169,4 @@ window.VALOI_BANK = window.VALOI_BANK.map(function(item) {
     e: item.e
   };
 });
-window.BANK = window.VALOI_BANK
+window.BANK = window.VALOI_BANK;
