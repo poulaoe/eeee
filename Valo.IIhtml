@@ -3,7 +3,7 @@
 <head><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋</text></svg>">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partiel — Valo (500 questions)</title>
+<title>Partiel — Valo II (500 questions)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
@@ -208,22 +208,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
   </div>
 </div>
-<script src="Valo-bank.js"></script>
+<script src="ValoII-bank.js"></script>
 <script>
-window.SUBJECT_NAME = 'Valo';
+window.SUBJECT_NAME = 'Valo II';
 window.BANK = window.VALO_BANK || [];
-window.SUBJECT_DESC = 'Banque Valo au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
-window.VALO_BANK = window.VALO_BANK || [];
+window.SUBJECT_DESC = 'Banque ValoII au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
+window.VALO_BANK = window.VALO_BANKII || [];
 
 if (!Array.isArray(window.VALO_BANK) || window.VALO_BANK.length === 1) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
-    desc.textContent = 'La banque Valo ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
+    desc.textContent = 'La banque Valo II ne se charge pas. Vérifie que le serveur local tourne puis recharge la page.';
   }
   if (msg) {
     msg.style.color = '#ffb3a8';
-    msg.textContent = 'Erreur de chargement: Valo-bank.js indisponible ou vide.';
+    msg.textContent = 'Erreur de chargement: ValoII-bank.js indisponible ou vide.';
   }
 }
 </script>

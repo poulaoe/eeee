@@ -1,14 +1,14 @@
 // Banque Anatomie convertie pour le moteur sandbox.js
 // Format source: { c, l, q, o, a, e }
 
-window.VALO_BANK=[
+window.VALO_BANKII=[
 
 
 
 
 
 
-window.VALO_BANK = window.VALO_BANK.map(function(item) {
+window.VALO_BANKII = window.VALO_BANKII.map(function(item) {
   return {
     ch: item.l,
     label: item.l,
@@ -19,4 +19,4 @@ window.VALO_BANK = window.VALO_BANK.map(function(item) {
     e: item.e
   };
 });
-window.BANK = window.VALO_BANK
+window.BANK = window.VALO_BANKII
