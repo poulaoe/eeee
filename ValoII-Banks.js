@@ -1,7 +1,7 @@
 // Banque Anatomie convertie pour le moteur sandbox.js
 // Format source: { c, l, q, o, a, e }
 
-window.VALO_BANKII=[
+window.VALOII_BANK=[
 {ch:"Poignet/Main",q:"Quelle est l'amplitude de la flexion du poignet (articulations carpiennes) ?",o:["65° à 85°","30° à 45°","100° à 120°"],a:0,e:"Flexion du poignet : AMA 65°-85°, amplitude maximale en position neutre sans déviation."},
 {ch:"Poignet/Main",q:"Quels sont les muscles moteurs principaux de l'extension du poignet ?",o:["Long et court extenseurs radiaux du carpe + extenseur ulnaire du carpe","Fléchisseur radial du carpe + long palmaire","Long extenseur de l'hallux + tibial antérieur"],a:0,e:"Extension du poignet : long extenseur radial, court extenseur radial et extenseur ulnaire du carpe."},
 {ch:"Poignet/Main",q:"À quel degré d'extension du poignet la force de préhension de la main est-elle maximale ?",o:["Entre 30° et 35°","Entre 60° et 70°","À 0° (position neutre stricte)"],a:0,e:"La force de préhension maximale est obtenue entre 30° et 35° d'extension du poignet."},
@@ -193,7 +193,7 @@ window.VALO_BANKII=[
 {ch:"Genou",q:"Sur le plan arthrocinématique, comment se comporte la surface fémorale par rapport au tibia lors de la flexion-extension (chaîne fermée) ?",o:["Surface convexe (fémur) se déplaçant sur surface concave (tibia)","Surface concave (fémur) sur surface convexe (tibia)","Les deux surfaces sont planes (arthrodie)"],a:0,e:"En chaîne cinétique fermée, le fémur convexe se déplace sur le plateau tibial concave."},
 ];
 
-window.VALO_BANKII = window.VALO_BANKII.map(function(item) {
+window.VALOII_BANK = window.VALOII_BANK.map(function(item) {
   return {
     ch: item.ch,
     label: item.ch,
@@ -204,4 +204,4 @@ window.VALO_BANKII = window.VALO_BANKII.map(function(item) {
     e: item.e
   };
 });
-window.BANK = window.VALO_BANKII
+window.BANK = window.VALOII_BANK;
