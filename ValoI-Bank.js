@@ -160,7 +160,7 @@ window.VALOI_BANK=[
 
 window.VALOI_BANK = window.VALOI_BANK.map(function(item) {
   return {
-    ch: item.l,
+    ch: item.ch,
     label: item.l,
     type: 'direct',
     q: item.q,
