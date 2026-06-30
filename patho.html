@@ -1822,15 +1822,21 @@ function showResults() {
     });
 
     const scoreRaw = Math.max(0, correct * grading.good - wrong * grading.bad);
-    const score = scoreRaw.toFixed(2);
-const noteSur10 = (scoreRaw / (currentSession.length * gradingConfig.good) * 10).toFixed(2);
-    const scoreMaxValue = examSize * grading.good;
-    const scoreMax = scoreMaxValue.toFixed(2);
-    const finalNoteValue = scoreMaxValue > 0 ? (scoreRaw / scoreMaxValue) * 20 : 0;
-    const finalNote = finalNoteValue.toFixed(2);
-    const pct = Math.round((correct / examSize) * 100);
-    const emoji = finalNoteValue >= 14 ? '🏆' : finalNoteValue >= 10 ? '👍' : finalNoteValue >= 8 ? '📖' : '💪';
-
+const score = scoreRaw.toFixed(2);
+const examSize = Math.max(1, Number(currentExamSize) || (Array.isArray(currentSession) ? currentSession.length : 1));
+const noteSur10 = (scoreRaw / (examSize * grading.good) * 10).toFixed(2);
+const scoreMaxValue = examSize * grading.good;
+const scoreMax = scoreMaxValue.toFixed(2);
+const finalNoteValue = scoreMaxValue > 0 ? (scoreRaw / scoreMaxValue) * 20 : 0;
+const finalNote = finalNoteValue.toFixed(2);
+const pct = Math.round((correct / examSize) * 100);
+const emoji =
+  finalNoteValue >= 16 ? '🏆' :
+  finalNoteValue >= 14 ? '🥇' :
+  finalNoteValue >= 12 ? '👍' :
+  finalNoteValue >= 10 ? '✅' :
+  finalNoteValue >= 8 ? '📖' :
+  '💪';
     // Enregistrer le résultat au classement (garde-fou si fonction indisponible)
     const leaderboardEntry = {
       date: new Date().toISOString(),
