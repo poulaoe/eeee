@@ -1126,8 +1126,8 @@ function showResults() {
     const finalNote = finalNoteValue.toFixed(2);
     const emoji = finalNoteValue >= 7 ? '🏆' : finalNoteValue >= 5 ? '👍' : finalNoteValue >= 4 ? '📖' : '💪';
     const resultDate = buildResultTimestamp();
-    try { recordLeaderboardResult({ date: resultDate, subject: SUBJECT_NAME, user: currentUser || 'Invité', score: finalNote, max: 20, pct }); } catch (e) { console.warn(e); }
-    try { saveResultForCurrentUser({ date: resultDate, subject: SUBJECT_NAME, score: finalNote, max: 20, pct }); } catch (e) { console.warn(e); }
+    try { recordLeaderboardResult({ date: resultDate, subject: SUBJECT_NAME, user: currentUser || "Invité", score: (finalNoteValue/2).toFixed(2), max: 10, pct }); } catch (e) { console.warn(e); }
+    try { saveResultForCurrentUser({ date: resultDate, subject: SUBJECT_NAME, score: (finalNoteValue/2).toFixed(2), max: 10, pct }); } catch (e) { console.warn(e); }
     const qcHTML = (Array.isArray(currentQC) ? currentQC : []).map((qc, i) => {
       const item = qc || {};
       return `<div class="qc-item"><div class="qc-q">Q${i + 1}. ${escapeHtml(item.q || 'Question courte')}</div><button class="show-r-btn" id="sbtn-${i}" onclick="toggleR(${i})">Voir la réponse</button><div class="qc-r" id="qcr-${i}">${escapeHtml(item.r || 'Réponse indisponible')}</div></div>`;
@@ -1135,7 +1135,7 @@ function showResults() {
     resultsEl.innerHTML = `
     <div class="score-card">
       <div style="font-size:2rem;margin-bottom:6px">${emoji}</div>
-      <div class="score-num" style="color:${finalNoteValue >= 10 ? '#2ecc71' : finalNoteValue >= 8 ? '#f39c12' : '#e74c3c'}">${finalNote}<span style="font-size:1.4rem">/20</span></div>
+      <div class="score-num" style="color:${finalNoteValue >= 10 ? '#2ecc71' : finalNoteValue >= 8 ? '#f39c12' : '#e74c3c'}">${(finalNoteValue/2).toFixed(2)}<span style="font-size:1.4rem">/10</span></div>
       <div style="color:#aaa;font-size:.82rem;margin-top:4px">Note finale sur 20 • Score brut : ${rawScore}/${maxScore} • ${pct}% de bonnes réponses</div>
       <div class="score-detail">
         <div class="sc-box" style="color:#2ecc71">✅ ${correct} correctes</div>
