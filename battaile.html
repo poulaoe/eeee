@@ -230,6 +230,8 @@ function getQuestions(subject, count) {
   else if (subject === 'Anat' && window.ANAT_BANK) bank = window.ANAT_BANK;
   else if (subject === 'ProcedII' && window.ProcedII_BANK) bank = window.ProcedII_BANK;
   else if (subject === 'Patho' && window.PATHO_BANK) bank = window.PATHO_BANK;
+   else if (subject === 'Valo I' && window.VALOI_BANK) bank = window.VALOI_BANK;
+   else if (subject === 'Valo II' && window.VALOII_BANK) bank = window.VALOII_BANK;
 
   if (!bank.length) bank = [
     {q:"La douleur chronique dure plus de :",o:["3 mois","1 mois","6 semaines"],a:0,e:"3 mois est le seuil de chronicité."},

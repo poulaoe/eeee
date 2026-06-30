@@ -208,14 +208,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
     </div>
   </div>
 </div>
-<script src="ValoII-bank.js"></script>
+<script src="ValoII-Bank.js"></script>
 <script>
 window.SUBJECT_NAME = 'Valo II';
-window.BANK = window.VALO_BANK || [];
-window.SUBJECT_DESC = 'Banque ValoII au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
-window.VALO_BANK = window.VALO_BANKII || [];
+window.BANK = window.VALOII_BANK || [];
+window.SUBJECT_DESC = 'Banque Valo II au même format que Pathologie et Douleur, avec tirage équilibré par chapitre.';
+window.VALOII_BANK = window.VALOII_BANK || [];
 
-if (!Array.isArray(window.VALO_BANK) || window.VALO_BANK.length === 1) {
+if (!Array.isArray(window.VALOII_BANK) || window.VALOII_BANK.length === 1) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
@@ -223,7 +223,7 @@ if (!Array.isArray(window.VALO_BANK) || window.VALO_BANK.length === 1) {
   }
   if (msg) {
     msg.style.color = '#ffb3a8';
-    msg.textContent = 'Erreur de chargement: ValoII-bank.js indisponible ou vide.';
+    msg.textContent = 'Erreur de chargement: ValoII-Bank.js indisponible ou vide.';
   }
 }
 </script>
