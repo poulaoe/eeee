@@ -518,5 +518,5 @@ window.BIOMEC_BANK = window.BIOMEC_BANK.map(function(item) {
     opts: item.opts,
     a: item.a,
     e: item.e
-  });
-]
+  };
+});
