@@ -507,12 +507,11 @@ window.BIOMEC_BANK = [
   { ch: "Modifications tronc", label: "QCM biomec", type: "direct", q: "Une inclinaison homolatérale du tronc pendant l'appui réduit principalement la demande sur quels muscles ?", opts: ["Les adducteurs de hanche homolatéraux", "Les abducteurs de hanche homolatéraux", "Les extenseurs du genou homolatéraux"], a: 1, e: "L inclinaison homolaterale du tronc pendant l appui reduit la demande sur les abducteurs de la hanche homolateraux." },
   { ch: "Modifications tronc", label: "QCM biomec", type: "direct", q: "Une inclinaison controlatérale du tronc pendant l'oscillation réduit principalement la demande sur quels muscles ?", opts: ["Les adducteurs de hanche du membre opposé", "Les extenseurs de genou du membre opposé", "Les abducteurs de hanche du membre opposé"], a: 2, e: "L inclinaison controlaterale du tronc pendant l oscillation reduit la demande sur les abducteurs de la hanche du membre oppose." },
 
+
 window.BIOMEC_BANK = window.BIOMEC_BANK.map(function(item) {
-
-
   return {
     ch: item.ch,
-    label: 'QCM biomec',
+    label: item.label,
     type: 'direct',
     q: item.q,
     opts: item.opts,
@@ -520,3 +519,4 @@ window.BIOMEC_BANK = window.BIOMEC_BANK.map(function(item) {
     e: item.e
   };
 });
+window.BANK = window.BIOMEC_BANK;
