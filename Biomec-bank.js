@@ -511,11 +511,11 @@ window.BIOMEC_BANK = window.BIOMEC_BANK.map(function(item) {
 
 
   return {
-    ch: item.l,
+    ch: item.ch,
     label: 'QCM biomec',
     type: 'direct',
     q: item.q,
-    opts: item.o,
+    opts: item.opts,
     a: item.a,
     e: item.e
   };
