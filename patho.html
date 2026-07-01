@@ -235,856 +235,494 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <script>
 // ===================== BANQUE DE QUESTIONS =====================
 const BANK = [
-// ===== CH3 — COGNITIF =====
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
- q:"Laquelle de ces affirmations concernant l'aphasie de BROCA est FAUSSE ?",
- opts:["L'émission du langage est abolie ou très réduite","La compréhension orale est généralement préservée","La répétition est perturbée","L'émission est fluide et paraphasique"],
- a:3,e:"Dans l'aphasie de Broca, l'émission est NON FLUIDE et laborieuse. L'émission fluide et paraphasique est caractéristique de Wernicke. Broca = zone motrice du langage (hémisphère gauche)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
- q:"Laquelle de ces affirmations sur l'aphasie de WERNICKE est FAUSSE ?",
- opts:["L'émission est fluide mais paraphasique","La compréhension orale est préservée","La répétition est perturbée","Elle est dite 'sensitive primaire'"],
- a:1,e:"Dans Wernicke, la COMPRÉHENSION est ALTÉRÉE (non préservée). L'émission est fluide mais paraphasique (mots déformés/inventés). On l'appelle aphasie sensitive car la zone de Wernicke est sensorielle."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"direct",
- q:"L'agnosie se définit comme :",
- opts:["L'incapacité à exécuter des mouvements appris malgré l'intégrité motrice","L'incapacité à identifier des objets ou son propre corps malgré des systèmes sensitifs intacts","Un trouble du langage avec émission paraphasique","Une perturbation de l'attention sélective du côté gauche"],
- a:1,e:"Agnosie = incapacité à RECONNAÎTRE malgré des systèmes sensitifs INTACTS. Lésion des zones d'association sensorielles (réseau occipito-temporal). À distinguer de l'apraxie (trouble du geste) et de l'aphasie (trouble du langage)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
- q:"Laquelle de ces affirmations sur l'apraxie est FAUSSE ?",
- opts:["C'est une incapacité à réaliser des gestes appris malgré des fonctions motrices et sensitives intactes","Elle indique une lésion des zones d'association motrices ou des réseaux de planification du geste","Elle est toujours bilatérale et symétrique, quelle que soit la localisation lésionnelle","On la distingue de la paralysie qui implique un déficit moteur"],
- a:2,e:"L'apraxie peut être unilatérale ou bilatérale selon la lésion. Une lésion hémisphérique gauche donne souvent une apraxie bilatérale (car l'hémisphère gauche coordonne les deux côtés pour les gestes appris)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"vraie",
- q:"Laquelle de ces affirmations sur le maintien de la conscience est VRAIE ?",
- opts:["Il dépend uniquement de l'intégrité du cortex pariétal","Il nécessite l'intégrité du sraa (tronc cérébral) pour le niveau de vigilance et des deux hémisphères pour le contenu","Il est assuré exclusivement par le lobe frontal gauche","Il ne peut être évalué que par irm fonctionnelle"],
- a:1,e:"La conscience nécessite 2 composantes : le NIVEAU DE VIGILANCE (SRAA, tronc cérébral) et le CONTENU (deux hémisphères). Une lésion du tronc peut abolir la vigilance même avec des hémisphères intacts."},
-
-// ===== CH4 — TONUS =====
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"fausse",
- q:"Concernant le PREMIER motoneurone, laquelle est FAUSSE ?",
- opts:["Il provoque une paralysie spasmodique","Le signe de babinski est positif (rcp extenseur)","Les réflexes myotatiques profonds sont exaltés","Il entraîne fasciculations et amyotrophie marquée"],
- a:3,e:"Fasciculations + amyotrophie MARQUÉE = syndrome du 2e MN (inférieur). Le 1er MN donne une amyotrophie LÉGÈRE par désuétude, sans fasciculations. Retenir : 1er MN = 'tout est trop' ; 2e MN = 'tout est absent'."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"vraie",
- q:"Laquelle de ces affirmations sur la spasticité est VRAIE ?",
- opts:["Elle est due à une lésion du 2e mn et donne un signe de la roue dentée","Elle est une hypertonie avec signe de la lame de canif, due à une lésion du système pyramidal","Elle touche principalement les muscles fléchisseurs des membres inférieurs","Elle est associée à une arréflexie et une paralysie flasque"],
- a:1,e:"Spasticité = hypertonie PYRAMIDALE (1er MN), signe de la lame de canif (résistance initiale → relâchement). Plus intense dans les extenseurs au MI et les fléchisseurs au MS. La roue dentée = extrapiramidal."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"direct",
- q:"La paraplégie se définit comme :",
- opts:["La paralysie d'un seul membre par atteinte d'un nerf périphérique","La paralysie d'un hémicorps par syndrome pyramidal","La paralysie des deux membres inférieurs par syndrome médullaire thoraco-lombaire","La paralysie des quatre membres par syndrome médullaire supra-cervical"],
- a:2,e:"Paraplégie = 2 membres inférieurs = lésion médullaire THORACO-LOMBAIRE. Tétraplégie = 4 membres = lésion SUPRA-CERVICALE. Hémiplégie = hémicorps = syndrome pyramidal central. Monoplégie = 1 membre."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"fausse",
- q:"Concernant la syncynie dans le syndrome pyramidal, laquelle est FAUSSE ?",
- opts:["C'est une contraction involontaire d'un groupe musculaire lors d'un mouvement volontaire d'un autre groupe","Elle s'observe chez les patients hémiplégiques ou hémiparétiques","Elle témoigne d'une lésion du faisceau pyramidal","Elle est un signe du 2e motoneurone (inférieur)"],
- a:3,e:"La syncynie est un signe du PREMIER motoneurone (syndrome pyramidal), observée chez les hémiplégiques. Le clonus aussi est un signe du 1er MN. Les fasciculations = 2e MN."},
-
-// ===== CH5 — DYSKINÉSIES =====
-{ch:"Ch.5",label:"Dyskinésies",type:"direct",
- q:"Dans le système extrapyramidal, quel neurotransmetteur inhibe  le noyau strié et réduit l'activation corticale ?",
- opts:["Acétylcholine (ach)","Gaba","Dopamine (da)","Glutamate"],
- a:2,e:"Dopamine = inhibe  le noyau strié (↓ activation corticale). Acétylcholine = ACTIVE l'intensification des mouvements corticaux. Déséquilibre DA/ACh → troubles extrapyramidaux. Dans Parkinson : ↓ DA → hyperactivité ACh relative."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"fausse",
- q:"Laquelle de ces affirmations sur la maladie de Huntington est FAUSSE ?",
- opts:["C'est une maladie génétique neurodégénérative à hérédité autosomique dominante","Elle se manifeste typiquement entre 35 et 44 ans","Elle entraîne des mouvements involontaires de type chorée","Elle est plus fréquente chez les personnes d'ascendance asiatique"],
- a:3,e:"Huntington est plus fréquente chez les personnes d'ascendance EUROPÉENNE OCCIDENTALE. Hérédité AD avec phénomènes d'anticipation (s'aggrave à chaque génération). Première maladie génétique des troubles hyperkinétiques neurologiques."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"vraie",
- q:"Laquelle de ces affirmations sur la chorée est VRAIE ?",
- opts:["Elle est due à un excès d'inhibition du noyau strié par la dopamine","Elle est un trouble hypokinétique du système extrapyramidal","C'est un trouble hyperkinétique dû à une inhibition moindre du noyau strié par l'ach ou un excès de da","Elle se manifeste exclusivement par des mouvements rythmiques des extrémités"],
- a:2,e:"Chorée = trouble HYPERKINÉTIQUE : mouvements anormaux rapides, involontaires, irréguliers, due à inhibition moindre ACh du strié OU excès DA. Peut toucher n'importe quel segment. Exemples : Huntington, chorée de Sydenham."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"direct",
- q:"Les dyskinésies TARDIVES sont caractérisées par :",
- opts:["Des épisodes brefs de mouvements chorée-dystoniques paroxystiques","Des mouvements répétitifs liés à l'utilisation prolongée de neuroleptiques","Une rigidité extrapiramdale progressive dans les deux hémicorps","Un tremblement au repos disparaissant lors du mouvement"],
- a:1,e:"Dyskinésies tardives = mouvements RÉPÉTITIFS stéréotypés (mâcher, tirer la langue, cligner des yeux, mouvements rapides des extrémités) liés à l'utilisation prolongée de NEUROLEPTIQUES ou métoclopramide."},
-
-// ===== CH6 — PARKINSON =====
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"fausse",
- q:"Laquelle de ces affirmations sur la maladie de Parkinson est FAUSSE ?",
- opts:["C'est la 2e maladie neurodégénérative la plus fréquente après alzheimer","Le tremblement au repos disparaît pendant le mouvement et le sommeil","Elle est plus fréquente chez les femmes que les hommes","Elle débute typiquement entre 50 et 60 ans"],
- a:2,e:"Parkinson est plus fréquente chez les HOMMES. L'étiologie est une mort des cellules dopaminergiques de la substance noire (pars compacta) avec dépôts d'alpha-synucléine (corps de Lewy). Cause primaire inconnue."},
-
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"direct",
- q:"Le tremblement parkinsonien se distingue du tremblement cérébelleux car :",
- opts:["Le tremblement parkinsonien est un tremblement d'intention, aggravé lors des mouvements fins","Le tremblement parkinsonien est un tremblement au repos qui disparaît pendant le mouvement et le sommeil","Les deux sont identiques en fréquence et en topographie initiale","Le tremblement parkinsonien est toujours bilatéral et symétrique dès le début"],
- a:1,e:"Tremblement parkinsonien = AU REPOS (disparaît au mouvement et au sommeil), asymétrique au début (distale, 'compter des pièces'). Tremblement cérébelleux = D'INTENTION (aggravé lors du mouvement précis, comme le test doigt-nez)."},
-
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"vraie",
- q:"Parmi les symptômes NON MOTEURS de Parkinson, lequel est VRAI ?",
- opts:["Hyperolfaction","Hypertension artérielle orthostatique systématique","Anosmie, hypomotilité intestinale (constipation), troubles du sommeil et dépression","Hyperactivité intestinale et diarrhée chronique"],
- a:2,e:"Symptômes non moteurs de Parkinson : ANOSMIE (perte de l'odorat souvent précoce), constipation (hypomotilité intestinale), HYPOTENSION orthostatique (pas hypertension), troubles du sommeil, dépression, troubles cognitifs tardifs."},
-
-// ===== CH7 — LÉSION MÉDULLAIRE =====
-{ch:"Ch.7",label:"Lésion Médullaire",type:"fausse",
- q:"Concernant le syndrome centromédullaire, laquelle est FAUSSE ?",
- opts:["C'est la lésion médullaire incomplète la plus fréquente","Il est classiquement provoqué par une hyperextension cervicale","Il affecte davantage les membres supérieurs que les membres inférieurs","Il entraîne une perte complète et définitive de toutes les fonctions sous le niveau lésé"],
- a:3,e:"Le syndrome centromédullaire est INCOMPLET — meilleur pronostic des syndromes médullaires. La préservation sacrée (sensibilité thermo-algésique sacrée) est souvent conservée. Récupération possible, surtout chez le jeune."},
-
-{ch:"Ch.7",label:"Lésion Médullaire",type:"direct",
- q:"L'IRM est l'examen de référence pour la lésion médullaire, SAUF quand :",
- opts:["Le patient présente une fracture vertébrale instable","Le patient est claustrophobe (dans ce cas tdm suffit)","Le patient porte un stimulateur cardiaque","Le patient présente une paraplégie complète"],
- a:2,e:"L'IRM est contre-indiquée en présence d'un STIMULATEUR CARDIAQUE (et de certains implants métalliques). Dans ce cas, on utilise la myélographie par scanner (produit de contraste dans l'espace péri-médullaire). La claustrophobie peut se gérer avec sédation légère."},
-
-{ch:"Ch.7",label:"Lésion Médullaire",type:"vraie",
- q:"Dans le syndrome centromédullaire, laquelle est VRAIE concernant la sensibilité ?",
- opts:["La sensibilité proprioceptive et vibratoire sont les premières perdues","La sensibilité thermo-algésique des segments sacrés est préservée (préservation sacrée)","Toutes les modalités sensitives sont également atteintes","La douleur est abolie mais la proprioception reste intacte indéfiniment"],
- a:1,e:"Syndrome centromédullaire : préservation SACRÉE de la sensibilité thermo-algésique (fibres spinothalamiques en périphérie de la moelle). La sensibilité proprioceptive et vibratoire (cordons postérieurs) peut aussi être préservée."},
-
-// ===== T8 — EXPLORATION NEURO =====
-{ch:"T.8",label:"Exploration Neurologique",type:"fausse",
- q:"Concernant les nerfs crâniens, laquelle est FAUSSE ?",
- opts:["Nc vii (facial)","Nc viii (acoustique) : audition et équilibre","Nc v (trijumeau) : sensibilité face et motricité masticatrice","Nc xi (accessoire spinal) : mouvements oculaires latéraux"],
- a:3,e:"NC XI (accessoire spinal) = muscles TRAPÈZE  (élévation épaule). Les mouvements oculaires LATÉRAUX = NC VI (abducens). Confusion fréquente NC VI/XI à l'examen."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"direct",
- q:"L'ordre d'exploration des fonctions corticales supérieures commence par :",
- opts:["Langage, puis mémoire, puis praxies","Conscience, attention,comportement,orientation","Réflexes myotatiques, puis réflexes cutanés, puis coordination","Gnosie, praxies, fonctions frontales"],
- a:1,e:"Ordre : 1-Conscience, 2-Attention, 3-Comportement, 4-Orientation ×3, 5-Mémoire, 6-Langage, 7-Praxies, 8-Gnosie, 9-Tests frontaux. On explore du plus global au plus spécifique."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"fausse",
- q:"Concernant le réflexe cornéen (arc V-VII), laquelle est FAUSSE ?",
- opts:["Il est provoqué par la stimulation de la cornée","Il provoque un clignement bilatéral des paupières","La réponse est uniquement ipsilatérale (côté stimulé)","Il sert à évaluer l'intégrité des nc v et vii"],
- a:2,e:"Le réflexe cornéen provoque un clignement BILATÉRAL (réponse DIRECTE + CONSENSUELLE = œil opposé). C'est son caractère bilatéral qui permet de tester séparément la voie afférente (V) et efférente (VII)."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"vraie",
- q:"Le réflexe cutané abdominal est pathologique quand :",
- opts:["Le nombril se déplace vers la zone caressée","Le nombril ne se déplace pas vers la zone caressée","La réponse est bilatérale et symétrique","Il est présent uniquement en décubitus dorsal"],
- a:1,e:"Réflexe cutané abdominal NORMAL = le nombril se déplace VERS la zone stimulée (contraction muscles abdominaux). Il est PATHOLOGIQUE s'il est ABSENT ou anormal. Son abolition peut signer une lésion pyramidale."},
-
-// ===== CH9 — SENSORIEL =====
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"direct",
- q:"Les cordons postérieurs de la moelle épinière transmettent :",
- opts:["La douleur et la température via fibres c non myélinisées","La proprioception et les vibrations via fibres a myélinisées","Le toucher superficiel uniquement, via fibres b","La sensibilité thermique croisée contralatérale"],
- a:1,e:"Cordons postérieurs = PROPRIOCEPTION (batistésie) + VIBRATIONS (palesthésie) via fibres A MYÉLINISÉES. La douleur et la température = faisceau SPINOTHALAMIQUE antéro-latéral, croisé. Tester proprioception = yeux fermés, distal→proximal."},
-
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"fausse",
- q:"Lors de l'exploration de la batistésie (proprioception), laquelle de ces affirmations est FAUSSE ?",
- opts:["On montre d'abord comment procéder avec les yeux ouverts","On répète ensuite les yeux fermés dans un ordre aléatoire","L'exploration se fait de distal vers proximal","On doit appliquer une forte pression tactile pour que le patient ressente le mouvement"],
- a:3,e:"L'exploration de la batistésie doit ÉVITER d'apporter une sensation tactile supplémentaire. On mobilise l'articulation en tenant les bords latéraux (pas les faces) pour ne pas induire de sensation tactile parasite. Mouvement minimal détectable."},
-
-// ===== CH10 — ONCOLOGIE =====
-{ch:"Ch.10",label:"Patient Oncologique",type:"fausse",
- q:"Laquelle de ces distinctions est FAUSSE ?",
- opts:["Une tumeur peut être bénigne ou maligne","Le cancer est une croissance infiltrante de certaines tumeurs malignes","La néoplasie désigne une altération de la prolifération, différenciation et survie cellulaires","Toute tumeur est nécessairement maligne"],
- a:3,e:"Tumeur = phénomène macroscopique d'augmentation de taille, SANS préjuger de sa nature (bénigne ou maligne). Cancer = croissance infiltrante maligne. Néoplasie = terme le plus précis (prolifération+différenciation+survie altérées)."},
-
-{ch:"Ch.10",label:"Patient Oncologique",type:"direct",
- q:"Le syndrome paranéoplasique se définit comme :",
- opts:["L'ensemble des métastases dans les organes à distance","Des manifestations parallèles à la tumeur dans des organes distants, sans rapport avec des métastases","La récidive tumorale après traitement chirurgical complet","La toxicité systémique des traitements de chimiothérapie"],
- a:1,e:"Syndrome paranéoplasique = manifestations à distance de la tumeur SANS rapport avec les métastases (mécanisme immuno-médié ou sécrétoire). Types : neuromusculaires (Lambert-Eaton, polyneurite), endocriniens, hématologiques..."},
-
-{ch:"Ch.10",label:"Patient Oncologique",type:"fausse",
- q:"Parmi les facteurs exogènes cancérigènes chimiques, lequel N'est PAS classiquement cité ?",
- opts:["Amiante","Benzène","Arsenic","Lumière visible"],
- a:3,e:"La lumière visible (400-700nm) n'est pas cancérigène. Les UV (en dehors du spectre visible) le sont (mélanome). Les facteurs chimiques classiques : amiante, benzène, arsenic, tabac, androgènes, agents alkylants."},
-
-// ===== CH12 — GUILLAIN-BARRÉ =====
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"direct",
- q:"La forme AIDP du SGB se caractérise par :",
- opts:["Atteinte axonale grave, peu fréquente en europe","La forme la plus courante en europe, avec atteinte démyélinisante","Triade ataxie + aréflexie + ophtalmoplégie","Atteinte axonale motrice et sensorielle combinée"],
- a:1,e:"AIDP (polyneuropathie inflammatoire démyélinisante aiguë) = + FRÉQUENTE en Europe, atteinte MYÉLINE. AMAN = axonale motrice. AMSAN = axonale motrice+sensorielle. Miller-Fisher = ataxie+aréflexie+ophtalmoplégie (rare)."},
-
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"fausse",
- q:"Concernant la physiopathologie du SGB, laquelle est FAUSSE ?",
- opts:["C'est une réponse auto-immune dirigée contre la myéline ou l'axone","Le système immunitaire produit des anticorps qui attaquent les composants du nerf périphérique","La guérison dépend de la régénération des fibres nerveuses","C'est une maladie dégénérative progressive du motoneurone central"],
- a:3,e:"Le SGB est une maladie AUTO-IMMUNE AIGUË du SNP (nerfs périphériques), pas du motoneurone central. Le pronostic dépend de la régénération des fibres. La forme SLA est la maladie dégénérative du motoneurone (1er et 2e MN)."},
-
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"vraie",
- q:"La triade clinique orientant vers un SGB est :",
- opts:["Rigidité, tremblement au repos et bradykinésie","Faiblesse progressive ascendante, aréflexie généralisée et progression rapide","Spasticité, babinski positif et hyperréflexie","Ataxie cérébelleuse, nystagmus et dysarthrie"],
- a:1,e:"SGB = FAIBLESSE PROGRESSIVE ASCENDANTE (commence aux jambes, remonte) + ARÉFLEXIE GÉNÉRALISÉE + PROGRESSION RAPIDE. À différencier de la myélite transverse, SEP, myasthénie grave. Diagnostic essentiellement clinique."},
-
-// ===== CH13 — GÉRIATRIE =====
-{ch:"Ch.13",label:"Patient Gériatrique",type:"fausse",
- q:"Laquelle de ces affirmations sur la sarcopénie est FAUSSE ?",
- opts:["C'est une perte progressive de masse et de force musculaire liée à l'âge","Elle peut être prévenue et améliorée par l'exercice physique régulier","Elle survient uniquement après 80 ans et ne touche que les membres inférieurs","Elle contribue au syndrome de fragilité du patient gériatrique"],
- a:2,e:"La sarcopénie commence dès 40-50 ans et touche TOUS les groupes musculaires (pas uniquement les MI). Elle est un axe d'intervention majeur du kiné en gériatrie via renforcement musculaire et exercice aérobie."},
-
-{ch:"Ch.13",label:"Patient Gériatrique",type:"direct",
- q:"Le vieillissement du SNC se caractérise notamment par :",
- opts:["Une augmentation de la synthèse d'acétylcholine (ach) compensatrice","Une perte de 30 à 40% des neurones corticaux avec diminution de la synthèse d'ach","Une hypertrophie compensatrice des neurones restants sans perte de fonction","Une augmentation de la plasticité synaptique après 65 ans"],
- a:1,e:"Vieillissement SNC : perte de 30-40% des neurones corticaux + ↓ synthèse ACh (d'où prudence avec les anticholinergiques chez la personne âgée). Le sommeil se fragmente, les réflexes ralentissent, la marche se modifie."},
-
-{ch:"Ch.13",label:"Patient Gériatrique",type:"fausse",
- q:"Concernant le délirium chez la personne âgée, laquelle est FAUSSE ?",
- opts:["C'est un trouble aigu de la conscience avec fluctuation","Il peut être déclenché par une infection, un médicament ou une déshydratation","Il est toujours d'installation progressive sur plusieurs semaines","Il doit être distingué de la démence qui est un trouble chronique"],
- a:2,e:"Le délirium est un trouble AIGU (heures-jours) et FLUCTUANT, à distinguer de la démence (chronique, progressive). Il peut être causé par infection, médicaments, déshydratation, chirurgie... Chez le vieillard, il est souvent la première manifestation d'une pathologie aiguë."},
-
-// ===== CH14 — ALZHEIMER =====
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"vraie",
- q:"Laquelle de ces affirmations sur la DCL (détérioration cognitive légère) est VRAIE ?",
- opts:["Elle remplit tous les critères diagnostiques d'une démence avérée","Elle se définit par une perte de mémoire avec cognition générale et avq préservées","Elle est toujours et sans exception précurseur d'alzheimer","Elle ne nécessite aucun suivi car réversible dans tous les cas"],
- a:1,e:"DCL = perte mémoire + capacité mémorielle <1,5 ET + COGNITION NORMALE + AVQ NORMALES + PAS de démence. Évolution incertaine : règle des tiers (1/3 évolue vers démence, 1/3 stable, 1/3 s'améliore). Nécessite un suivi."},
-
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"fausse",
- q:"Concernant le diagnostic de démence, laquelle est FAUSSE ?",
- opts:["Le mmse est un test cognitif utilisé : un score <24/30 indique une détérioration cognitive","Le diagnostic est essentiellement clinique, avec examen neurocognitif","Il faut toujours inclure la famille dans l'entretien pour recouper les informations","Un mmse normal exclut formellement tout diagnostic de démence"],
- a:3,e:"Un MMSE NORMAL n'exclut pas la démence légère ou les démences non-amnésiques. Le MMSE est sensible mais peu spécifique pour les démences débutantes. On peut avoir une démence frontale avec MMSE normal."},
-
-// ===== CH15 — PHYSIO PÉDIATRIQUE =====
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"fausse",
- q:"Concernant le développement neurologique de l'enfant, laquelle est FAUSSE ?",
- opts:["Le développement est séquentiel : céphalo-caudal et proximo-distal","Le système nerveux est plastique et peut se réorganiser surtout aux stades précoces","Le développement moteur, sensoriel, cognitif et émotionnel sont interdépendants","Le développement neurologique est identique chez tous les enfants au même âge"],
- a:3,e:"Le développement est INDIVIDUEL : chaque enfant a son propre rythme avec des fourchettes normales de variabilité. L'affirmer identique serait faux — c'est une caractéristique fondamentale du développement normal."},
-
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"direct",
- q:"La migration neuronale se produit principalement entre :",
- opts:["La conception et la 8e semaine de gestation","La 12e et la 24e semaine de gestation","La 28e semaine de gestation et la naissance","Les 6 premiers mois de vie post-natale"],
- a:1,e:"Migration neuronale = 12e-24e semaine de gestation. Les neurones migrent de la zone ventriculaire vers le cortex, guidés par cellules gliales radiales + signaux chimiques. Altérations → lysencéphalie, hétérotopies."},
-
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"vraie",
- q:"La plasticité du système nerveux pédiatrique signifie que :",
- opts:["Le cerveau de l'enfant est plus fragile et ne peut pas compenser les lésions","Le système nerveux peut s'adapter, se réorganiser et compenser les lésions, particulièrement aux stades précoces","La plasticité disparaît définitivement après 3 ans","La plasticité est uniquement présente dans le cervelet"],
- a:1,e:"Plasticité = capacité du SN à S'ADAPTER à l'expérience, SE RÉORGANISER et COMPENSER les lésions, particulièrement aux stades précoces (fenêtres de développement). C'est le fondement de la rééducation précoce en neuropédiatrie."},
-
-// ===== T11 — SEP =====
-{ch:"T.11",label:"Sclérose en Plaques",type:"fausse",
- q:"Concernant l'épidémiologie de la SEP, laquelle est FAUSSE ?",
- opts:["Elle touche préférentiellement les jeunes adultes entre 20 et 30 ans","Le ratio femmes/hommes est d'environ 3:1","Elle est plus fréquente dans les pays à climat chaud, proches de l'équateur","C'est la 2e cause d'invalidité neurologique chez les jeunes après les traumatismes"],
- a:2,e:"SEP = plus fréquente dans les pays FROIDS, LOIN de l'équateur (distribution inversée). Carence en vitamine D (↓ immunorégulation) et niveau socio-économique élevé sont des facteurs. Race blanche, nord de l'Europe."},
-
-{ch:"T.11",label:"Sclérose en Plaques",type:"direct",
- q:"La névrite optique rétrobulbaire dans la SEP se caractérise par :",
- opts:["Une perte visuelle bilatérale symétrique et indolore","Une perte visuelle unilatérale subaiguë avec douleur lors des mouvements oculaires","Une perte visuelle permanente et totale dès la première poussée","Une atteinte exclusivement du champ visuel périphérique"],
- a:1,e:"Névrite optique SEP = perte visuelle UNILATÉRALE subaiguë + DOULEUR lors des mouvements oculaires + scotome central. Représente 36% des premières manifestations. Récupération partielle/totale en quelques semaines, mais peut précéder la SEP."},
-
-{ch:"T.11",label:"Sclérose en Plaques",type:"vraie",
- q:"L'activité de la SEP est définie par :",
- opts:["Uniquement par le score edss et la durée de la maladie","Par les poussées cliniques et l'activité observée à l'irm","Par le nombre de plaques visibles uniquement à l'irm-t1","Par la vitesse de progression du handicap moteur"],
- a:1,e:"Depuis 2015, l'activité SEP = POUSSÉES + activité IRM (lésions prenant le contraste à la gadolinium). C'est un facteur déterminant pour les décisions thérapeutiques. Progression et aggravation sont des concepts distincts de l'activité."},
-
-// ===== T16 — PCI I =====
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"direct",
- q:"Les facteurs PÉRINATAUX de la PCI incluent :",
- opts:["Infections congénitales (toxoplasmose, cmv)","Méningite néonatale et traumatisme crânien postnatal","Hypoxie pendant l'accouchement, prématurité et traumatisme obstétrique","Malformations congénitales et troubles génétiques"],
- a:2,e:"PÉRINATAUX = autour de la naissance : hypoxie per-partum, prématurité, traumatisme obstétrique. PRÉNATAUX = avant : infections congénitales (toxoplasmose, rubéole, CMV), malformations, génétique. POSTNATAUX = après : méningite, traumatisme crânien, AVC néonatal."},
-
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"vraie",
- q:"La forme ATAXIQUE de la PCI se caractérise par :",
- opts:["Des mouvements involontaires interférant avec les gestes volontaires (tonus fluctuant)","Un déséquilibre, une démarche instable, une dysmétrie et des tremblements lors de mouvements fins","Une spasticité bilatérale touchant surtout les membres inférieurs","Une paralysie flasque unilatérale avec amyotrophie"],
- a:1,e:"PCI ataxique = lésion cérébelleuse : déséquilibre + démarche instable + DYSMÉTRIE (difficulté à évaluer distance/force) + tremblements lors des mouvements fins. À distinguer de la forme dyskinétique (mouvements involontaires + tonus fluctuant)."},
-
-// ===== T17 — PCI II / PRÉMATURITÉ =====
-{ch:"Ch.17",label:"PCI & Prématurité",type:"vraie",
- q:"Parmi les complications neurologiques du prématuré grave, laquelle est la plus courante ?",
- opts:["Les malformations cardiaques congénitales","Les hémorragies sévères et les lésions kystiques de la substance blanche","Les maladies auto-immunes du snp","Les troubles métaboliques thyroïdiens néonataux"],
- a:1,e:"Prématuré grave : hémorragies sévères + lésions kystiques substance blanche (leucomalacie périventriculaire) + crises convulsives + encéphalopathie hypoxique-ischémique. Ces 4 complications affectent développement moteur, sensoriel, cognitif."},
-
-{ch:"Ch.17",label:"PCI & Prématurité",type:"fausse",
- q:"Concernant les complications neurologiques du prématuré, laquelle est FAUSSE ?",
- opts:["Les hémorragies intraventriculaires sont fréquentes chez le grand prématuré","La leucomalacie périventriculaire est une lésion kystique de la substance blanche","Les lésions neurologiques du prématuré ne peuvent jamais influencer le développement moteur","L'encéphalopathie hypoxique-ischémique peut survenir même sans prématurité"],
- a:2,e:"Les lésions neurologiques du prématuré PEUVENT et AFFECTENT le développement moteur, sensoriel et cognitif. C'est précisément pourquoi la prise en charge kinésithérapique précoce est fondamentale chez ces enfants."},
-
-// ===== T18 — TSA / TDAH =====
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"fausse",
- q:"Laquelle de ces affirmations sur le TSA est FAUSSE ?",
- opts:["Les enfants tsa peuvent présenter une hyper ou hyposensibilité aux stimuli","L'hypotonie et les difficultés motrices fines et globales sont fréquentes","La marche sur la pointe des pieds est classiquement associée au tsa","Le tsa est principalement causé par un déficit en dopamine identique à parkinson"],
- a:3,e:"Le TSA n'est PAS causé par un déficit dopaminergique. C'est un trouble NEURODÉVELOPPEMENTAL complexe multifactoriel (génétique + environnemental). Le lier au manque de dopamine comme Parkinson est une confusion erronée."},
-
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"direct",
- q:"Le TDAH est un trouble neurobiologique caractérisé par la triade :",
- opts:["Hypotonie, fasciculations et faiblesse musculaire progressive","Hyperactivité, impulsivité et difficultés d'attention","Dyslexie, dyscalculie et dysgraphie combinées","Spasticité, babinski et hyperréflexie"],
- a:1,e:"TDAH = trouble NEUROBIOLOGIQUE et NEURODÉVELOPPEMENTAL : HYPERACTIVITÉ + IMPULSIVITÉ + DIFFICULTÉS D'ATTENTION. Diagnostiqué généralement pendant l'enfance mais peut persister à l'âge adulte. Triade à connaître absolument."},
-
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"vraie",
- q:"La dyspraxie (trouble développemental de la coordination) est directement du domaine du kinésithérapeute car :",
- opts:["Elle n'implique que des difficultés scolaires sans composante motrice","Elle touche la coordination motrice, la motricité fine, la planification et l'organisation du mouvement","Elle est uniquement diagnostiquée par un bilan orthophonique","Elle guérit spontanément à l'adolescence sans prise en charge"],
- a:1,e:"Dyspraxie = trouble de la COORDINATION MOTRICE (motricité fine + planification + organisation du geste). C'est un trouble des compétences non verbales qui relève DIRECTEMENT du kiné pour la rééducation de la motricité et de la coordination."},
-
-// ===== T19 — NEUROMUSCULAIRE PÉDIATRIQUE =====
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"fausse",
- q:"Laquelle de ces affirmations sur l'AME est FAUSSE ?",
- opts:["Elle est classée parmi les maladies neuromusculaires pédiatriques","Elle entraîne une faiblesse musculaire progressive par atteinte du 2e motoneurone","Elle peut toucher les muscles respiratoires","Elle affecte uniquement les muscles des membres supérieurs"],
- a:3,e:"L'AME entraîne une faiblesse DIFFUSE : membres, tronc ET muscles RESPIRATOIRES. L'atteinte respiratoire est souvent la complication la plus grave et la principale cause de décès. Elle n'est pas limitée aux membres supérieurs."},
-
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"direct",
- q:"La myasthénie gravis (forme auto-immune) est causée par :",
- opts:["Une mutation génétique de la dystrophine entraînant la dégénérescence musculaire","Des anticorps anti-récepteurs d'acétylcholine à la jonction neuromusculaire","Un déficit en dopamine au niveau des ganglions de la base","Une démyélinisation des fibres nerveuses périphériques"],
- a:1,e:"Myasthénie gravis auto-immune = anticorps ANTI-RÉCEPTEURS ACh à la JNM → blocage de la transmission neuromusculaire → faiblesse fluctuante. La forme congénitale est NON auto-immune (rare). Différent de Duchenne (dystrophine)."},
-
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"vraie",
- q:"La myopathie de Duchenne est caractérisée par :",
- opts:["Une atteinte auto-immune de la jonction neuromusculaire","Une atteinte des neurones moteurs périphériques avec fasciculations","Une dystrophie musculaire progressive liée au chromosome x touchant principalement les garçons","Une polyneuropathie symétrique avec atteinte sensitive prédominante"],
- a:2,e:"Duchenne = DYSTROPHIE MUSCULAIRE liée au chromosome X (gène de la DYSTROPHINE), touche quasi-exclusivement les GARÇONS. Faiblesse progressive proximale, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire évolutive."},
-
-// ===== T20 — MYÉLOMÉNINGOCÈLE =====
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"direct",
- q:"Le spina bifida occulta se distingue du myéloméningocèle car :",
- opts:["Il contient du tissu neural hernié à travers un défaut osseux","Il est associé à une paralysie complète des membres inférieurs","C'est une anomalie osseuse minime, généralement asymptomatique, sans protrusion méningée","Il nécessite toujours une chirurgie urgente à la naissance"],
- a:2,e:"Spina bifida occulta = anomalie osseuse MINIME, généralement ASYMPTOMATIQUE, sans protrusion méningée ni tissu neural. Peut se manifester par stigmates cutanés (fossette, touffe de poils, lipome). Méningocèle = protrusion méningée sans tissu neural."},
-
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"fausse",
- q:"Concernant le myéloméningocèle, laquelle est FAUSSE ?",
- opts:["C'est une forme de spina bifida avec protrusion de la moelle et des méninges","Il peut entraîner des déficits moteurs et sensitifs selon le niveau de la lésion","Il est souvent associé à des troubles sphinctériens","Il n'est jamais associé à d'autres malformations neurologiques"],
- a:3,e:"Le myéloméningocèle est FRÉQUEMMENT associé à d'autres malformations, notamment la malformation d'Arnold-Chiari (herniation du cervelet dans le foramen magnum) et l'hydrocéphalie. Ces associations sont importantes à connaître."},
-
-// ===== T21 — PHARMACOLOGIE =====
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"fausse",
- q:"Concernant le rôle du kinésithérapeute en pharmacologie, laquelle est FAUSSE ?",
- opts:["Il peut appliquer des médicaments par sonophorèse ou ionophorèse sur ordonnance médicale","Il doit coordonner ses séances avec les moments d'effet optimal du traitement pharmacologique","Il peut prescrire et modifier les traitements médicamenteux de façon autonome","Il peut appliquer des produits homéopathiques par massothérapie si justifié par un certificat d'aptitude"],
- a:2,e:"Le kinésithérapeute NE PRESCRIT PAS et ne modifie PAS les traitements médicamenteux. Il peut APPLIQUER des médicaments (sonophorèse/ionophorèse) sur ORDONNANCE. Il coordonne les séances avec les pics d'efficacité."},
-
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"direct",
- q:"Un médicament est défini comme :",
- opts:["Tout principe actif pur extrait d'une plante médicinale","Une préparation ou composition de substances contenant un ou plusieurs principes actifs, prête à être administrée","Toute substance ayant un effet thérapeutique, y compris les compléments alimentaires","Uniquement les substances synthétiques produites en laboratoire"],
- a:1,e:"Médicament = préparation ou composition de substances contenant un/plusieurs PRINCIPES ACTIFS + EXCIPIENTS, prête à être administrée (forme galénique : sirop, comprimé, crème...). Ne pas confondre avec le principe actif seul (pharmacodynamique)."},
-
-// ===== T22 — PHARMACOCINÉTIQUE =====
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"direct",
- q:"La biodisponibilité (F) d'un médicament correspond à :",
- opts:["La vitesse d'élimination hépatique en première passe","La proportion de médicament atteignant la circulation sanguine par rapport à la dose administrée","La quantité totale de médicament fixée aux protéines plasmatiques","Le temps nécessaire pour que la concentration plasmatique atteigne son maximum"],
- a:1,e:"Biodisponibilité F = dose absorbée / dose administrée (0-100%). Voie IV = 100% par définition. Voie orale diminuée par le premier passage hépatique. Le kiné peut modifier F par massage, chaleur, ultrasons (↑ circulation locale)."},
-
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"fausse",
- q:"Laquelle de ces affirmations sur la pharmacodynamique est FAUSSE ?",
- opts:["Un agoniste se fixe sur un récepteur et produit un effet biologique","Un antagoniste bloque un récepteur sans produire d'effet propre","Plus la constante kd est faible, plus l'affinité du médicament pour son récepteur est élevée","Un médicament antagoniste produit toujours un effet plus puissant qu'un agoniste"],
- a:3,e:"Un antagoniste BLOQUE le récepteur SANS effet propre (il ne produit pas d'effet plus puissant). L'effet d'un antagoniste dépend de la concentration d'agoniste présent. Plus le Kd est FAIBLE, plus l'affinité est ÉLEVÉE (concentration plus faible nécessaire)."},
-
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"vraie",
- q:"Parmi les interventions du kinésithérapeute pouvant modifier la pharmacocinétique, laquelle est VRAIE ?",
- opts:["Le massage n'a aucun effet sur la distribution du médicament","L'application de chaleur peut accélérer l'absorption locale d'un médicament en augmentant la circulation","L'exercice physique est toujours contre-indiqué pendant un traitement médicamenteux","Les ultrasons thérapeutiques n'influencent jamais la perméabilité tissulaire"],
- a:1,e:"CHALEUR → vasodilatation → ↑ circulation locale → accélère l'absorption. Important par exemple avec les patchs cutanés (chaleur + patch = absorption accrue). Masse, exercice, ultrasons peuvent tous modifier la pharmacocinétique du principe actif."}
-,
-// ===== CH3 SUITE =====
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
- q:"L'apraxie constructive est principalement associée à des lésions de :",
- opts:["L'hémisphère gauche frontal","Les régions occipito-pariétales droites","Le tronc cérébral","Le cervelet"],
- a:1,e:"L'apraxie constructive (incapacité à dessiner, reproduire des dessins, assembler des objets) a une forte composante visuo-spatiale. Elle est liée aux lésions occipitales, cingulaires et pariétales postérieures, PRÉDOMINANT dans l'hémisphère DROIT."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"direct",
- q:"L'apraxie de l'habillement se caractérise par :",
- opts:["Une paralysie des membres supérieurs empêchant de boutonner","L'incapacité à s'habiller correctement malgré des fonctions motrices et sensitives intactes, liée à une composante vi...","Un trouble du schéma corporel avec confusion droite-gauche uniquement","Une agnosie visuelle des vêtements"],
- a:1,e:"Apraxie de l'habillement = incapacité à s'habiller (boutonner, orienter les vêtements) MALGRÉ des fonctions motrices et sensitives intactes. Forte composante visuo-spatiale, associée à des lésions PARIÉTALES DROITES. Ce n'est pas une vraie apraxie (causée par atteinte des circuits visuospatiaux)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
- q:"Dans l'aphasie de conduction, laquelle est FAUSSE ?",
- opts:["L'émission est fluide (paraphasique)","La compréhension orale est préservée","La répétition est impossible","L'émission est non fluide avec agrammatisme"],
- a:3,e:"L'aphasie de CONDUCTION a une émission FLUIDE (paraphasique), compréhension PRÉSERVÉE, répétition IMPOSSIBLE. L'émission non fluide avec agrammatisme = aphasie de BROCA. La conduction = lésion du faisceau arqué reliant Wernicke à Broca."},
-
-// ===== CH4 SUITE =====
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"direct",
- q:"Le clonus est défini comme :",
- opts:["Une contraction musculaire volontaire inhibée par une douleur aiguë","Une série de contractions rapides et réflexes après étirement soudain d'un muscle, signe d'une lésion pyramidale","Une faiblesse musculaire focale due à une atteinte du 2e motoneurone","Une hyperextension involontaire du genou lors de la marche"],
- a:1,e:"Clonus = série de CONTRACTIONS RAPIDES et RÉFLEXES après étirement SOUDAIN (ex : étirement brusque du tendon d'Achille). Se manifeste du côté hémiplégique. Témoigne d'une lésion du FAISCEAU PYRAMIDAL (1er MN). Signe du syndrome pyramidal, comme Babinski."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"vraie",
- q:"L'hypertonie extrapiramdale (signe de la roue dentée) se distingue de la spasticité car :",
- opts:["Elle est due à une lésion du faisceau pyramidal et s'accompagne de babinski","Elle est présente tout au long du mouvement passif avec des saccades, sans dépendre de la vitesse","Elle disparaît en fin d'amplitude articulaire comme un ressort","Elle s'accompagne toujours de fasciculations musculaires"],
- a:1,e:"Roue dentée (extrapiramidal) = résistance CONSTANTE + SACCADES durant tout le mouvement passif, indépendante de la vitesse. Spasticité (pyramidal) = résistance initiale puis RELÂCHEMENT (lame de canif), vitesse-dépendante. Association roue dentée + tremblement au repos = Parkinson."},
-
-// ===== CH5 SUITE =====
-{ch:"Ch.5",label:"Dyskinésies",type:"fausse",
- q:"Concernant la dystonie, laquelle est FAUSSE ?",
- opts:["Elle se manifeste par des contractions musculaires involontaires avec des postures très inhabituelles","Elle peut entraîner des extensions forcées ou des torsions autour d'une seule articulation","C'est un trouble hyperkinétique du système extrapyramidal","Elle entraîne un relâchement musculaire complet avec hypotonie sévère"],
- a:3,e:"La dystonie produit des contractions INVOLONTAIRES (pas de relâchement) avec postures très inhabituelles (extensions forcées, torsions). C'est un trouble hyperkinétique = mouvement involontaire. Relâchement complet + hypotonie = hypotonie, pas dystonie."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"direct",
- q:"Le ballisme est caractérisé par :",
- opts:["Des mouvements fins, rythmiques et de faible amplitude au repos","Des mouvements brusques, amples, involontaires, semblables à des jets de membres","Des contractions musculaires soutenues maintenant des postures anormales","Des secousses musculaires brèves, soudaines et involontaires"],
- a:1,e:"Ballisme = mouvements BRUSQUES, AMPLES, involontaires, ressemblant à des jets violents des membres. L'hémiballisme (unilatéral) est souvent causé par une lésion du noyau subthalamique (AVC). À distinguer des myoclonies (secousses brèves) et de la chorée (mouvements plus modérés)."},
-
-// ===== CH6 SUITE =====
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"vraie",
- q:"L'hypomimie dans la maladie de Parkinson correspond à :",
- opts:["Une paralysie faciale périphérique avec asymétrie du visage","Une faible expressivité faciale avec visage inexpressif dit 'masque de poker' et absence de clignement des yeux","Un spasme hémifacial involontaire unilatéral","Une rigidité des muscles masticateurs empêchant l'ouverture de la bouche"],
- a:1,e:"Hypomimie = réduction des mouvements involontaires du visage → visage inexpressif 'masque de poker' + absence de clignement des yeux. C'est une manifestation de la BRADYKINÉSIE/HYPOKINÉSIE de Parkinson (réduction des mouvements involontaires)."},
-
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"fausse",
- q:"Parmi les symptômes non moteurs de Parkinson, lequel est FAUX ?",
- opts:["L'anosmie est souvent un symptôme précoce","L'hypotension orthostatique fait partie de la dysautonomie parkinsonienne","La constipation est fréquente","L'hyperkinésie et l'hyperréflexie sont des symptômes non moteurs classiques"],
- a:3,e:"Hyperkinésie et hyperréflexie sont des signes du 1er motoneurone (syndrome pyramidal), PAS de Parkinson. Les symptômes non moteurs de Parkinson incluent : anosmie, constipation, hypotension orthostatique, troubles du sommeil, dépression, dysautonomie, détérioration cognitive tardive."},
-
-// ===== CH7 SUITE =====
-{ch:"Ch.7",label:"Lésion Médullaire",type:"direct",
- q:"Le syndrome médullaire ANTÉRIEUR se caractérise par :",
- opts:["Préservation de la motricité et perte de la sensibilité proprioceptive uniquement","Perte motrice et de la sensibilité thermoalgésique, avec préservation de la proprioception et des vibrations","Perte totale de toutes les fonctions sous le niveau lésé","Atteinte motrice seulement des membres supérieurs"],
- a:1,e:"Syndrome médullaire ANTÉRIEUR : lèse faisceau CORTICOSPINAL (moteur) + SPINOTHALAMIQUE (douleur/temp). La proprioception et les vibrations (cordons postérieurs) sont PRÉSERVÉES. Souvent causé par ischémie de l'artère spinale antérieure."},
-
-{ch:"Ch.7",label:"Lésion Médullaire",type:"fausse",
- q:"Concernant l'étiologie de la lésion médullaire, laquelle est FAUSSE ?",
- opts:["La hernie discale peut comprimer la moelle épinière (cause extrinsèque)","La sclérose en plaques peut causer une lésion médullaire (cause intrinsèque)","La carence en vitamine b12 peut entraîner une dégénérescence combinée subaiguë","Toutes les lésions médullaires sont d'origine traumatique"],
- a:3,e:"Les lésions médullaires peuvent être EXTRINSÈQUES (compression : hernie discale, tumeur, abcès, hématome) ou INTRINSÈQUES (SEP, infarctus médullaire, myélite transverse, syphilis, carence B12). Les causes traumatiques ne sont qu'une partie des étiologies."},
-
-// ===== T8 SUITE =====
-{ch:"T.8",label:"Exploration Neurologique",type:"direct",
- q:"La manœuvre doigt-doigt et la manœuvre talon-genou évaluent :",
- opts:["La sensibilité proprioceptive profonde","La coordination cérébelleuse et la dysmétrie","La force musculaire des membres","La spasticité et le tonus musculaire"],
- a:1,e:"Manœuvre doigt-doigt et talon-genou = tests de COORDINATION CÉRÉBELLEUSE (dysmétrie). Une disdiadococinésie (incapacité aux mouvements alternés rapides) accompagne souvent ces signes. Ataxie cérébelleuse = imprécision + tremblements d'intention."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"vraie",
- q:"Le nerf crânien XI (accessoire spinal) est un nerf moteur pur innervant :",
- opts:["Les muscles oculomoteurs","Le sterno-cléido-mastoïdien et la moitié supérieure du trapèze","Les muscles de la mimique faciale et le muscle stapédien","Les muscles de la déglutition et le voile du palais"],
- a:1,e:"NC XI (accessoire spinal) = NERF MOTEUR PUR innervant le STERNO-CLÉIDO-MASTOÏDIEN (rotation de la tête) et la ½ supérieure du TRAPÈZE (élévation épaule). Évaluation : résistance à l'élévation des épaules et à la rotation céphalique."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"fausse",
- q:"Concernant le réflexe crémastérique, laquelle est FAUSSE ?",
- opts:["Il est déclenché par la stimulation du tiers supérieur et antéro-médial de la cuisse","La réponse normale est l'élévation du testicule du côté de la stimulation chez l'homme","Il s'agit d'un réflexe superficiel ou muco-cutané","Il est pathologique quand il est présent et vigoureux"],
- a:3,e:"Le réflexe crémastérique est PATHOLOGIQUE quand il est ABSENT ou anormal (pas quand il est présent). Sa présence est NORMALE. Son abolition peut signer une lésion pyramidale ou une lésion de la racine L1-L2."},
-
-// ===== CH9 SUITE =====
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"direct",
- q:"Dans les neuropathies périphériques, les dysesthésies apparaissent initialement :",
- opts:["Au niveau proximal des membres, de manière asymétrique","Au niveau distal des membres de manière symétrique, s'étendant de manière centripète en gant ou chaussette","Uniquement du côté droit par prédilection anatomique","Dans les zones rachidiennes avant les extrémités"],
- a:1,e:"Neuropathies périphériques : dysesthésies (picotements, brûlures) DISTALES et SYMÉTRIQUES au début, s'étendant en CENTRIPÈTE → distribution en 'gant ou chaussette'. L'atteinte proprioceptive entraîne une ataxie sensorielle (instabilité de marche supérieure au déficit moteur)."},
-
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"fausse",
- q:"Concernant l'exploration de la palesthésie (vibrations), laquelle est FAUSSE ?",
- opts:["On utilise un diapason appliqué sur les reliefs osseux","On teste de distal vers proximal","Les vibrations empruntent les cordons postérieurs de la moelle","Les vibrations sont véhiculées par des fibres c non myélinisées"],
- a:3,e:"Les VIBRATIONS (palesthésie) sont véhiculées par des fibres de TYPE A MYÉLINISÉES (grosses fibres) via les CORDONS POSTÉRIEURS. Les fibres C non myélinisées véhiculent la DOULEUR et la TEMPÉRATURE (faisceau spinothalamique). Confusion classique et piège d'examen fréquent."},
-
-// ===== CH10 SUITE =====
-{ch:"Ch.10",label:"Patient Oncologique",type:"vraie",
- q:"Parmi les manifestations LOCALES du cancer, laquelle est VRAIE ?",
- opts:["Un cancer local ne provoque jamais de douleur avant le stade métastatique","L'augmentation de volume tumorale peut provoquer une masse étrangère, une douleur et une insuffisance fonctionnelle","Les métastases sont toujours la première manifestation d'un cancer","La sténose des organes creux est exclusivement une manifestation à distance"],
- a:1,e:"Manifestations locales : augmentation de volume → MASSE + DOULEUR (compression/irritation) + INSUFFISANCE FONCTIONNELLE. Autres manifestations locales : conflit d'espace (compression structures), sténose organes creux, ulcération tumorale avec nécrose et hémorragie."},
-
-{ch:"Ch.10",label:"Patient Oncologique",type:"fausse",
- q:"Concernant les voies de dissémination métastatique, laquelle est FAUSSE ?",
- opts:["La voie hématogène se propage via la circulation sanguine","La voie lymphatique affecte d'abord les ganglions lymphatiques","La voie transcellulaire se produit dans les cavités corporelles","Toutes les tumeurs malignes métastasent obligatoirement par voie hématogène"],
- a:3,e:"Toutes les tumeurs ne métastasent pas de la même façon. Le TROPISME tumoral (théorie du 'sol et des semences' de Paget) explique que certaines tumeurs privilégient certains organes cibles. Ex : mélanome → foie ; cancer du sein → os."},
-
-// ===== CH12 SUITE =====
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"vraie",
- q:"Dans le SGB, la paralysie respiratoire peut survenir car :",
- opts:["Le sgb touche exclusivement les muscles des membres et jamais le tronc","La faiblesse ascendante peut atteindre les muscles intercostaux et le diaphragme","C'est un effet secondaire systématique des immunoglobulines","Le sgb provoque une compression médullaire cervicale"],
- a:1,e:"SGB : faiblesse ASCENDANTE peut atteindre les muscles INTERCOSTAUX et le DIAPHRAGME → insuffisance respiratoire aiguë, URGENCE VITALE. C'est la principale cause de décès dans le SGB. La surveillance de la capacité vitale est donc cruciale dans le suivi."},
-
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"fausse",
- q:"Parmi ces pathologies, laquelle N'est PAS un diagnostic différentiel classique du SGB ?",
- opts:["La myélite transverse","La sclérose en plaques","La myasthénie grave","La maladie de parkinson"],
- a:3,e:"Parkinson (troubles hypokinétiques extrapyramidaux) n'est PAS un DD du SGB. Les DD classiques du SGB sont : myélite transverse (lésion ME), SEP (poussée), myasthénie grave (JNM), botulisme. Tous partagent une faiblesse musculaire mais avec des mécanismes différents."},
-
-// ===== CH13 SUITE =====
-{ch:"Ch.13",label:"Patient Gériatrique",type:"fausse",
- q:"Concernant la réserve fonctionnelle chez la personne âgée, laquelle est FAUSSE ?",
- opts:["Le vieillissement entraîne une détérioration physiologique progressive des organes","La diminution de la réserve fonctionnelle augmente la fragilité et la vulnérabilité","En présence de maladies chroniques, la réserve fonctionnelle est encore plus réduite","Le vieillissement augmente la capacité de l'organisme à s'adapter aux situations de surcharge"],
- a:3,e:"Le vieillissement DIMINUE la capacité d'adaptation (perte de réserve fonctionnelle). Face à une surcharge fonctionnelle, le déficit de réserve devient évident → fragilité → risque accru de complications → décès. C'est l'opposé d'une augmentation de la capacité adaptive."},
-
-{ch:"Ch.13",label:"Patient Gériatrique",type:"direct",
- q:"Le délirium chez la personne âgée se distingue de la démence principalement par :",
- opts:["Son installation progressive sur plusieurs mois","Son installation aiguë, son caractère fluctuant et sa réversibilité potentielle avec traitement de la cause","Sa prévalence uniquement après 90 ans","Son association exclusive avec la maladie d'alzheimer"],
- a:1,e:"DÉLIRIUM = AIGU (heures-jours), FLUCTUANT, souvent RÉVERSIBLE si cause traitée (infection, médicament, déshydratation). DÉMENCE = CHRONIQUE, progressive, irréversible. Chez la personne âgée, le délirium peut être la 1ère manifestation d'une pathologie aiguë intercurrente."},
-
-// ===== CH14 SUITE =====
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"vraie",
- q:"Le SPECT cérébral dans la maladie d'Alzheimer montre typiquement :",
- opts:["Un hypermétabolisme frontal bilatéral","Un hypométabolisme dans les régions temporale et pariétale","Un hypermétabolisme généralisé sans topographie particulière","Un hypométabolisme exclusivement des ganglions de la base"],
- a:1,e:"Dans Alzheimer, le SPECT montre un HYPOMÉTABOLISME (hypoperfusion) dans les régions TEMPORALE et PARIÉTALE. Cela reflète la dégénérescence des zones d'association impliquées dans la mémoire épisodique et les fonctions cognitives supérieures."},
-
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"fausse",
- q:"Concernant le bilan de démence, laquelle est FAUSSE ?",
- opts:["Le mmse est un test cognitif global","Le test de l'horloge évalue les fonctions visuo-spatiales et exécutives","Il faut inclure la famille dans l'entretien pour recouper les informations","Un scanner ou une irm est inutile car le diagnostic de démence est purement clinique"],
- a:3,e:"L'imagerie (CT ou IRM) est INDISPENSABLE dans le bilan de démence pour EXCLURE d'autres causes : tumeur, hématome, hydrocéphalie, démence vasculaire. Le diagnostic de démence INCLUT l'imagerie pour éliminer les causes traitables et réversibles."},
-
-// ===== CH15 SUITE =====
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"direct",
- q:"Parmi les indicateurs de risque neurobiologique néonataux, lequel est lié à un risque accru de leucomalacie périventriculaire ?",
- opts:["La macrosomie fœtale (poids de naissance > 4kg)","La prématurité extrême","Une grossesse gémellaire sans complication","Un accouchement post-terme (> 42 semaines)"],
- a:1,e:"Prématurité EXTRÊME (<32 semaines) = risque accru de LEUCOMALACIE PÉRIVENTRICULAIRE (lésions kystiques de la substance blanche) et d'hémorragies cérébrales. Le faible poids (<1500g) est également un indicateur de risque neurobiologique important."},
-
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"fausse",
- q:"Concernant les infections congénitales du groupe TORCH, laquelle est FAUSSE ?",
- opts:["Torch inclut la toxoplasmose, la rubéole et le cytomégalovirus","Ces infections peuvent provoquer des séquelles neurologiques","Elles constituent des facteurs de risque neurobiologiques néonataux","Torch touche exclusivement les prématurés, jamais les nouveau-nés à terme"],
- a:3,e:"TORCH (Toxoplasmose, Rubéole, Cytomégalovirus, Herpès + autres) touche les enfants nés À TERME comme les prématurés. Ce sont des infections CONGÉNITALES (transmission materno-fœtale) pouvant provoquer des séquelles neurologiques graves chez tous les nouveau-nés."},
-
-// ===== T11 SUITE =====
-{ch:"T.11",label:"Sclérose en Plaques",type:"fausse",
- q:"Concernant la SEP, laquelle des manifestations tronco-cérébrales est FAUSSE ?",
- opts:["Le nystagmus peut survenir lors d'une poussée affectant le tronc cérébral","La diplopie est associée à une atteinte du tronc cérébral","La dysarthrie peut être une manifestation de la sep","La démence profonde et immédiate est la première manifestation dans 90% des cas"],
- a:3,e:"La démence profonde n'est PAS la 1ère manifestation de la SEP dans 90% des cas. La SEP débute généralement par : névrite optique (36%), myélopathie (35%), manifestations tronco-cérébrales/cérébelleuses (25%) : diplopie, nystagmus, vertiges, dysarthrie, ataxie."},
-
-// ===== T16 SUITE =====
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"direct",
- q:"L'échelle MACS (Manual Ability Classification System) niveau V signifie :",
- opts:["Manipule facilement et efficacement des objets avec quelques limitations","Manipule la plupart des objets avec qualité et vitesse réduites","Manipule les objets avec difficulté et nécessite une assistance","Ne manipule pas d'objets — capacité fortement limitée à exécuter des actions simples"],
- a:3,e:"MACS niveau V = NE MANIPULE PAS d'objets. Capacité fortement limitée à exécuter des actions simples. Niveau I = manipulation facile et efficace. L'échelle MACS classe la fonction manuelle en 5 niveaux, utile pour les enfants avec hémiparésie et diplégie PCI."},
-
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"fausse",
- q:"Concernant la forme SPASTIQUE de la PCI, laquelle est FAUSSE ?",
- opts:["Elle est la forme la plus fréquente de pci","Elle est due à une lésion du système pyramidal (1er motoneurone)","Elle se manifeste par une hypertonie et une hyperréflexie","Elle est caractérisée par un tonus musculaire fluctuant"],
- a:3,e:"Tonus FLUCTUANT + mouvements INVOLONTAIRES = forme DYSKINÉTIQUE de la PCI (atteinte des ganglions de la base). La forme SPASTIQUE = hypertonie constante + hyperréflexie + Babinski (lésion pyramidale). La spastique est la forme la plus fréquente de PCI."},
-
-// ===== T17 SUITE =====
-{ch:"Ch.17",label:"PCI & Prématurité",type:"direct",
- q:"L'encéphalopathie hypoxique-ischémique du nouveau-né est causée par :",
- opts:["Une infection bactérienne du liquide céphalo-rachidien","Un manque d'oxygène pendant l'accouchement pouvant entraîner une encéphalopathie","Une carence en vitamine k entraînant des hémorragies cérébrales","Un excès de bilirubine induisant une jaunisse nucléaire"],
- a:1,e:"Encéphalopathie hypoxique-ischémique = manque d'OXYGÈNE pendant l'accouchement → peut entraîner une encéphalopathie et une PARALYSIE CÉRÉBRALE. C'est l'un des 4 grands indicateurs de risque neurobiologique du prématuré avec : hémorragies, leucomalacie, convulsions néonatales."},
-
-// ===== T18 SUITE =====
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"vraie",
- q:"La dyspraxie se caractérise principalement par :",
- opts:["Un trouble exclusif de la lecture et de l'écriture","Un trouble de la coordination motrice, de la motricité fine, de la planification et de l'organisation du mouvement","Un déficit du calcul et de la compréhension des nombres","Un trouble du langage oral avec difficultés d'articulation"],
- a:1,e:"Dyspraxie = trouble des COMPÉTENCES NON VERBALES : coordination motrice + motricité fine + PLANIFICATION + ORGANISATION du geste. Bon langage de base mais difficultés en perception spatiale, concepts abstraits. Relève directement du KINÉ pour la rééducation motrice."},
-
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"fausse",
- q:"Concernant le TSA, laquelle de ces manifestations motrices est FAUSSE ?",
- opts:["La marche sur la pointe des pieds est classiquement associée au tsa","L'hypotonie est fréquente chez les enfants tsa","La raideur posturale peut être observée","L'hyperkinésie avec mouvements excessifs et rapides est le signe moteur principal et le plus fréquent du tsa"],
- a:3,e:"Dans le TSA, les signes moteurs classiques sont : hypotonie, raideur posturale, marche sur la pointe des pieds, difficultés motrices fines et globales, balancement, battement des bras. L'hyperkinésie excessive n'est PAS le signe moteur PRINCIPAL du TSA."},
-
-// ===== T19 SUITE =====
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"vraie",
- q:"Dans la myasthénie gravis pédiatrique, laquelle est VRAIE ?",
- opts:["La forme congénitale est auto-immune et la plus fréquente chez les adolescents","La forme auto-immune est due à des anticorps anti-récepteurs ach ; la forme congénitale est non auto-immune et rare","Elle est toujours héréditaire avec transmission autosomique récessive","Elle est causée par une mutation du gène de la dystrophine"],
- a:1,e:"Myasthénie gravis PÉDIATRIQUE : forme AUTO-IMMUNE (anti-récepteurs ACh) = plus fréquente chez les ADOLESCENTS. Forme CONGÉNITALE = NON auto-immune, rare, due à mutations des protéines de la JNM. La dystrophine = Duchenne, pas myasthénie."},
-
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"fausse",
- q:"La myopathie de Duchenne touche :",
- opts:["Principalement les filles par transmission autosomique dominante","Quasi-exclusivement les garçons par transmission liée au chromosome x","Les deux sexes également","Uniquement les enfants de moins de 2 ans, avec guérison spontanée à l'adolescence"],
- a:1,e:"Duchenne = GARÇONS quasi-exclusivement (gène DYSTROPHINE sur chromosome X, transmission récessive liée à l'X). Faiblesse proximale progressive, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire. Pas de guérison spontanée — évolution progressive."},
-
-// ===== T20 SUITE =====
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"direct",
- q:"Pratiquement tous les enfants atteints de myéloméningocèle sous L2 présentent :",
- opts:["Une hydrocéphalie nécessitant un shunt immédiat","Une vessie neurogène avec risque de lésion rénale à long terme","Une paralysie complète et permanente de tous les membres","Une déficience intellectuelle sévère dans 100% des cas"],
- a:1,e:"Myéloméningocèle <L2 → VESSIE NEUROGÈNE (arréflexique ou spastique à haute pression). Risque de LÉSION RÉNALE par reflux vésico-urétéral ou pression intravésicale élevée. Traitement : cathétérisme intermittent propre (CIP). Historiquement, l'insuffisance rénale était la 1ère cause de décès."},
-
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"fausse",
- q:"Laquelle est FAUSSE concernant les malformations associées au myéloméningocèle ?",
- opts:["Le myéloméningocèle est souvent associé à la malformation d'arnold-chiari","L'hydrocéphalie est fréquemment associée au myéloméningocèle","La malformation d'arnold-chiari implique une herniation du cervelet dans le foramen magnum","Le myéloméningocèle n'est jamais associé à d'autres malformations du système nerveux"],
- a:3,e:"Le myéloméningocèle est FRÉQUEMMENT associé à la malformation d'Arnold-Chiari (herniation du cervelet + tronc dans le foramen magnum) et à l'HYDROCÉPHALIE. Ces associations sont importantes car elles influencent le traitement et le pronostic."},
-
-// ===== T21 SUITE =====
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"vraie",
- q:"Un médicament nécessite une forme galénique car :",
- opts:["Le principe actif seul est suffisant pour être administré directement","Le médicament ne peut pas être administré ni commercialisé sous forme de simple mélange de principe actif et d'excipi...","La forme galénique est facultative pour les médicaments injectables","Les excipients sont des principes actifs supplémentaires ajoutés pour renforcer l'effet"],
- a:1,e:"Un médicament NE PEUT PAS être administré comme simple mélange principe actif + excipient. Il nécessite une FORME GALÉNIQUE (forme pharmaceutique) : comprimé, sirop, crème, injectable... Cette forme conditionne la biodisponibilité, la libération et l'administration correcte."},
-
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"fausse",
- q:"Concernant l'application de médicaments par le kinésithérapeute, laquelle est FAUSSE ?",
- opts:["L'application par sonophorèse ou ionophorèse nécessite une ordonnance médicale","Ces applications sont couvertes par l'assurance responsabilité civile de l'ordre des physiothérapeutes","L'application de produits homéopathiques par massothérapie peut être effectuée si justifiée par un certificat d'aptitude","Le kinésithérapeute peut prescrire des médicaments injectables en toute autonomie"],
- a:3,e:"Le kinésithérapeute NE PRESCRIT PAS de médicaments injectables ni aucun autre médicament de façon autonome. Son rôle : APPLIQUER (sonophorèse/ionophorèse sur ordonnance), COORDONNER les séances avec le traitement pharmacologique, et appliquer des homéopathiques si certifié."},
-
-// ===== T22 SUITE =====
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"direct",
- q:"La pharmacodynamique étudie :",
- opts:["Le devenir du médicament dans l'organisme","Les mécanismes d'action du médicament sur l'organisme et la relation dose-effet","Les voies d'administration et les formes galéniques uniquement","Les interactions médicamenteuses au niveau hépatique uniquement"],
- a:1,e:"PHARMACODYNAMIQUE = ce que le médicament FAIT à l'organisme (mécanismes d'action, récepteurs, relation dose-effet, agoniste/antagoniste). PHARMACOCINÉTIQUE = ce que l'organisme FAIT au médicament (ADME : absorption, distribution, métabolisme, élimination)."},
-
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"fausse",
- q:"Un médicament agoniste partiel se distingue d'un agoniste complet car :",
- opts:["L'agoniste complet produit l'effet maximal sur un récepteur","L'agoniste partiel peut produire un effet plus élevée que l'agoniste complet sur le même récepteur","L'agoniste complet a une kd plus élevée que l'agoniste partiel","L'agoniste partiel n'a aucun effet sur les récepteurs pharmacologiques"],
- a:1,e:"L'agoniste PARTIEL NE PEUT PAS produire un effet plus élevé que l'agoniste COMPLET — c'est sa définition. L'agoniste partiel produit un effet MAXIMAL INFÉRIEUR à celui de l'agoniste complet, même à concentrations saturantes. Plus le Kd est FAIBLE, plus l'AFFINITÉ est élevée."},
-
-
-// ===== CH3 COGNITIF EXTRA =====
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
-q:"L'apraxie constructive prédomine dans les lésions de :",
-opts:["L'hémisphère gauche dans l'aire de broca","L'hémisphère droit dans les régions occipitale, pariétale postérieure","Le cervelet bilatéralement","Le tronc cérébral au niveau du mésencéphale"],
-a:0,
-e:"L'apraxie constructive (incapacité à dessiner ou assembler) est liée à une composante VISUOSPATIALE et prédomine dans les lésions de l'HÉMISPHÈRE DROIT (occipital, cingulaire, pariétal postérieur). L'hémisphère gauche est dominant pour le langage. Inverser les deux hémisphères est l'erreur classique."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"direct",
-q:"L'apraxie de l'habillement se caractérise par :",
-opts:["L'incapacité à reconnaître les vêtements malgré une vision intacte","L'incapacité à s'habiller correctement par défaillance de l'association corps/vêtements, composante visuospatiale, lé...","Un refus volontaire de s'habiller d'origine psychiatrique","Une paralysie des membres supérieurs empêchant de boutonner"],
-a:1,
-e:"Apraxie de l'habillement = incapacité à S'HABILLER (ex: boutonner) par défaillance de l'association entre parties du corps et vêtements. Composante visuospatiale importante, liée à des lésions PARIÉTALES DROITES. Ce n'est pas une vraie apraxie au sens strict (terme par extension)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"vraie",
-q:"Dans l'aphasie de conduction, laquelle est VRAIE ?",
-opts:["L'émission et la compréhension sont toutes deux abolies","L'émission est fluide (paraphasique), la compréhension est préservée, mais la répétition est sélectivement perturbée","La répétition est préservée mais l'émission est non fluide","Toutes les modalités du langage sont uniformément atteintes"],
-a:1,
-e:"Aphasie de CONDUCTION : émission OUI (fluide, paraphasique) + compréhension OUI + répétition NON. Pattern typique : répétition sélectivement atteinte car le faisceau arqué (reliant Broca et Wernicke) est lésé. C'est la distinction clé par rapport à Broca (émission non fluide) et Wernicke (compréhension altérée)."},
-
-{ch:"Ch.3",label:"Cognitif & Neuropsychologique",type:"fausse",
-q:"Concernant les syndromes corticaux topographiques, laquelle est FAUSSE ?",
-opts:["Ils résultent d'une atteinte étendue des zones corticales","Leur étiologie peut être vasculaire, tumorale ou traumatique","Le maintien de la conscience nécessite l'intégrité du sraa et des deux hémisphères","Une lésion localisée d'un seul réseau entraîne toujours un syndrome diffus"],
-a:3,
-e:"Une lésion LOCALISÉE d'un réseau isolé = cause LOCALE (tumorale, vasculaire, traumatique) avec déficit focal. Le syndrome DIFFUS nécessite une atteinte généralisée du cortex (toxique-métabolique, infection, démence). Ces deux mécanismes sont distincts et ne pas les confondre."},
-
-// ===== CH4 EXTRA =====
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"direct",
-q:"Le clonus témoigne d'une lésion de :",
-opts:["Le deuxième motoneurone uniquement","Le faisceau pyramidal (premier motoneurone)","Le système extrapyramidal exclusivement","Le cervelet"],
-a:1,
-e:"Clonus = contractions rapides et réflexes après étirement soudain = SIGNE DU 1ER MN (faisceau pyramidal). Apparaît côté hémiplégique après quelques jours d'évolution. L'exploration se fait au niveau de la cheville ou du genou. À distinguer des fasciculations (2e MN)."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"vraie",
-q:"Concernant les aspects positifs de la spasticité en clinique, lequel est VRAI ?",
-opts:["Elle améliore toujours la coordination des mouvements fins","Elle peut aider à la stabilité debout/assise, prévenir l'atrophie et améliorer le retour veineux","Elle supprime définitivement la douleur neuropathique","Elle remplace totalement la force musculaire perdue"],
-a:1,
-e:"Aspects POSITIFS de la spasticité : stabilité debout/assise, prévention atrophie musculaire, amélioration retour veineux, aide à tousser. Aspects NÉGATIFS : réduit mobilité, limite AVD, cause douleur, contractures, escarres. La décision de traiter dépend du rapport bénéfice/risque pour chaque patient."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"fausse",
-q:"La SLA (sclérose latérale amyotrophique) est une pathologie du :",
-opts:["2e motoneurone exclusivement (paralysie flasque)","1er motoneurone exclusivement (spasticité)","1er et 2e motoneurone simultanément","Système cérébelleux uniquement"],
-a:2,
-e:"La SLA atteint le 1er ET LE 2e MOTONEURONE — c'est son caractère distinctif. Elle combine signes centraux  ET périphériques . Maladie de Charcot. Pronostic sombre. Opposé : SLP (sclérose latérale primitive) = 1er MN seul ; poliomyélite = 2e MN seul."},
-
-{ch:"Ch.4",label:"Tonus & Mouvement",type:"direct",
-q:"La différence clinique entre spasticité et rigidité extrapiramdale est :",
-opts:["La spasticité est indépendante de la vitesse du mouvement passif, la rigidité augmente avec la vitesse","La spasticité augmente avec la vitesse, la rigidité est constante quelle que soit la vitesse","Les deux sont identiques et nécessitent le même traitement","La rigidité prédomine exclusivement dans les extenseurs des membres inférieurs"],
-a:1,
-e:"SPASTICITÉ (pyramidale) = VITESSE-DÉPENDANTE → lame de canif. RIGIDITÉ (extrapiramdale) = CONSTANTE quelle que soit la vitesse → roue dentée (avec saccades) ou tuyau de plomb (uniforme). Distinction clinique FONDAMENTALE pour le diagnostic étiologique."},
-
-// ===== CH5 EXTRA =====
-{ch:"Ch.5",label:"Dyskinésies",type:"fausse",
-q:"La dystonie se caractérise principalement par :",
-opts:["Des mouvements rapides et irréguliers touchant des segments multiples simultanément","Des contractions musculaires involontaires produisant des postures inhabituelles","Des oscillations rythmiques identiques au tremblement parkinsonien au repos","Un excès d'activité uniquement dans les ganglions de la base"],
-a:0,
-e:"Dystonie = contractions musculaires INVOLONTAIRES → POSTURES INHABITUELLES (extensions forcées, torsions autour d'une seule articulation). Comportements POSTURAUX involontaires. Les mouvements rapides irréguliers multisegmentaires = CHORÉE. La confusion dystonie/chorée est classique."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"direct",
-q:"Le ballisme se distingue de la chorée principalement par :",
-opts:["Le ballisme est plus lent et symétrique","Des mouvements brusques de grande amplitude des membres proximaux, souvent unilatéral (hémiballisme), par lésion du n...","Le ballisme est un trouble hypokinétique contrairement à la chorée","Le ballisme atteint exclusivement les muscles du visage"],
-a:1,
-e:"Ballisme = mouvements BRUSQUES, GRANDE AMPLITUDE, membres PROXIMAUX. Souvent UNILATÉRAL (hémiballisme) → lésion du noyau SUBTALAMIQUE controlatéral. La chorée est plus distale, irrégulière, multi-segmentaire. Les deux sont hyperkinétiques mais le ballisme est plus violent et invalidant."},
-
-{ch:"Ch.5",label:"Dyskinésies",type:"vraie",
-q:"La myoclonie se distingue du tremblement car :",
-opts:["La myoclonie est une oscillation régulière et rythmique continue","La myoclonie est une contraction brusque et brève, involontaire, non rythmique","La myoclonie est toujours pathologique, contrairement au tremblement","La myoclonie prédomine au repos et disparaît au mouvement"],
-a:1,
-e:"Myoclonie = contraction BRUSQUE + BRÈVE (choc électrique) involontaire. Peut être PHYSIOLOGIQUE (myoclonies hypniques = sursauts à l'endormissement) ou pathologique. TREMBLEMENT = oscillation RYTHMIQUE continue. L'irrégularité et la brièveté distinguent la myoclonie du tremblement."},
-
-// ===== CH6 PARKINSON EXTRA =====
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"vraie",
-q:"L'anosmie dans la maladie de Parkinson est un symptôme important car :",
-opts:["Elle est toujours bilatérale et soudaine, permettant un diagnostic précoce aisé","Elle peut préceder les symptômes moteurs de plusieurs années","Elle n'apparaît qu'aux stades avancés et sévères de la maladie","Elle est causée par la rigidité des muscles olfactifs"],
-a:1,
-e:"L'ANOSMIE est un symptôme PRÉ-MOTEUR de Parkinson, pouvant précéder les symptômes moteurs de PLUSIEURS ANNÉES (stades 1-2 de Braak). Avec la constipation, les troubles du sommeil REM et la dépression, c'est un signe précoce. Utile pour le diagnostic prémoteur dans les familles à risque."},
-
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"fausse",
-q:"Concernant les parkinsonismes atypiques, laquelle est FAUSSE ?",
-opts:["La paralysie supranucléaire progressive (psp) est un parkinsonisme atypique","Les parkinsonismes atypiques répondent généralement mal au traitement dopaminergique","L'atrophie multisystématisée (ams) est un autre parkinsonisme atypique","Tous les syndromes parkinsoniens répondent parfaitement et durablement à la dopamine"],
-a:3,
-e:"Les parkinsonismes ATYPIQUES (PSP, AMS, dégénérescence corticobasale) répondent MAL ou de façon INCOMPLÈTE à la dopamine. C'est un critère diagnostique IMPORTANT : une bonne réponse oriente vers la maladie de Parkinson idiopathique. Les parkinsonismes atypiques ont un pronostic plus sévère."},
-
-{ch:"Ch.6",label:"Maladie de Parkinson",type:"direct",
-q:"La dysautonomie parkinsonienne peut inclure :",
-opts:["Hypertension artérielle permanente et tachycardie de repos","Hypotension orthostatique hypomotilité intestinale","Hypotension orthostatique et hyperactivité intestinale avec diarrhée chronique","Bradycardie permanente et hyperhydrose isolée"],
-a:1,
-e:"Dysautonomie parkinsonienne : HYPOTENSION ORTHOSTATIQUE (pas hypertension), CONSTIPATION (hypomotilité intestinale), SIALORRHÉE, DYSFONCTION SEXUELLE, troubles vésicaux. Ces symptômes non moteurs précèdent parfois les symptômes moteurs et altèrent fortement la qualité de vie."},
-
-// ===== CH7 LÉSION MÉDULLAIRE EXTRA =====
-{ch:"Ch.7",label:"Lésion Médullaire",type:"direct",
-q:"Le syndrome médullaire ANTÉRIEUR préserve sélectivement :",
-opts:["La motricité et la sensibilité à la douleur sous-lésionnelle","La proprioception, les vibrations et le toucher léger (cordons postérieurs), mais perd la motricité et la douleur/tem...","Toutes les fonctions motrices et sensitives uniformément","Uniquement les fonctions sphinctériennes sacrées"],
-a:1,
-e:"Syndrome médullaire ANTÉRIEUR : affecte 2/3 antérieurs → perte MOTRICE + perte DOULEUR/TEMPÉRATURE (spinothalamique). Préserve les CORDONS POSTÉRIEURS → proprioception + vibration + toucher léger INTACTS. Type d'infarctus médullaire le plus courant. Pronostic moteur souvent défavorable."},
-
-{ch:"Ch.7",label:"Lésion Médullaire",type:"fausse",
-q:"Le choc spinal survenant immédiatement après une lésion médullaire se caractérise par :",
-opts:["Une flaccidité et aréflexie transitoire , même dans les lésions complètes","Une durée variable de quelques jours à semaines","Une spasticité et hyperréflexie immédiate dès les premières minutes","Un signe pronostic : sa durée ne préjuge pas du déficit définitif"],
-a:2,
-e:"Choc spinal = FLACCIDITÉ + ARÉFLEXIE TRANSITOIRE (PAS de spasticité immédiate). Dure jours à semaines. Après le choc → apparition progressive de la spasticité. Important : ne pas conclure trop tôt sur le pronostic pendant le choc spinal car la récupération peut survenir après."},
-
-// ===== T8 EXPLORATION EXTRA =====
-{ch:"T.8",label:"Exploration Neurologique",type:"direct",
-q:"Les tests doigt-nez et talon-genou évaluent :",
-opts:["La force musculaire des membres","La coordination et la dysmétrie (ataxie cérébelleuse)","La sensibilité tactile superficielle","Les réflexes myotatiques profonds"],
-a:1,
-e:"Doigt-nez (MS) et talon-genou (MI) = évaluation de la COORDINATION et DYSMÉTRIE. Positifs = ATAXIE CÉRÉBELLEUSE. La disdiadococinésie (alternance rapide pro/supination) complète cet examen cérébelleux. À différencier du Romberg (proprioception) et des réflexes (MN)."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"fausse",
-q:"Le test de Romberg est positif quand :",
-opts:["Le patient perd l'équilibre yeux ouverts, indépendamment de la fermeture des yeux","Le patient perd l'équilibre yeux fermés mais pas yeux ouverts","Le patient ressent des vertiges sans déséquilibre réel","Le patient présente une ataxie identique yeux ouverts et fermés"],
-a:0,
-e:"Romberg POSITIF = perte d'équilibre yeux FERMÉS mais PAS yeux ouverts. Signifie que le patient compense sa déficience proprioceptive (cordons postérieurs) par la VISION. Perte de l'équilibre YEUX OUVERTS = atteinte CÉRÉBELLEUSE (ne s'améliore pas en fermant les yeux car le cervelet n'utilise pas la vision)."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"vraie",
-q:"La paralysie faciale CENTRALE (AVC) se distingue de la périphérique (Bell) car :",
-opts:["La paralysie centrale touche tout le visage y compris le front du même côté que la lésion","La paralysie centrale épargne le front du côté paralysé, la périphérique touche tout le visage homolatéral","Les deux ont la même présentation clinique et le même traitement","La paralysie centrale est toujours bilatérale"],
-a:1,
-e:"Paralysie faciale CENTRALE (AVC) = épargne le FRONT controlatéral à la lésion (le front a une représentation BILATÉRALE corticale). Paralysie PÉRIPHÉRIQUE (Bell) = tout le visage HOMOLATÉRAL est atteint incluant le FRONT (car lésion du NC VII lui-même). Distinction clinique FONDAMENTALE en urgence."},
-
-{ch:"T.8",label:"Exploration Neurologique",type:"fausse",
-q:"Concernant le nerf vague (NC X), laquelle est FAUSSE ?",
-opts:["Il régule le rythme cardiaque (ralentissement)","Il innerve les muscles pharyngés et laryngés (déglutition, phonation)","Il contrôle les fonctions digestives","Il assure exclusivement la motricité des muscles masticateurs"],
-a:3,
-e:"La motricité des muscles MASTICATEURS = NC V (trijumeau). Le NC X (vague) assure : ralentissement cardiaque, fonctions digestives (péristaltisme, sécrétions), phonation (cordes vocales), déglutition. C'est le nerf le plus long du SNP, avec un trajet complexe. Sa lésion = tachycardie, dysphagie, dysphonie."},
-
-// ===== CH9 SENSORIEL EXTRA =====
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"vraie",
-q:"L'ataxie sensorielle dans les neuropathies périphériques est causée par :",
-opts:["Une atteinte cérébelleuse directe","L'atteinte de la composante proprioceptive entraînant une instabilité de marche supérieure au déficit moteur, aggravé...","Un déficit visuel associé à la neuropathie","Une atteinte des muscles paravertébraux"],
-a:1,
-e:"Ataxie SENSORIELLE = instabilité de marche due à l'atteinte PROPRIOCEPTIVE (fibres afférentes périphériques ou cordons postérieurs). AGGRAVÉE par la fermeture des yeux (Romberg positif). Plus prononcée que le déficit moteur pur. À distinguer de l'ataxie cérébelleuse (pas améliorée par les yeux)."},
-
-{ch:"Ch.9",label:"Troubles Sensoriels & SNP",type:"fausse",
-q:"Les fibres A myélinisées transmettent principalement :",
-opts:["La douleur et la température uniquement","La proprioception et les vibrations (cordons postérieurs)","La sensibilité thermique croisée contralatérale","Le toucher léger protopathique non discriminatif"],
-a:0,
-e:"Fibres A MYÉLINISÉES → PROPRIOCEPTION + VIBRATIONS (palesthésie + batistésie) via CORDONS POSTÉRIEURS. Fibres C (non myélinisées) → douleur + température → spinothalamique. Fibres Aδ (peu myélinisées) → douleur rapide + température. Cette distinction est fondamentale pour comprendre les tableaux cliniques."},
-
-// ===== CH10 ONCOLOGIE EXTRA =====
-{ch:"Ch.10",label:"Patient Oncologique",type:"vraie",
-q:"Les voies de dissémination des métastases sont :",
-opts:["Uniquement hématogène (sang)","Hématogène (circulation sanguine), lymphatique (ganglions) et transcellulaire","Hématogène et lymphatique uniquement, la voie transcellulaire n'existe pas","Uniquement par contiguïté directe avec la tumeur primitive"],
-a:1,
-e:"3 voies de métastases : HÉMATOGÈNE (artères/veines), LYMPHATIQUE (ganglions), TRANSCELLULAIRE (plèvre, péritoine, péricarde). La localisation des métastases dépend du TROPISME des cellules tumorales ('théorie du sol et des semences' de Paget) et des facteurs anatomiques/physiologiques."},
-
-{ch:"Ch.10",label:"Patient Oncologique",type:"direct",
-q:"Le syndrome paranéoplasique se définit comme :",
-opts:["L'ensemble des métastases à distance d'une tumeur primitive","L'ensemble des manifestations dans des organes distants, en parallèle à la tumeur, sans rapport avec les métastases","La récidive tumorale après traitement","La toxicité de la chimiothérapie"],
-a:1,
-e:"Syndrome paranéoplasique = manifestations dans des organes distants SANS RELATION avec les métastases (mécanisme immuno-médié ou sécrétoire). Types : neuromusculaires (Lambert-Eaton, polyneurite, encéphalite), endocriniens (syndrome de Cushing ectopique), hématologiques, cutanés."},
-
-// ===== CH12 GUILLAIN EXTRA =====
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"direct",
-q:"La complication la plus grave du SGB nécessitant une surveillance en soins intensifs est :",
-opts:["La perte de sensibilité tactile aux membres inférieurs","La paralysie respiratoire par atteinte des muscles respiratoires, nécessitant une ventilation mécanique","La constipation sévère","La perte des réflexes ostéotendineux"],
-a:1,
-e:"PARALYSIE RESPIRATOIRE = complication LA PLUS GRAVE du SGB. La surveillance de la CAPACITÉ VITALE est essentielle (alarme si CV < 15-20 ml/kg). L'atteinte autonome (arythmies, instabilité tensionnelle) est aussi dangereuse. D'où la surveillance en RÉANIMATION. La mortalité peut atteindre 5% même avec traitement."},
-
-{ch:"Ch.12",label:"Guillain-Barré (SGB)",type:"fausse",
-q:"La forme Miller-Fisher du SGB évolue toujours vers :",
-opts:["Une paralysie respiratoire sévère nécessitant une ventilation prolongée","Un pronostic généralement favorable sans paralysie respiratoire sévère dans la plupart des cas","Une paraplégie permanente des membres inférieurs","Une démyélinisation centrale irréversible"],
-a:0,
-e:"Miller-Fisher = PRONOSTIC GÉNÉRALEMENT FAVORABLE. Ne progresse pas systématiquement vers la paralysie respiratoire sévère, contrairement aux formes axonales. La triade ataxie+aréflexie+ophtalmoplégie se résout souvent en quelques semaines à mois. Le diagnostic différentiel inclut la botulisme et les myasthénies oculaires."},
-
-// ===== CH13 GÉRIATRIE EXTRA =====
-{ch:"Ch.13",label:"Patient Gériatrique",type:"direct",
-q:"Parmi les théories moléculaires du vieillissement, laquelle est correcte ?",
-opts:["Radicaux libres : accumulation de lipofuscine dans les cellules","Raccourcissement des télomères","Théorie membranaire : mutation catastrophique de l'adn mitochondrial","Cross-linking cellulaire progressif"],
-a:1,
-e:"Théorie des TÉLOMÈRES : à chaque division cellulaire, les télomères (extrémités chromosomiques) se raccourcissent. Quand trop courts → sénescence ou apoptose cellulaire. Théorie moléculaire fondamentale du vieillissement. Les radicaux libres = théorie CELLULAIRE. Cross-linking = théorie CELLULAIRE aussi."},
-
-{ch:"Ch.13",label:"Patient Gériatrique",type:"vraie",
-q:"Le délirium chez la personne âgée se distingue de la démence car :",
-opts:["Le délirium est chronique et progressif, la démence est aiguë et fluctuante","Le délirium est aigu (heures-jours) et fluctuant, la démence est chronique et progressive, avec une cause déclenchant...","Les deux présentations sont cliniquement indistinguables","Le délirium touche uniquement les patients de plus de 90 ans"],
-a:1,
-e:"DÉLIRIUM = AIGU (heures-jours) + FLUCTUANT + cause déclenchante (infection, médicament, déshydratation, chirurgie). DÉMENCE = CHRONIQUE + PROGRESSIVE + sans fluctuation nette. Le délirium peut SE GREFFER sur une démence préexistante (le plus fréquent), ce qui complique le diagnostic."},
-
-// ===== CH14 ALZHEIMER EXTRA =====
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"fausse",
-q:"Concernant le MMSE, laquelle est FAUSSE ?",
-opts:["Un score < 24/30 indique une détérioration cognitive","Il explore l'orientation, la mémoire, l'attention, le langage et les capacités visuospatiales","Il est utilisé avec d'autres tests comme le test de l'horloge","Un mmse norma ll exclut formellement tout diagnostic de démence"],
-a:3,
-e:"Un MMSE NORMAL n'exclut PAS une démence. Les démences FRONTALES et les démences LÉGÈRES peuvent avoir un MMSE normal (car le MMSE ne teste pas bien les fonctions frontales). D'autres tests (test de l'horloge, bilan neuropsychologique complet) sont nécessaires pour un diagnostic précis."},
-
-{ch:"Ch.14",label:"Démences & Alzheimer",type:"direct",
-q:"La démence vasculaire se distingue d'Alzheimer principalement par :",
-opts:["Une évolution progressive et insidieuse sans événements déclenchants","Une évolution en marche d'escaleier avec des phases stables entre événements vasculaires","Une atteinte exclusive de la mémoire épisodique","Une fréquence plus élevée chez les femmes de moins de 60 ans"],
-a:1,
-e:"Démence VASCULAIRE = lésions vasculaires cérébrales (AVC répétés) → évolution en MARCHES D'ESCALIER avec phases stables. ALZHEIMER = évolution CONTINUE et PROGRESSIVE. La démence vasculaire est associée aux facteurs de risque cardiovasculaires (HTA, diabète, tabac). Les deux peuvent coexister (démence mixte)."},
-
-// ===== CH15 PÉDIATRIQUE EXTRA =====
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"vraie",
-q:"La plasticité du SN pédiatrique implique pour le kinésithérapeute :",
-opts:["Qu'aucune rééducation n'est utile avant 3 ans car le cerveau n'est pas formé","Que la prise en charge précoce est fondamentale","Que la plasticité disparaît définitivement après 6 mois","Que la rééducation ne doit commencer qu'après 5 ans"],
-a:1,
-e:"Plasticité = capacité du SN à SE RÉORGANISER et compenser les lésions, MAXIMALE aux stades PRÉCOCES. La prise en charge PRÉCOCE est donc fondamentale en neuropédiatrie. Les premières années de vie sont des 'fenêtres de développement' critiques. C'est le fondement de la rééducation précoce chez le prématuré et le nourrisson avec PCI."},
-
-{ch:"Ch.15",label:"Bases Physio Neuro Pédiatrique",type:"fausse",
-q:"Concernant la myélinisation du système nerveux, laquelle est FAUSSE ?",
-opts:["Elle commence avant la naissance et se poursuit plusieurs années","Elle suit un ordre cranio-caudal et proximo-distal","Elle améliore la vitesse de conduction nerveuse","Elle est complète et définitive dès la naissance"],
-a:3,
-e:"La myélinisation N'est PAS complète à la naissance. Elle débute in utero et continue PLUSIEURS ANNÉES (voire jusqu'à la 3e décennie pour certains faisceaux frontaux). C'est pourquoi le Babinski est NORMAL chez le nourrisson (absence de myélinisation complète du faisceau pyramidal). Il disparaît avec la maturation."},
-
-// ===== T11 SEP EXTRA =====
-{ch:"T.11",label:"Sclérose en Plaques",type:"direct",
-q:"Les manifestations tronco-cérébrales de la SEP incluent :",
-opts:["Une paralysie spastique progressive symétrique des quatre membres","Diplopie, nystagmus, vertiges, dysarthrie, dysphagie et ataxie par démyélinisation du cervelet et de ses connexions","Une perte auditive neurosensorielle bilatérale","Une hypertension intracrânienne avec céphalées matinales"],
-a:1,
-e:"Manifestations tronco-cérébrales SEP (25%) : DIPLOPIE, NYSTAGMUS, VERTIGES, DYSARTHRIE, DYSPHAGIE, ATAXIE. Dues à la démyélinisation du cervelet + ses connexions + faisceaux corticospinaux. À distinguer : manifestations médullaires (35%) et névrite optique (36%). Ces pourcentages peuvent être demandés."},
-
-{ch:"T.11",label:"Sclérose en Plaques",type:"fausse",
-q:"Concernant la physiopathologie de la SEP, laquelle est FAUSSE ?",
-opts:["C'est une maladie auto-immune démyélinisante du snc","Les leucocytes (lymphocytes t) attaquent la myéline","La démyélinisation ralentit ou bloque la conduction nerveuse","La sep atteint exclusivement le système nerveux périphérique"],
-a:3,
-e:"SEP = maladie AUTO-IMMUNE DÉMYÉLINISANTE du SYSTÈME NERVEUX CENTRAL uniquement (cerveau, moelle épinière, nerf optique). Le SNP N'est PAS atteint. Les nerfs périphériques = SGB, neuropathies périphériques. Cette distinction central/périphérique est fondamentale."},
-
-// ===== T16 PCI EXTRA =====
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"fausse",
-q:"La forme spastique de la PCI est causée par :",
-opts:["Une lésion des voies pyramidales","Une lésion exclusive du cervelet","Une atteinte du système extrapyramidal (ganglions de la base)","Une démyélinisation des nerfs périphériques moteurs"],
-a:1,
-e:"La forme SPASTIQUE de la PCI est liée à une lésion des VOIES PYRAMIDALES (cortex moteur, faisceau corticospinal). La lésion CÉRÉBELLEUSE donne la forme ATAXIQUE. L'atteinte des ganglions de la base donne la forme DYSKINÉTIQUE. La démyélinisation périphérique n'est pas en cause dans la PCI."},
-
-{ch:"T.16",label:"Paralysie Cérébrale Infantile I",type:"direct",
-q:"La diplégie spastique dans la PCI touche préférentiellement :",
-opts:["Les membres supérieurs plus que les membres inférieurs","Les membres inférieurs principalement","Les quatre membres de façon égale","Uniquement les muscles faciaux et oculaires"],
-a:1,
-e:"Diplégie spastique (maladie de Little) = PCI spastique touchant PRINCIPALEMENT les MEMBRES INFÉRIEURS. Fréquente chez le PRÉMATURÉ par LEUCOMALACIE PÉRIVENTRICULAIRE (les fibres corticospinales pour les MI passent au niveau périventriculaire, zone vulnérable à l'ischémie chez le prématuré)."},
-
-// ===== T17 PRÉMATURITÉ EXTRA =====
-{ch:"Ch.17",label:"PCI & Prématurité",type:"direct",
-q:"La leucomalacie périventriculaire chez le prématuré correspond à :",
-opts:["Une hémorragie dans les ventricules cérébraux","Des lésions kystiques","Une malformation du corps calleux d'origine génétique","Une tumeur bénigne du plexus choroïde"],
-a:1,
-e:"Leucomalacie périventriculaire = LÉSIONS KYSTIQUES de la SUBSTANCE BLANCHE périventriculaire. Mécanisme : ISCHÉMIE des zones périventriculaires (vascularisation immature chez le prématuré). Conséquences : diplégie spastique, troubles cognitifs. Les fibres corticospinales pour les MI passent exactement dans cette zone."},
-
-{ch:"Ch.17",label:"PCI & Prématurité",type:"vraie",
-q:"Parmi ces 4 complications neurologiques du prématuré grave, laquelle est correctement listée ?",
-opts:["Méningites bactériennes, malformations cardiaques, hydrocéphalie congénitale, cataracte néonatale","Hemoragie sévere , lésions kystiques,convuslsion,encheplopathoe","Thrombopénie, anémie hémolytique, icère nucléaire, surdité neurosensorielle","Hydrocéphalie, méningocèle, myéloméningocèle, spina bifida occulta"],
-a:1,
-e:"Les 4 complications neurologiques majeures du prématuré grave : hémorragies sévères + lésions kystiques substance blanche (leucomalacie périventriculaire) + crises convulsives dans les premiers jours + encéphalopathie hypoxique-ischémique. Ces 4 altèrent développement moteur, sensoriel et cognitif."},
-
-// ===== T18 TSA/TDAH EXTRA =====
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"direct",
-q:"Le trouble du spectre autistique (TSA) implique des difficultés dans 2 domaines centraux :",
-opts:["Motricité grossière et coordination fine uniquement","Communication + interaction sociale et comportements répétitifs + intérêts restreints","Lecture, écriture et mathématiques exclusivement","Mémoire à court terme et vitesse de traitement uniquement"],
-a:1,
-e:"TSA = 2 domaines centraux (DSM-5) : 1. COMMUNICATION + INTERACTION SOCIALE (réciprocité sociale, langage, relations) 2. COMPORTEMENTS RÉPÉTITIFS + INTÉRÊTS RESTREINTS (stéréotypies, rigidité, intérêts spécifiques). S'y ajoutent souvent des PARTICULARITÉS SENSORIELLES (hyper/hyposensibilité) et des particularités motrices."},
-
-{ch:"T.18",label:"TSA / TDAH / Handicap Intellectuel / DYS",type:"fausse",
-q:"Concernant les troubles DYS, laquelle est FAUSSE ?",
-opts:["La dyslexie affecte principalement la lecture","La dyscalculie concerne les mathématiques","La dyspraxie touche la coordination motrice et la planification du geste","Les dys sont causés exclusivement par un manque de travail scolaire"],
-a:3,
-e:"Les DYS NE SONT PAS causés par un manque de travail. Ce sont des troubles NEUROBIOLOGIQUES spécifiques des apprentissages affectant des enfants à INTELLIGENCE NORMALE. La méconnaissance de ces troubles engendre souvent un échec scolaire injustifié. Dyslexie = lecture, Dyscalculie = maths, Dyspraxie = coordination motrice."},
-
-// ===== T19 NEUROMUSCULAIRE EXTRA =====
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"vraie",
-q:"La myopathie de Duchenne évolue inévitablement vers :",
-opts:["Une guérison spontanée à la puberté","Une atteinte cardiaque (cardiomyopathie dilatée) et respiratoire (insuffisance restrictive), principales causes de décès","Une atteinte du snc avec épilepsie réfractaire","Une calcification musculaire généralisée"],
-a:1,
-e:"Duchenne = évolution INÉVITABLE vers : CARDIOMYOPATHIE DILATÉE + INSUFFISANCE RESPIRATOIRE RESTRICTIVE = principales causes de DÉCÈS. La surveillance cardiorespiratoire est ESSENTIELLE dès le diagnostic. La Ventilation Non Invasive (VNI) et le suivi cardio prolongent significativement la survie."},
-
-{ch:"T.19",label:"Maladies Neuromusculaires Pédiatriques",type:"fausse",
-q:"Concernant la myasthénie gravis auto-immune, laquelle est FAUSSE ?",
-opts:["Elle est causée par des anticorps anti-récepteurs ach à la jonction neuromusculaire","La faiblesse est fluctuante, aggravée par l'effort et améliorée par le repos","Elle est plus fréquente dans la forme auto-immune chez les adolescents","Elle est identique en mécanisme à la myopathie de duchenne"],
-a:3,
-e:"Myasthénie gravis et Duchenne ont des mécanismes TOTALEMENT DIFFÉRENTS. Myasthénie = anticorps anti-récepteurs ACh → trouble de la TRANSMISSION NEUROMUSCULAIRE (JNM). Duchenne = mutation du gène de la DYSTROPHINE → DYSTROPHIE MUSCULAIRE (dégénérescence structurale du muscle). Mécanismes, traitements et évolution différents."},
-
-// ===== T20 MYÉLOMÉNINGOCÈLE EXTRA =====
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"direct",
-q:"Dans le myéloméningocèle, les niveaux lésionnels les plus fréquents sont :",
-opts:["Cervicaux (c3-c5)","Thoraciques hauts (t1-t4)","Lombo-sacrés (l4-l5 et l5-s1)","Sacraux bas (s3-s5) exclusivement"],
-a:2,
-e:"Les niveaux les plus fréquents dans le myéloméningocèle = LOMBO-SACRÉS (L4-L5 et L5-S1). Un niveau L4 permet flexion/adduction hanches mais pas dorsiflexion du pied. Niveaux thoraciques élevés = paraplégie complète MI + tronc. Niveaux sacrés bas = mobilité relative avec faiblesse des pieds/chevilles."},
-
-{ch:"T.20",label:"Myéloméningocèle & Lésion Méd. Inf.",type:"fausse",
-q:"Concernant le méningocèle, laquelle est FAUSSE ?",
-opts:["C'est une protrusion des méninges à travers un défaut osseux","Il diffère du myéloméningocèle car il ne contient pas de tissu nerveux","Il est généralement associé à des déficits neurologiques sévères et permanents","Il appartient au groupe des spina bifida ouverts"],
-a:2,
-e:"Le MÉNINGOCÈLE = méninges uniquement, SANS tissu neural → pronostic neurologique GÉNÉRALEMENT MEILLEUR que le myéloméningocèle. Les déficits neurologiques sont souvent MINIMES ou absents. C'est précisément l'absence de tissu nerveux dans le sac qui fait la différence pronostique majeure."},
-
-// ===== T21 PHARMACOLOGIE EXTRA =====
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"direct",
-q:"La forme galénique d'un médicament est :",
-opts:["Le principe actif pur isolé","La préparation finale permettant l'administration au patient","L'excipient seul, sans principe actif","Le conditionnement extérieur (boîte, notice)"],
-a:1,
-e:"Forme GALÉNIQUE = forme FINALE du médicament prête à être administrée : comprimé, sirop, aérosol, pommade, injectable... Contient PRINCIPE ACTIF + EXCIPIENTS dans une forme posologique. Un médicament ne peut être commercialisé comme simple mélange - la forme galénique est obligatoire pour permettre l'administration correcte."},
-
-{ch:"T.21",label:"Pharmacologie & Pharmacovigilance",type:"fausse",
-q:"Concernant la pharmacovigilance, laquelle est FAUSSE ?",
-opts:["Elle surveille les effets indésirables des médicaments après leur mise sur le marché","Le kinésithérapeute doit signaler les effets indésirables observés chez ses patients","Elle inclut les signalements des professionnels de santé et des patients","La pharmacovigilance n'est utile que pendant les essais cliniques avant la mise sur le marché"],
-a:3,
-e:"La pharmacovigilance est SURTOUT utile APRÈS la mise sur le marché (phase IV). Les essais cliniques (phases I-III) précèdent la commercialisation. Les effets indésirables RARES et INATTENDUS ne sont souvent détectés qu'en POST-COMMERCIALISATION avec des millions de patients. La phase IV est cruciale."},
-
-// ===== T22 PHARMACOCINÉTIQUE EXTRA =====
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"direct",
-q:"La pharmacodynamique étudie :",
-opts:["Ce que le corps fait au médicament","Ce que le médicament fait au corps","Uniquement la durée d'action des médicaments dans l'organisme","La voie d'administration optimale pour chaque médicament"],
-a:1,
-e:"PHARMACODYNAMIQUE = ce que le MÉDICAMENT fait au CORPS : mécanismes d'action (récepteurs, enzymes, canaux ioniques), effets thérapeutiques et indésirables, relations dose-effet, agonistes/antagonistes. PHARMACOCINÉTIQUE (ADME) = ce que le CORPS fait au MÉDICAMENT. Ces deux disciplines sont complémentaires."},
-
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"fausse",
-q:"Concernant la constante de dissociation Kd en pharmacodynamique, laquelle est FAUSSE ?",
-opts:["Kd représente la concentration d'agoniste nécessaire pour occuper 50% des récepteurs","Plus kd est faible, plus l'affinité du médicament pour son récepteur est élevée","Kd est une constante caractérisant l'affinité médicament-récepteur","Plus kd est élevé, plus l'affinité du médicament pour son récepteur est élevée"],
-a:3,
-e:"Plus Kd est FAIBLE → plus l'affinité est ÉLEVÉE (concentration plus faible nécessaire pour occuper 50% des récepteurs). Relation INVERSE : Kd faible = forte affinité. Kd élevé = faible affinité (besoin de plus de médicament pour le même effet). Cette relation inverse est souvent une source de confusion."},
-
-{ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"vraie",
-q:"La chaleur appliquée sur la peau peut modifier la pharmacocinétique d'un médicament en :",
-opts:["Diminuant la circulation locale et ralentissant l'absorption","Provoquant une vasodilatation locale qui accélère l'absorption d'un médicament","N'ayant aucun effet sur la pharmacocinétique dans tous les cas","Activant le premier passage hépatique"],
-a:1,
-e:"CHALEUR → VASODILATATION → ↑ circulation locale → ACCÉLÈRE l'absorption. Important pour les PATCHS CUTANÉS : appliquer une chaleur (coussin chauffant, bain chaud) sur un patch peut augmenter dramatiquement l'absorption et provoquer un surdosage. Le kiné doit en être conscient lors des applications de chaleur."}
-
+// =============================================
+// BANQUE COMPLÈTE — PATHOLOGIE NEUROLOGIQUE
+// Format compact : {l, t, q, o, a, e}
+// l = label chapitre
+// t = type : "fausse" | "vraie" | "direct"
+// q = question
+// o = options [A,B,C,D]
+// a = index bonne réponse (0-3)
+// e = explication
+// =============================================
+// Mapping :
+// { ch:item.l, label:item.l, type:item.t, q:item.q, opts:item.o, a:item.a, e:item.e }
+// =============================================
+
+const BANK = [
+
+// ===== CH.3 — COGNITIF =====
+{l:"Ch.3",t:"fausse",q:"Laquelle des affirmations sur l'aphasie de Broca est FAUSSE ?",
+o:["L'émission est non fluide et laborieuse","La compréhension orale est généralement préservée","La répétition est perturbée","L'émission est fluide et paraphasique"],
+a:3,e:"Dans l'aphasie de Broca, l'émission est NON FLUIDE et laborieuse. L'émission fluide et paraphasique est caractéristique de WERNICKE. Broca = zone motrice du langage."},
+
+{l:"Ch.3",t:"fausse",q:"Laquelle des affirmations sur l'aphasie de Wernicke est FAUSSE ?",
+o:["L'émission est fluide mais paraphasique","La compréhension orale est préservée","La répétition est perturbée","Elle est dite 'sensitive primaire'"],
+a:1,e:"Dans Wernicke, la COMPRÉHENSION est ALTÉRÉE. L'émission est fluide mais paraphasique. On l'appelle aphasie sensitive car la zone de Wernicke est sensorielle."},
+
+{l:"Ch.3",t:"direct",q:"L'agnosie se définit comme :",
+o:["L'incapacité à réaliser des gestes appris malgré l'intégrité motrice","L'incapacité à identifier des objets malgré des fonctions sensitives intactes","Un trouble du langage avec émission non fluide","Une perturbation de l'attention pour les stimuli controlatéraux"],
+a:1,e:"Agnosie = incapacité à RECONNAÎTRE malgré des systèmes sensitifs INTACTS. Lésion des zones d'association sensorielles. À distinguer de l'apraxie et de l'aphasie."},
+
+{l:"Ch.3",t:"fausse",q:"Laquelle des affirmations sur l'apraxie est FAUSSE ?",
+o:["C'est l'incapacité à réaliser des gestes appris malgré des fonctions motrices intactes","Elle indique une lésion des zones d'association motrices","Elle est toujours bilatérale et symétrique quelle que soit la lésion","Elle se distingue de la paralysie par l'absence de déficit moteur"],
+a:2,e:"L'apraxie peut être unilatérale ou bilatérale selon la lésion. Une lésion hémisphérique gauche donne souvent une apraxie bilatérale (l'hémisphère gauche coordonne les deux côtés pour les gestes appris)."},
+
+{l:"Ch.3",t:"vraie",q:"Laquelle des affirmations sur le maintien de la conscience est VRAIE ?",
+o:["Il dépend uniquement de l'intégrité du cortex pariétal","Il nécessite l'intégrité du SRAA ET des deux hémisphères","Il est assuré exclusivement par le lobe frontal gauche","Il ne peut être évalué que par IRM fonctionnelle"],
+a:1,e:"La conscience nécessite 2 composantes : le NIVEAU DE VIGILANCE (SRAA, tronc cérébral) et le CONTENU (deux hémisphères). Une lésion du tronc peut abolir la vigilance même avec des hémisphères intacts."},
+
+{l:"Ch.3",t:"fausse",q:"Concernant la négligence spatiale unilatérale, laquelle est FAUSSE ?",
+o:["Elle survient généralement lors d'une lésion de l'hémisphère non dominant","Elle se traduit par un déficit d'attention pour les stimuli controlatéraux à la lésion","L'anosognosie est une variante où le patient ne reconnaît pas son déficit","Elle survient uniquement lors de lésions frontales gauches"],
+a:3,e:"La négligence spatiale survient lors de lésions de l'HÉMISPHÈRE NON DOMINANT (droit). Le patient ignore toute réalité du côté CONTROLATÉRAL. L'anosognosie et l'asomatognosie en sont des variantes."},
+
+{l:"Ch.3",t:"direct",q:"L'anosognosie se définit comme :",
+o:["L'incapacité à reconnaître les objets malgré une vision intacte","Le fait que le patient ne reconnaît pas son propre déficit neurologique","L'incapacité à nommer les objets avec les autres composantes intactes","Une extinction visuelle bilatérale lors de stimulations simultanées"],
+a:1,e:"Anosognosie = le patient NE RECONNAÎT PAS son propre déficit neurologique. Variante de la négligence. Lésion de l'hémisphère non dominant. À distinguer de l'asomatognosie."},
+
+{l:"Ch.3",t:"vraie",q:"Concernant l'aphasie nominale, laquelle est VRAIE ?",
+o:["Elle est caractérisée par une émission non fluide et une compréhension altérée","Elle se manifeste par une perte isolée de la capacité à nommer les objets","Elle touche la répétition de manière sélective avec compréhension préservée","Elle est due à une lésion du faisceau arqué"],
+a:1,e:"Aphasie NOMINALE = perte de la capacité à NOMMER les objets. Toutes les autres composantes restent INTACTES. C'est la forme d'aphasie la plus légère et la plus spécifique."},
+
+{l:"Ch.3",t:"fausse",q:"Dans le syndrome frontal, lequel de ces signes est FAUX ?",
+o:["Troubles du comportement et de la personnalité","Réflexes primitifs de succion et de préhension","Incontinence sphinctérienne","Hyperkinésie et accélération du temps de réaction"],
+a:3,e:"Le syndrome frontal se caractérise par une HYPOKINÉSIE (aboulie, apragmatisme) et NON une hyperkinésie. Signes classiques : troubles du comportement, réflexes primitifs, incontinence sphinctérienne, déficit attentionnel."},
+
+{l:"Ch.3",t:"direct",q:"L'aphasie globale se caractérise par :",
+o:["Une perte sélective de la répétition avec émission préservée","Une perte totale de l'expression ET de la compréhension du langage","Une émission fluide paraphasique avec compréhension altérée","Une perte isolée de la capacité à nommer les objets"],
+a:1,e:"Aphasie GLOBALE = perte de l'EXPRESSION ET de la COMPRÉHENSION. C'est la forme la plus sévère. À distinguer de Broca (expression seule) et Wernicke (compréhension surtout)."},
+
+{l:"Ch.3",t:"fausse",q:"Dans l'aphasie de conduction, laquelle est FAUSSE ?",
+o:["L'émission est fluide et paraphasique","La compréhension orale est préservée","La répétition est impossible","L'émission est non fluide avec agrammatisme"],
+a:3,e:"L'aphasie de CONDUCTION a une émission FLUIDE (paraphasique), compréhension PRÉSERVÉE, répétition IMPOSSIBLE. L'émission non fluide avec agrammatisme = aphasie de BROCA. La conduction = lésion du faisceau arqué."},
+
+{l:"Ch.3",t:"direct",q:"L'apraxie constructive est principalement associée à des lésions de :",
+o:["L'hémisphère gauche dans l'aire de Broca","Les régions occipito-pariétales droites","Le cervelet bilatéralement","Le tronc cérébral au niveau du mésencéphale"],
+a:1,e:"L'apraxie constructive (incapacité à dessiner ou assembler) a une forte composante visuospatiale. Elle est liée aux lésions occipitales et pariétales postérieures, prédominant dans l'HÉMISPHÈRE DROIT."},
+
+{l:"Ch.3",t:"fausse",q:"Concernant les syndromes corticaux topographiques, laquelle est FAUSSE ?",
+o:["Ils résultent d'une atteinte étendue des zones corticales","Leur étiologie peut être vasculaire, tumorale ou traumatique","Le maintien de la conscience nécessite l'intégrité du SRAA et des deux hémisphères","Une lésion localisée d'un seul réseau entraîne toujours un syndrome diffus"],
+a:3,e:"Une lésion LOCALISÉE d'un réseau = déficit FOCAL. Le syndrome DIFFUS nécessite une atteinte généralisée du cortex. Ces deux mécanismes sont distincts."},
+
+// ===== CH.4 — TONUS & MOUVEMENT =====
+{l:"Ch.4",t:"fausse",q:"Concernant le premier motoneurone, laquelle est FAUSSE ?",
+o:["Il provoque une paralysie spasmodique","Le signe de Babinski est positif","Les réflexes myotatiques profonds sont exaltés","Il entraîne fasciculations et amyotrophie marquée"],
+a:3,e:"Fasciculations + amyotrophie MARQUÉE = syndrome du 2e MN. Le 1er MN donne une amyotrophie légère par désuétude, sans fasciculations. 1er MN = hypertonus, hyperréflexie ; 2e MN = hypotonie, aréflexie."},
+
+{l:"Ch.4",t:"vraie",q:"Laquelle des affirmations sur la spasticité est VRAIE ?",
+o:["Elle est due à une lésion du 2e MN et donne le signe de la roue dentée","Elle est une hypertonie pyramidale vitesse-dépendante avec signe de la lame de canif","Elle touche principalement les muscles fléchisseurs des membres inférieurs","Elle est associée à une aréflexie et une paralysie flasque"],
+a:1,e:"Spasticité = hypertonie PYRAMIDALE (1er MN), signe de la lame de canif, VITESSE-DÉPENDANTE. Plus intense dans les extenseurs au MI et les fléchisseurs au MS. La roue dentée = extrapyramidal."},
+
+{l:"Ch.4",t:"direct",q:"La paraplégie se définit comme :",
+o:["La paralysie d'un seul membre par atteinte d'un nerf périphérique","La paralysie d'un hémicorps par syndrome pyramidal","La paralysie des deux membres inférieurs par syndrome médullaire thoraco-lombaire","La paralysie des quatre membres par syndrome médullaire supra-cervical"],
+a:2,e:"Paraplégie = 2 membres inférieurs = lésion THORACO-LOMBAIRE. Tétraplégie = 4 membres = lésion SUPRA-CERVICALE. Hémiplégie = hémicorps = syndrome pyramidal. Monoplégie = 1 membre."},
+
+{l:"Ch.4",t:"fausse",q:"Concernant la syncynie dans le syndrome pyramidal, laquelle est FAUSSE ?",
+o:["C'est une contraction involontaire lors d'un mouvement volontaire d'un autre groupe","Elle s'observe chez les patients hémiplégiques ou hémiparétiques","Elle témoigne d'une lésion du faisceau pyramidal","Elle est un signe du 2e motoneurone inférieur"],
+a:3,e:"La syncynie est un signe du PREMIER motoneurone (syndrome pyramidal), observée chez les hémiplégiques. Le clonus est aussi un signe du 1er MN. Les fasciculations = 2e MN."},
+
+{l:"Ch.4",t:"direct",q:"Le clonus se définit comme :",
+o:["Une contraction musculaire volontaire inhibée par une douleur aiguë","Une série de contractions rapides et réflexes après étirement soudain — signe pyramidal","Une faiblesse musculaire focale due à une atteinte du 2e motoneurone","Une hyperextension involontaire du genou lors de la marche"],
+a:1,e:"Clonus = série de CONTRACTIONS RAPIDES et RÉFLEXES après étirement SOUDAIN (ex : tendon d'Achille). Témoigne d'une lésion du FAISCEAU PYRAMIDAL (1er MN). Signe du syndrome pyramidal, comme Babinski."},
+
+{l:"Ch.4",t:"fausse",q:"La SLA est une pathologie du :",
+o:["2e motoneurone exclusivement avec paralysie flasque","1er motoneurone exclusivement avec spasticité","1er et 2e motoneurone simultanément","Système cérébelleux uniquement"],
+a:2,e:"La SLA atteint le 1er ET LE 2e MOTONEURONE. Elle combine signes CENTRAUX (spasticité, Babinski) ET PÉRIPHÉRIQUES (fasciculations, amyotrophie marquée). Maladie de Charcot. SLP = 1er MN seul ; poliomyélite = 2e MN seul."},
+
+{l:"Ch.4",t:"vraie",q:"L'athétose est classée parmi les troubles :",
+o:["Hypokinétiques du système extrapyramidal comme Parkinson","Hyperkinétiques avec mouvements lents et sinueux des extrémités distales","Pyramidaux avec spasticité et hyperréflexie","Cérébelleux avec dysmétrie et ataxie"],
+a:1,e:"ATHÉTOSE = trouble HYPERKINÉTIQUE extrapyramidal : mouvements LENTS, SINUEUX des extrémités DISTALES. Les hyperkinétiques incluent aussi : tremblements, dystonie, chorée, ballisme, myoclonies."},
+
+{l:"Ch.4",t:"direct",q:"La différence clinique entre spasticité pyramidale et rigidité extrapyramidale est :",
+o:["La spasticité est indépendante de la vitesse du mouvement passif","La spasticité est vitesse-dépendante, la rigidité est constante quelle que soit la vitesse","Les deux sont identiques et nécessitent le même traitement","La rigidité prédomine exclusivement dans les extenseurs des MI"],
+a:1,e:"SPASTICITÉ (pyramidale) = VITESSE-DÉPENDANTE → lame de canif. RIGIDITÉ (extrapyramidale) = CONSTANTE quelle que soit la vitesse → roue dentée. Distinction clinique FONDAMENTALE."},
+
+{l:"Ch.4",t:"direct",q:"Dans le syndrome de Brown-Séquard, la perte motrice est :",
+o:["Controlatérale à la lésion car la voie corticospinale croise dans la moelle","Ipsilatérale à la lésion car la voie corticospinale croise dans le bulbe","Bilatérale et symétrique car les deux voies sont atteintes","Absente car la motricité est préservée dans toutes les hémisections"],
+a:1,e:"Brown-Séquard : perte MOTRICE IPSILATÉRALE (faisceau corticospinal croise dans le BULBE, pas dans la moelle). Perte DOULEUR/TEMPÉRATURE CONTROLATÉRALE (faisceau spinothalamique croise dans la moelle). Proprioception perdue IPSILATÉRALE (cordons postérieurs ne croisent pas)."},
+
+{l:"Ch.4",t:"vraie",q:"Concernant les aspects positifs de la spasticité en clinique, lequel est VRAI ?",
+o:["Elle améliore toujours la coordination des mouvements fins","Elle peut aider à la stabilité debout/assise et prévenir l'atrophie musculaire","Elle supprime définitivement la douleur neuropathique","Elle remplace totalement la force musculaire perdue"],
+a:1,e:"Aspects POSITIFS de la spasticité : stabilité debout/assise, prévention atrophie musculaire, amélioration retour veineux, aide à tousser. Aspects NÉGATIFS : réduit mobilité, limite AVD, contractures, douleur, escarres."},
+
+// ===== CH.5 — DYSKINÉSIES =====
+{l:"Ch.5",t:"direct",q:"Dans le système extrapyramidal, quel neurotransmetteur INHIBE le noyau strié ?",
+o:["Acétylcholine","GABA","Dopamine","Glutamate"],
+a:2,e:"Dopamine = INHIBE le noyau strié. Acétylcholine = ACTIVE l'intensification des mouvements corticaux. Déséquilibre DA/ACh → troubles extrapyramidaux. Dans Parkinson : ↓ DA → hyperactivité ACh relative."},
+
+{l:"Ch.5",t:"fausse",q:"Concernant la maladie de Huntington, laquelle est FAUSSE ?",
+o:["C'est une maladie génétique neurodégénérative à hérédité autosomique dominante","Elle se manifeste typiquement entre 35 et 44 ans","Elle entraîne des mouvements involontaires de type chorée","Elle est plus fréquente chez les personnes d'ascendance asiatique"],
+a:3,e:"Huntington est plus fréquente chez les personnes d'ascendance EUROPÉENNE OCCIDENTALE. Hérédité AD avec phénomènes d'anticipation. Première maladie génétique des troubles hyperkinétiques neurologiques."},
+
+{l:"Ch.5",t:"vraie",q:"Laquelle des affirmations sur la chorée est VRAIE ?",
+o:["Elle est due à un excès d'inhibition du noyau strié par la dopamine","Elle est un trouble hypokinétique du système extrapyramidal","C'est un trouble hyperkinétique dû à une inhibition moindre de l'ACh ou un excès de DA","Elle se manifeste exclusivement par des mouvements rythmiques des extrémités"],
+a:2,e:"Chorée = trouble HYPERKINÉTIQUE : mouvements anormaux rapides, involontaires, irréguliers. Dû à inhibition moindre ACh du strié OU excès DA. Exemples : Huntington, chorée de Sydenham."},
+
+{l:"Ch.5",t:"direct",q:"Les dyskinésies tardives sont caractérisées par :",
+o:["Des épisodes brefs de mouvements paroxystiques chorée-dystoniques","Des mouvements répétitifs stéréotypés liés à l'utilisation prolongée de neuroleptiques","Une rigidité extrapyramidale progressive dans les deux hémicorps","Un tremblement au repos disparaissant lors du mouvement"],
+a:1,e:"Dyskinésies tardives = mouvements RÉPÉTITIFS stéréotypés (mâcher, tirer la langue, cligner des yeux) liés à l'utilisation prolongée de NEUROLEPTIQUES ou métoclopramide."},
+
+{l:"Ch.5",t:"fausse",q:"Concernant la dystonie, laquelle est FAUSSE ?",
+o:["Elle se manifeste par des contractions musculaires involontaires avec postures inhabituelles","Elle peut entraîner des extensions forcées ou des torsions autour d'une seule articulation","C'est un trouble hyperkinétique du système extrapyramidal","Elle entraîne un relâchement musculaire complet avec hypotonie sévère"],
+a:3,e:"La dystonie produit des contractions INVOLONTAIRES (pas de relâchement) avec postures très inhabituelles. C'est un trouble HYPERKINÉTIQUE. Relâchement complet + hypotonie = hypotonie, pas dystonie."},
+
+{l:"Ch.5",t:"direct",q:"Le ballisme se caractérise par :",
+o:["Des mouvements fins, rythmiques et de faible amplitude au repos","Des mouvements brusques, amples et involontaires ressemblant à des jets de membres","Des contractions musculaires soutenues maintenant des postures anormales","Des secousses musculaires brèves, soudaines et involontaires"],
+a:1,e:"Ballisme = mouvements BRUSQUES, AMPLES, involontaires. L'hémiballisme (unilatéral) est souvent causé par une lésion du noyau subthalamique. À distinguer des myoclonies et de la chorée."},
+
+{l:"Ch.5",t:"vraie",q:"La myoclonie se distingue du tremblement car :",
+o:["La myoclonie est une oscillation régulière et rythmique continue","La myoclonie est une contraction brusque, brève, involontaire et non rythmique","La myoclonie est toujours pathologique contrairement au tremblement","La myoclonie prédomine au repos et disparaît au mouvement"],
+a:1,e:"Myoclonie = contraction BRUSQUE + BRÈVE involontaire. Peut être PHYSIOLOGIQUE (sursauts à l'endormissement) ou pathologique. TREMBLEMENT = oscillation RYTHMIQUE continue."},
+
+{l:"Ch.5",t:"fausse",q:"Concernant le tremblement essentiel, laquelle est FAUSSE ?",
+o:["C'est le tremblement le plus fréquent dans la population générale","Il est postural et cinétique, s'aggravant lors des tâches manuelles précises","Il disparaît au repos comme le tremblement parkinsonien","Il touche fréquemment les mains et parfois la tête ou la voix"],
+a:2,e:"Tremblement ESSENTIEL = POSTURAL/CINÉTIQUE, aggravé lors des tâches. Il EST PRÉSENT au repos, contrairement au tremblement parkinsonien qui DISPARAÎT au repos. Distinction importante."},
+
+{l:"Ch.5",t:"direct",q:"La maladie de Huntington est transmise de façon :",
+o:["Autosomique récessive avec pénétrance variable","Autosomique dominante avec phénomènes d'anticipation","Récessive liée au chromosome X","Mitochondriale par la mère uniquement"],
+a:1,e:"Huntington = hérédité AUTOSOMIQUE DOMINANTE avec phénomènes d'ANTICIPATION (la maladie s'aggrave et commence plus tôt à chaque génération, liée à l'expansion des répétitions CAG)."},
+
+// ===== CH.6 — PARKINSON =====
+{l:"Ch.6",t:"fausse",q:"Laquelle des affirmations sur la maladie de Parkinson est FAUSSE ?",
+o:["C'est la 2e maladie neurodégénérative la plus fréquente après Alzheimer","Le tremblement au repos disparaît pendant le mouvement et le sommeil","Elle est plus fréquente chez les femmes que les hommes","Elle débute typiquement entre 50 et 60 ans"],
+a:2,e:"Parkinson est plus fréquente chez les HOMMES. L'étiologie est une mort des cellules dopaminergiques de la substance noire avec dépôts d'alpha-synucléine (corps de Lewy). Cause primaire inconnue."},
+
+{l:"Ch.6",t:"direct",q:"Le tremblement parkinsonien se distingue du tremblement cérébelleux car :",
+o:["Le tremblement parkinsonien est d'intention et aggravé lors des mouvements fins","Le tremblement parkinsonien est au repos et disparaît au mouvement et au sommeil","Les deux sont identiques en fréquence et en topographie initiale","Le tremblement parkinsonien est toujours bilatéral et symétrique dès le début"],
+a:1,e:"Tremblement parkinsonien = AU REPOS (disparaît au mouvement et au sommeil), asymétrique au début, distal. Tremblement cérébelleux = D'INTENTION (aggravé lors du mouvement précis, test doigt-nez)."},
+
+{l:"Ch.6",t:"vraie",q:"Parmi les symptômes non moteurs de Parkinson, lequel est VRAI ?",
+o:["Hyperolfaction et hypermotilité intestinale","Hypertension artérielle orthostatique systématique","Anosmie, constipation, troubles du sommeil et dépression","Hyperactivité intestinale et diarrhée chronique"],
+a:2,e:"Symptômes non moteurs de Parkinson : ANOSMIE (perte de l'odorat souvent précoce), constipation, HYPOTENSION orthostatique, troubles du sommeil, dépression, troubles cognitifs tardifs."},
+
+{l:"Ch.6",t:"vraie",q:"L'hypomimie dans la maladie de Parkinson correspond à :",
+o:["Une paralysie faciale périphérique avec asymétrie du visage","Un visage inexpressif dit 'masque de poker' avec absence de clignement des yeux","Un spasme hémifacial involontaire unilatéral","Une rigidité des muscles masticateurs empêchant l'ouverture de la bouche"],
+a:1,e:"Hypomimie = réduction des mouvements involontaires du visage → visage inexpressif + absence de clignement des yeux. Manifestation de la BRADYKINÉSIE parkinsonienne."},
+
+{l:"Ch.6",t:"fausse",q:"Parmi les symptômes non moteurs de Parkinson, lequel est FAUX ?",
+o:["L'anosmie est souvent un symptôme précoce","L'hypotension orthostatique fait partie de la dysautonomie parkinsonienne","La constipation est fréquente","L'hyperkinésie et l'hyperréflexie sont des symptômes non moteurs classiques"],
+a:3,e:"Hyperkinésie et hyperréflexie sont des signes du 1er motoneurone (syndrome pyramidal), PAS de Parkinson. Symptômes non moteurs : anosmie, constipation, hypotension orthostatique, troubles du sommeil, dépression."},
+
+{l:"Ch.6",t:"vraie",q:"L'anosmie dans la maladie de Parkinson est importante car :",
+o:["Elle est toujours bilatérale et soudaine permettant un diagnostic précoce aisé","Elle peut précéder les symptômes moteurs de plusieurs années","Elle n'apparaît qu'aux stades avancés et sévères","Elle est causée par la rigidité des muscles olfactifs"],
+a:1,e:"L'ANOSMIE est un symptôme PRÉ-MOTEUR de Parkinson, pouvant précéder les symptômes moteurs de PLUSIEURS ANNÉES (stades 1-2 de Braak). Avec la constipation et les troubles du sommeil REM, c'est un signe précoce important."},
+
+{l:"Ch.6",t:"fausse",q:"Concernant les parkinsonismes atypiques, laquelle est FAUSSE ?",
+o:["La paralysie supranucléaire progressive (PSP) est un parkinsonisme atypique","Les parkinsonismes atypiques répondent généralement mal au traitement dopaminergique","L'atrophie multisystématisée (AMS) est un autre parkinsonisme atypique","Tous les syndromes parkinsoniens répondent parfaitement et durablement à la dopamine"],
+a:3,e:"Les parkinsonismes ATYPIQUES (PSP, AMS, dégénérescence corticobasale) répondent MAL à la dopamine. C'est un critère diagnostique IMPORTANT : une bonne réponse oriente vers la maladie de Parkinson idiopathique."},
+
+{l:"Ch.6",t:"direct",q:"La dysautonomie parkinsonienne peut inclure :",
+o:["Hypertension artérielle permanente et tachycardie de repos","Hypotension orthostatique et hypomotilité intestinale","Hypotension orthostatique et diarrhée chronique","Bradycardie permanente et hyperhydrose isolée"],
+a:1,e:"Dysautonomie parkinsonienne : HYPOTENSION ORTHOSTATIQUE, CONSTIPATION (hypomotilité intestinale), sialorrhée, dysfonction sexuelle, troubles vésicaux. Ces symptômes non moteurs précèdent parfois les symptômes moteurs."},
+
+// ===== CH.7 — LÉSION MÉDULLAIRE =====
+{l:"Ch.7",t:"fausse",q:"Concernant le syndrome centromédullaire, laquelle est FAUSSE ?",
+o:["C'est la lésion médullaire incomplète la plus fréquente","Il est classiquement provoqué par une hyperextension cervicale","Il affecte davantage les membres supérieurs que les membres inférieurs","Il entraîne une perte complète de toutes les fonctions sous le niveau lésé"],
+a:3,e:"Le syndrome centromédullaire est INCOMPLET — meilleur pronostic des syndromes médullaires. La préservation sacrée est souvent conservée. Récupération possible, surtout chez le jeune."},
+
+{l:"Ch.7",t:"vraie",q:"Dans le syndrome de Brown-Séquard, la perte de sensibilité à la douleur et à la température est :",
+o:["Ipsilatérale car le faisceau spinothalamique ne croise pas","Controlatérale car le faisceau spinothalamique croise dans la moelle","Bilatérale et symétrique car les deux cordons postérieurs sont atteints","Absente car la sensibilité thermoalgésique est toujours préservée"],
+a:1,e:"Brown-Séquard : faisceau SPINOTHALAMIQUE croise 2-3 étages au-dessus → perte douleur/température CONTROLATÉRALE. Cordons postérieurs NE CROISENT PAS → perte proprioception/vibrations IPSILATÉRALE."},
+
+{l:"Ch.7",t:"fausse",q:"Concernant le syndrome médullaire postérieur, laquelle est FAUSSE ?",
+o:["Il résulte d'une atteinte des cordons postérieurs","Il entraîne une perte de la proprioception et des vibrations","La motricité et la sensibilité à la douleur sont préservées","Il entraîne une perte motrice complète et une analgésie"],
+a:3,e:"Syndrome médullaire POSTÉRIEUR = atteinte des CORDONS POSTÉRIEURS uniquement → perte PROPRIOCEPTION + VIBRATIONS. La MOTRICITÉ et la sensibilité THERMOALGÉSIQUE sont PRÉSERVÉES. Perte motrice + analgésie = syndrome ANTÉRIEUR."},
+
+{l:"Ch.7",t:"direct",q:"La préservation sacrée dans une lésion médullaire incomplète signifie :",
+o:["La motricité des membres supérieurs est préservée","La sensibilité et/ou la motricité des segments sacrés sont conservées","Les fonctions sphinctériennes sont entièrement préservées sans séquelles","La lésion est localisée uniquement au niveau sacré"],
+a:1,e:"Préservation SACRÉE = conservation de la sensibilité thermo-algésique et/ou motricité des SEGMENTS SACRÉS (périanal, périnée). Critère d'INCOMPLÉTUDE selon la classification ASIA. Meilleur pronostic fonctionnel."},
+
+{l:"Ch.7",t:"vraie",q:"Le syndrome de la queue de cheval se distingue du syndrome du cône médullaire car :",
+o:["Il donne une paraplégie spastique avec hyperréflexie car c'est une lésion centrale","Il donne une paralysie flasque avec aréflexie car il atteint les racines périphériques","Il est toujours complet sans possibilité de récupération","Il préserve systématiquement les fonctions sphinctériennes"],
+a:1,e:"Queue de cheval = atteinte des RACINES PÉRIPHÉRIQUES (L1-S5) → paralysie FLASQUE + ARÉFLEXIE + troubles sensitifs en selle + troubles sphinctériens. Meilleur potentiel de récupération que les lésions médullaires."},
+
+{l:"Ch.7",t:"direct",q:"Le syndrome médullaire antérieur préserve sélectivement :",
+o:["La motricité et la sensibilité à la douleur sous-lésionnelle","La proprioception, les vibrations et le toucher léger via les cordons postérieurs","Toutes les fonctions motrices et sensitives uniformément","Uniquement les fonctions sphinctériennes sacrées"],
+a:1,e:"Syndrome médullaire ANTÉRIEUR : perte MOTRICE + perte DOULEUR/TEMPÉRATURE. Préserve les CORDONS POSTÉRIEURS → proprioception + vibration + toucher léger INTACTS. Type d'infarctus médullaire le plus courant."},
+
+{l:"Ch.7",t:"fausse",q:"Concernant l'étiologie de la lésion médullaire, laquelle est FAUSSE ?",
+o:["La hernie discale peut comprimer la moelle épinière","La sclérose en plaques peut causer une lésion médullaire","La carence en vitamine B12 peut entraîner une dégénérescence combinée subaiguë","Toutes les lésions médullaires sont d'origine traumatique"],
+a:3,e:"Les lésions médullaires peuvent être EXTRINSÈQUES (compression : hernie discale, tumeur, abcès) ou INTRINSÈQUES (SEP, infarctus médullaire, myélite transverse, carence B12). Les causes traumatiques ne sont qu'une partie des étiologies."},
+
+{l:"Ch.7",t:"fausse",q:"Le choc spinal immédiat après une lésion médullaire se caractérise par :",
+o:["Une flaccidité et aréflexie transitoire même dans les lésions complètes","Une durée variable de quelques jours à semaines","Une spasticité et hyperréflexie immédiates dès les premières minutes","Sa durée ne préjuge pas du déficit définitif"],
+a:2,e:"Choc spinal = FLACCIDITÉ + ARÉFLEXIE TRANSITOIRE (PAS de spasticité immédiate). Dure jours à semaines. Après le choc → apparition progressive de la spasticité. Ne pas conclure trop tôt sur le pronostic."},
+
+// ===== T.8 — EXPLORATION NEUROLOGIQUE =====
+{l:"T.8",t:"fausse",q:"Concernant les nerfs crâniens, laquelle est FAUSSE ?",
+o:["NC VII (facial) : muscles mimiques et stapédien","NC VIII (acoustique) : audition et équilibre","NC V (trijumeau) : sensibilité face et motricité masticatrice","NC XI (accessoire spinal) : mouvements oculaires latéraux"],
+a:3,e:"NC XI (accessoire spinal) = muscles TRAPÈZE et sterno-cléido-mastoïdien. Les mouvements oculaires LATÉRAUX = NC VI (abducens). Confusion fréquente NC VI/XI à l'examen."},
+
+{l:"T.8",t:"direct",q:"L'ordre d'exploration des fonctions corticales supérieures commence par :",
+o:["Langage, puis mémoire, puis praxies","Conscience, attention, comportement, orientation","Réflexes myotatiques, réflexes cutanés, puis coordination","Gnosie, praxies, fonctions frontales"],
+a:1,e:"Ordre : 1-Conscience, 2-Attention, 3-Comportement, 4-Orientation ×3, 5-Mémoire, 6-Langage, 7-Praxies, 8-Gnosie, 9-Tests frontaux. On explore du plus global au plus spécifique."},
+
+{l:"T.8",t:"fausse",q:"Concernant le réflexe cornéen, laquelle est FAUSSE ?",
+o:["Il est provoqué par la stimulation de la cornée","Il provoque un clignement bilatéral des paupières","La réponse est uniquement ipsilatérale (côté stimulé)","Il sert à évaluer l'intégrité des NC V et VII"],
+a:2,e:"Le réflexe cornéen provoque un clignement BILATÉRAL (réponse DIRECTE + CONSENSUELLE). C'est son caractère bilatéral qui permet de tester séparément la voie afférente (V) et efférente (VII)."},
+
+{l:"T.8",t:"vraie",q:"Le nerf crânien XI (accessoire spinal) innerve :",
+o:["Les muscles oculomoteurs","Le sterno-cléido-mastoïdien et la moitié supérieure du trapèze","Les muscles de la mimique faciale et le muscle stapédien","Les muscles de la déglutition et le voile du palais"],
+a:1,e:"NC XI (accessoire spinal) = NERF MOTEUR PUR innervant le STERNO-CLÉIDO-MASTOÏDIEN (rotation de la tête) et la ½ supérieure du TRAPÈZE (élévation épaule). Évaluation : résistance à l'élévation des épaules."},
+
+{l:"T.8",t:"direct",q:"Les tests doigt-nez et talon-genou évaluent :",
+o:["La force musculaire des membres","La coordination et la dysmétrie cérébelleuse","La sensibilité tactile superficielle","Les réflexes myotatiques profonds"],
+a:1,e:"Doigt-nez (MS) et talon-genou (MI) = évaluation de la COORDINATION et DYSMÉTRIE. Positifs = ATAXIE CÉRÉBELLEUSE. À différencier du Romberg (proprioception) et des réflexes (MN)."},
+
+{l:"T.8",t:"vraie",q:"La paralysie faciale centrale se distingue de la paralysie périphérique car :",
+o:["La paralysie centrale touche tout le visage y compris le front du même côté","La paralysie centrale épargne le front, la périphérique touche tout le visage homolatéral","Les deux ont la même présentation clinique et le même traitement","La paralysie centrale est toujours bilatérale"],
+a:1,e:"Paralysie faciale CENTRALE : épargne le FRONT controlatéral (représentation BILATÉRALE corticale). Paralysie PÉRIPHÉRIQUE (Bell) : tout le visage HOMOLATÉRAL atteint incluant le FRONT. Distinction clinique FONDAMENTALE en urgence."},
+
+{l:"T.8",t:"fausse",q:"Concernant les réflexes ostéo-tendineux (ROT), laquelle est FAUSSE ?",
+o:["Les ROT sont exaltés en cas de lésion du 1er motoneurone","Les ROT sont abolis en cas de lésion du 2e motoneurone","Les ROT sont évalués avec un marteau réflexe en tenant le membre détendu","Les ROT abolis signent toujours une atteinte du 1er motoneurone"],
+a:3,e:"ROT ABOLIS = atteinte du 2e MN (périphérique) ou de l'arc réflexe lui-même. ROT EXALTÉS = atteinte du 1er MN (central). Les ROT abolis SIGNENT le 2e MN, PAS le 1er MN."},
+
+{l:"T.8",t:"vraie",q:"Le test de Romberg est positif quand :",
+o:["Le patient perd l'équilibre yeux ouverts indépendamment de la fermeture des yeux","Le patient perd l'équilibre yeux FERMÉS mais pas yeux ouverts","Le patient ressent des vertiges sans déséquilibre réel","Le patient présente une ataxie identique yeux ouverts et fermés"],
+a:1,e:"Romberg POSITIF = perte d'équilibre yeux FERMÉS mais PAS yeux ouverts. Le patient compense sa déficience proprioceptive par la VISION. Perte d'équilibre yeux OUVERTS = atteinte CÉRÉBELLEUSE."},
+
+{l:"T.8",t:"fausse",q:"Concernant le réflexe crémastérique, laquelle est FAUSSE ?",
+o:["Il est déclenché par la stimulation du tiers supérieur et antéro-médial de la cuisse","La réponse normale est l'élévation du testicule du côté de la stimulation","Il s'agit d'un réflexe superficiel ou muco-cutané","Il est pathologique quand il est présent et vigoureux"],
+a:3,e:"Le réflexe crémastérique est PATHOLOGIQUE quand il est ABSENT ou anormal (pas quand il est présent). Sa présence est NORMALE. Son abolition peut signer une lésion pyramidale ou la racine L1-L2."},
+
+// ===== CH.9 — TROUBLES SENSORIELS & SNP =====
+{l:"Ch.9",t:"direct",q:"Les cordons postérieurs de la moelle épinière transmettent :",
+o:["La douleur et la température via fibres C non myélinisées","La proprioception et les vibrations via fibres A myélinisées","Le toucher superficiel uniquement via fibres B","La sensibilité thermique croisée contralatérale"],
+a:1,e:"Cordons postérieurs = PROPRIOCEPTION (batistésie) + VIBRATIONS (palesthésie) via fibres A MYÉLINISÉES. La douleur et la température = faisceau SPINOTHALAMIQUE antéro-latéral, croisé."},
+
+{l:"Ch.9",t:"fausse",q:"Lors de l'exploration de la batistésie (proprioception), laquelle est FAUSSE ?",
+o:["On montre d'abord comment procéder avec les yeux ouverts","On répète ensuite les yeux fermés dans un ordre aléatoire","L'exploration se fait de distal vers proximal","On doit appliquer une forte pression tactile pour faciliter la perception"],
+a:3,e:"L'exploration de la batistésie doit ÉVITER d'apporter une sensation tactile supplémentaire. On mobilise l'articulation en tenant les bords latéraux pour ne pas induire de sensation tactile parasite."},
+
+{l:"Ch.9",t:"fausse",q:"Concernant l'exploration de la palesthésie (vibrations), laquelle est FAUSSE ?",
+o:["On utilise un diapason appliqué sur les reliefs osseux","On teste de distal vers proximal","Les vibrations empruntent les cordons postérieurs de la moelle","Les vibrations sont véhiculées par des fibres C non myélinisées"],
+a:3,e:"Les VIBRATIONS sont véhiculées par des fibres de TYPE A MYÉLINISÉES via les CORDONS POSTÉRIEURS. Les fibres C non myélinisées véhiculent la DOULEUR et la TEMPÉRATURE (faisceau spinothalamique)."},
+
+{l:"Ch.9",t:"direct",q:"Dans les neuropathies périphériques, les dysesthésies apparaissent initialement :",
+o:["Au niveau proximal des membres de manière asymétrique","Au niveau distal des membres de manière symétrique en gant ou chaussette","Uniquement du côté droit par prédilection anatomique","Dans les zones rachidiennes avant les extrémités"],
+a:1,e:"Neuropathies périphériques : dysesthésies DISTALES et SYMÉTRIQUES au début, s'étendant en CENTRIPÈTE → distribution en 'gant ou chaussette'. L'atteinte proprioceptive entraîne une ataxie sensorielle."},
+
+{l:"Ch.9",t:"vraie",q:"L'ataxie sensorielle dans les neuropathies périphériques est causée par :",
+o:["Une atteinte cérébelleuse directe","L'atteinte proprioceptive aggravée par la fermeture des yeux (Romberg positif)","Un déficit visuel associé à la neuropathie","Une atteinte des muscles paravertébraux"],
+a:1,e:"Ataxie SENSORIELLE = instabilité de marche due à l'atteinte PROPRIOCEPTIVE. AGGRAVÉE par la fermeture des yeux (Romberg positif). À distinguer de l'ataxie cérébelleuse (pas améliorée par les yeux)."},
+
+{l:"Ch.9",t:"direct",q:"Le syndrome de Horner se manifeste par la triade :",
+o:["Ptôsis, hyperhydrose et mydriase unilatéraux","Ptôsis, myosis et énophtalmie unilatéraux par atteinte du système sympathique cervical","Diplopie, nystagmus et ataxie par atteinte du tronc cérébral","Ptôsis bilatéral et ophtalmoplégie par atteinte du NC III"],
+a:1,e:"Syndrome de HORNER = PTÔSIS + MYOSIS + ÉNOPHTALMIE UNILATÉRAUX. Dû à une interruption du système SYMPATHIQUE CERVICAL. Causes : tumeur de Pancoast, dissection carotidienne, lésion médullaire cervicale."},
+
+// ===== CH.10 — PATIENT ONCOLOGIQUE =====
+{l:"Ch.10",t:"fausse",q:"Laquelle de ces distinctions est FAUSSE ?",
+o:["Une tumeur peut être bénigne ou maligne","Le cancer est une croissance infiltrante de certaines tumeurs malignes","La néoplasie désigne une altération de la prolifération et de la survie cellulaires","Toute tumeur est nécessairement maligne"],
+a:3,e:"Tumeur = phénomène macroscopique d'augmentation de taille, SANS préjuger de sa nature (bénigne ou maligne). Cancer = croissance infiltrante maligne. Néoplasie = terme le plus précis."},
+
+{l:"Ch.10",t:"direct",q:"Le syndrome paranéoplasique se définit comme :",
+o:["L'ensemble des métastases dans les organes à distance","Des manifestations dans des organes distants sans rapport avec des métastases","La récidive tumorale après traitement chirurgical complet","La toxicité systémique des traitements de chimiothérapie"],
+a:1,e:"Syndrome paranéoplasique = manifestations à distance SANS RELATION avec les métastases (mécanisme immuno-médié ou sécrétoire). Types : neuromusculaires (Lambert-Eaton), endocriniens, hématologiques."},
+
+{l:"Ch.10",t:"fausse",q:"Concernant le syndrome de Lambert-Eaton, laquelle est FAUSSE ?",
+o:["C'est un syndrome paranéoplasique neuromusculaire","Il est dû à des anticorps contre les canaux calciques présynaptiques","La faiblesse s'améliore temporairement à l'effort contrairement à la myasthénie","Il est identique à la myasthénie grave dans ses mécanismes et son traitement"],
+a:3,e:"Lambert-Eaton ≠ Myasthénie grave. Lambert-Eaton = anticorps anti-CANAUX CALCIQUES PRÉSYNAPTIQUES → faiblesse qui s'AMÉLIORE à l'effort. Myasthénie = anticorps anti-RÉCEPTEURS ACh POST-SYNAPTIQUES → faiblesse qui s'AGGRAVE à l'effort."},
+
+{l:"Ch.10",t:"vraie",q:"Les voies de dissémination des métastases sont :",
+o:["Uniquement hématogène (sang)","Hématogène (circulation sanguine), lymphatique (ganglions) et transcellulaire","Hématogène et lymphatique uniquement","Uniquement par contiguïté directe avec la tumeur primitive"],
+a:1,e:"3 voies de métastases : HÉMATOGÈNE, LYMPHATIQUE, TRANSCELLULAIRE (plèvre, péritoine, péricarde). La localisation dépend du TROPISME des cellules tumorales."},
+
+{l:"Ch.10",t:"fausse",q:"Parmi les facteurs exogènes cancérigènes, lequel N'est PAS classiquement cité ?",
+o:["Amiante","Benzène","Arsenic","Lumière visible (400-700 nm)"],
+a:3,e:"La lumière visible n'est pas cancérigène. Les UV (non visibles) le sont (mélanome). Facteurs chimiques classiques : amiante, benzène, arsenic, tabac, agents alkylants."},
+
+// ===== CH.12 — GUILLAIN-BARRÉ =====
+{l:"Ch.12",t:"direct",q:"La forme AIDP du SGB se caractérise par :",
+o:["Atteinte axonale grave et peu fréquente en Europe","La forme la plus courante en Europe, avec atteinte démyélinisante","Triade ataxie, aréflexie et ophtalmoplégie","Atteinte axonale motrice et sensorielle combinée"],
+a:1,e:"AIDP = + FRÉQUENTE en Europe, atteinte MYÉLINE. AMAN = axonale motrice. AMSAN = axonale motrice + sensorielle. Miller-Fisher = ataxie + aréflexie + ophtalmoplégie."},
+
+{l:"Ch.12",t:"fausse",q:"Concernant la physiopathologie du SGB, laquelle est FAUSSE ?",
+o:["C'est une réponse auto-immune dirigée contre la myéline ou l'axone","Le système immunitaire produit des anticorps qui attaquent les composants du nerf périphérique","La guérison dépend de la régénération des fibres nerveuses","C'est une maladie dégénérative progressive du motoneurone central"],
+a:3,e:"Le SGB est une maladie AUTO-IMMUNE AIGUË du SNP (nerfs périphériques), pas du motoneurone central. Le pronostic dépend de la régénération des fibres. La SLA est la maladie dégénérative du motoneurone."},
+
+{l:"Ch.12",t:"vraie",q:"La triade clinique orientant vers un SGB est :",
+o:["Rigidité, tremblement au repos et bradykinésie","Faiblesse progressive ascendante, aréflexie généralisée et progression rapide","Spasticité, Babinski positif et hyperréflexie","Ataxie cérébelleuse, nystagmus et dysarthrie"],
+a:1,e:"SGB = FAIBLESSE PROGRESSIVE ASCENDANTE + ARÉFLEXIE GÉNÉRALISÉE + PROGRESSION RAPIDE. Diagnostic essentiellement clinique."},
+
+{l:"Ch.12",t:"direct",q:"La complication la plus grave du SGB nécessitant une surveillance en soins intensifs est :",
+o:["La perte de sensibilité tactile aux membres inférieurs","La paralysie respiratoire par atteinte des muscles respiratoires","La constipation sévère par dysautonomie","La perte des réflexes ostéo-tendineux"],
+a:1,e:"PARALYSIE RESPIRATOIRE = complication LA PLUS GRAVE du SGB. Surveillance de la CAPACITÉ VITALE est essentielle. L'atteinte autonome est aussi dangereuse. D'où la surveillance en réanimation."},
+
+{l:"Ch.12",t:"fausse",q:"Parmi ces pathologies, laquelle N'est PAS un diagnostic différentiel classique du SGB ?",
+o:["La myélite transverse","La sclérose en plaques","La myasthénie grave","La maladie de Parkinson"],
+a:3,e:"Parkinson (troubles hypokinétiques extrapyramidaux) n'est PAS un DD du SGB. Les DD classiques sont : myélite transverse, SEP (poussée), myasthénie grave, botulisme."},
+
+{l:"Ch.12",t:"vraie",q:"Dans le SGB, la paralysie respiratoire peut survenir car :",
+o:["Le SGB touche exclusivement les muscles des membres et jamais le tronc","La faiblesse ascendante peut atteindre les muscles intercostaux et le diaphragme","C'est un effet secondaire systématique des immunoglobulines","Le SGB provoque une compression médullaire cervicale"],
+a:1,e:"SGB : faiblesse ASCENDANTE peut atteindre les muscles INTERCOSTAUX et le DIAPHRAGME → insuffisance respiratoire aiguë, URGENCE VITALE. C'est la principale cause de décès dans le SGB."},
+
+// ===== CH.13 — GÉRIATRIE =====
+{l:"Ch.13",t:"fausse",q:"Laquelle des affirmations sur la sarcopénie est FAUSSE ?",
+o:["C'est une perte progressive de masse et force musculaire liée à l'âge","Elle peut être prévenue et améliorée par l'exercice physique régulier","Elle survient uniquement après 80 ans et ne touche que les membres inférieurs","Elle contribue au syndrome de fragilité du patient gériatrique"],
+a:2,e:"La sarcopénie commence dès 40-50 ans et touche TOUS les groupes musculaires. Elle est un axe d'intervention majeur du kiné en gériatrie via renforcement musculaire et exercice aérobie."},
+
+{l:"Ch.13",t:"direct",q:"Le vieillissement du SNC se caractérise notamment par :",
+o:["Une augmentation de la synthèse d'acétylcholine compensatrice","Une perte de 30 à 40% des neurones corticaux avec diminution de la synthèse d'ACh","Une hypertrophie compensatrice des neurones restants","Une augmentation de la plasticité synaptique après 65 ans"],
+a:1,e:"Vieillissement SNC : perte de 30-40% des neurones corticaux + ↓ synthèse ACh. D'où prudence avec les anticholinergiques chez la personne âgée. Le sommeil se fragmente, les réflexes ralentissent."},
+
+{l:"Ch.13",t:"fausse",q:"Concernant le délirium chez la personne âgée, laquelle est FAUSSE ?",
+o:["C'est un trouble aigu de la conscience avec fluctuation","Il peut être déclenché par une infection, un médicament ou une déshydratation","Il est toujours d'installation progressive sur plusieurs semaines","Il doit être distingué de la démence qui est un trouble chronique"],
+a:2,e:"Le délirium est un trouble AIGU (heures-jours) et FLUCTUANT. Il peut être causé par infection, médicaments, déshydratation, chirurgie... C'est souvent la première manifestation d'une pathologie aiguë."},
+
+{l:"Ch.13",t:"vraie",q:"Le syndrome de fragilité chez la personne âgée se caractérise par :",
+o:["Une démence obligatoire associée à une perte de mobilité","Une vulnérabilité accrue avec risque de décompensation pour des agressions minimes","Une hypertension artérielle chronique avec insuffisance cardiaque","Une perte de poids uniquement sans autres manifestations"],
+a:1,e:"Fragilité = VULNÉRABILITÉ ACCRUE aux facteurs de stress. Même une agression MINIME peut entraîner une DÉCOMPENSATION grave. Lié à la perte de RÉSERVE FONCTIONNELLE. Le kiné joue un rôle clé dans la prévention."},
+
+{l:"Ch.13",t:"fausse",q:"Concernant les chutes chez la personne âgée, laquelle est FAUSSE ?",
+o:["Elles constituent la première cause de mortalité accidentelle chez la personne âgée","La peur de tomber peut entraîner une restriction des activités","Le kinésithérapeute peut intervenir pour améliorer l'équilibre et prévenir les chutes","Les chutes sont inévitables et aucune intervention préventive n'est efficace"],
+a:3,e:"Les chutes sont ÉVITABLES. Les interventions kinésithérapeutiques (renforcement musculaire, équilibre, marche, évaluation environnementale) ont démontré une EFFICACITÉ dans la réduction des chutes chez la personne âgée."},
+
+{l:"Ch.13",t:"direct",q:"Le délirium chez la personne âgée se distingue de la démence principalement par :",
+o:["Son installation progressive sur plusieurs mois","Son installation aiguë, son caractère fluctuant et sa réversibilité potentielle","Sa prévalence uniquement après 90 ans","Son association exclusive avec la maladie d'Alzheimer"],
+a:1,e:"DÉLIRIUM = AIGU (heures-jours), FLUCTUANT, souvent RÉVERSIBLE si cause traitée. DÉMENCE = CHRONIQUE, progressive, irréversible. Le délirium peut être la 1ère manifestation d'une pathologie aiguë intercurrente."},
+
+{l:"Ch.13",t:"vraie",q:"La polypharmacie chez la personne âgée est définie comme :",
+o:["La prise de 2 médicaments ou plus par jour","La prise d'au moins 5 médicaments simultanément avec risque accru d'interactions","La prescription de médicaments uniquement par voie orale","La résistance aux médicaments par accumulation hépatique"],
+a:1,e:"Polypharmacie = prise d'AU MOINS 5 médicaments simultanément. Risques : interactions médicamenteuses, effets indésirables accumulés, chutes. Population à haut risque d'EIM graves."},
+
+// ===== CH.14 — DÉMENCES =====
+{l:"Ch.14",t:"vraie",q:"Laquelle des affirmations sur la DCL (détérioration cognitive légère) est VRAIE ?",
+o:["Elle remplit tous les critères diagnostiques d'une démence avérée","Elle se définit par une perte de mémoire avec cognition générale et AVQ préservées","Elle évolue toujours et sans exception vers Alzheimer","Elle ne nécessite aucun suivi car réversible dans tous les cas"],
+a:1,e:"DCL = perte mémoire + COGNITION NORMALE + AVQ NORMALES + PAS de démence. Évolution incertaine (règle des tiers : 1/3 évolue vers démence, 1/3 stable, 1/3 s'améliore). Nécessite un suivi."},
+
+{l:"Ch.14",t:"fausse",q:"Concernant le diagnostic de démence, laquelle est FAUSSE ?",
+o:["Le MMSE est un test cognitif global : un score <24/30 indique une détérioration cognitive","Le diagnostic est essentiellement clinique avec examen neurocognitif","Il faut inclure la famille dans l'entretien pour recouper les informations","Un MMSE normal exclut formellement tout diagnostic de démence"],
+a:3,e:"Un MMSE NORMAL n'exclut pas la démence légère ou les démences non-amnésiques (frontales). Le MMSE est peu sensible pour les démences débutantes. On peut avoir une démence frontale avec MMSE normal."},
+
+{l:"Ch.14",t:"direct",q:"La démence vasculaire se distingue d'Alzheimer principalement par :",
+o:["Une évolution progressive et insidieuse sans événements déclenchants","Une évolution en marche d'escalier avec des phases stables entre événements vasculaires","Une atteinte exclusive de la mémoire épisodique","Une fréquence plus élevée chez les femmes de moins de 60 ans"],
+a:1,e:"Démence VASCULAIRE = lésions vasculaires cérébrales → évolution en MARCHES D'ESCALIER avec phases stables. ALZHEIMER = évolution CONTINUE et PROGRESSIVE. La démence vasculaire est associée aux facteurs de risque cardiovasculaires."},
+
+{l:"Ch.14",t:"fausse",q:"Concernant le bilan de démence, laquelle est FAUSSE ?",
+o:["Le MMSE est un test cognitif global","Le test de l'horloge évalue les fonctions visuo-spatiales et exécutives","Il faut inclure la famille dans l'entretien pour recouper les informations","Un scanner ou une IRM est inutile car le diagnostic est purement clinique"],
+a:3,e:"L'imagerie (CT ou IRM) est INDISPENSABLE pour EXCLURE d'autres causes : tumeur, hématome, hydrocéphalie, démence vasculaire. Le diagnostic de démence INCLUT l'imagerie pour éliminer les causes traitables."},
+
+{l:"Ch.14",t:"vraie",q:"Le SPECT cérébral dans la maladie d'Alzheimer montre typiquement :",
+o:["Un hypermétabolisme frontal bilatéral","Un hypométabolisme dans les régions temporale et pariétale","Un hypermétabolisme généralisé sans topographie particulière","Un hypométabolisme exclusivement des ganglions de la base"],
+a:1,e:"Dans Alzheimer, le SPECT montre un HYPOMÉTABOLISME (hypoperfusion) dans les régions TEMPORALE et PARIÉTALE. Cela reflète la dégénérescence des zones d'association impliquées dans la mémoire et les fonctions cognitives."},
+
+// ===== CH.15 — PHYSIO PÉDIATRIQUE =====
+{l:"Ch.15",t:"fausse",q:"Concernant le développement neurologique de l'enfant, laquelle est FAUSSE ?",
+o:["Le développement est séquentiel : céphalo-caudal et proximo-distal","Le système nerveux est plastique et peut se réorganiser aux stades précoces","Le développement moteur, sensoriel, cognitif et émotionnel sont interdépendants","Le développement neurologique est identique chez tous les enfants au même âge"],
+a:3,e:"Le développement est INDIVIDUEL : chaque enfant a son propre rythme avec des fourchettes normales de variabilité. L'affirmer identique serait faux — c'est une caractéristique fondamentale du développement normal."},
+
+{l:"Ch.15",t:"direct",q:"La migration neuronale se produit principalement entre :",
+o:["La conception et la 8e semaine de gestation","La 12e et la 24e semaine de gestation","La 28e semaine de gestation et la naissance","Les 6 premiers mois de vie post-natale"],
+a:1,e:"Migration neuronale = 12e-24e semaine de gestation. Les neurones migrent de la zone ventriculaire vers le cortex, guidés par cellules gliales radiales. Altérations → lysencéphalie, hétérotopies."},
+
+{l:"Ch.15",t:"vraie",q:"La plasticité du système nerveux pédiatrique signifie que :",
+o:["Le cerveau de l'enfant est plus fragile et ne peut pas compenser les lésions","Le système nerveux peut s'adapter, se réorganiser et compenser les lésions, surtout aux stades précoces","La plasticité disparaît définitivement après 3 ans","La plasticité est uniquement présente dans le cervelet"],
+a:1,e:"Plasticité = capacité du SN à S'ADAPTER, SE RÉORGANISER et COMPENSER les lésions, particulièrement aux stades précoces. C'est le fondement de la rééducation précoce en neuropédiatrie."},
+
+{l:"Ch.15",t:"direct",q:"Le réflexe de Moro chez le nourrisson est un réflexe :",
+o:["Acquis après 6 mois de vie indiquant une bonne maturation corticale","Archaïque présent dès la naissance et normalement disparu avant 3-6 mois","Pathologique à tout âge indiquant une lésion du 1er motoneurone","Exclusivement présent chez le prématuré avant 32 semaines"],
+a:1,e:"Réflexe de MORO = réflexe ARCHAÏQUE présent dès la naissance. Normalement DISPARU avant 3-6 mois. Sa PERSISTANCE après 6 mois = signe d'une atteinte neurologique (PCI, lésion cérébrale)."},
+
+{l:"Ch.15",t:"fausse",q:"Concernant la myélinisation du système nerveux, laquelle est FAUSSE ?",
+o:["Elle commence avant la naissance et se poursuit plusieurs années","Elle suit un ordre cranio-caudal et proximo-distal","Elle améliore la vitesse de conduction nerveuse","Elle est complète et définitive dès la naissance"],
+a:3,e:"La myélinisation N'est PAS complète à la naissance. Elle débute in utero et continue PLUSIEURS ANNÉES. C'est pourquoi le Babinski est NORMAL chez le nourrisson (faisceau pyramidal pas encore entièrement myélinisé)."},
+
+// ===== T.11 — SEP =====
+{l:"T.11",t:"fausse",q:"Concernant l'épidémiologie de la SEP, laquelle est FAUSSE ?",
+o:["Elle touche préférentiellement les jeunes adultes entre 20 et 30 ans","Le ratio femmes/hommes est d'environ 3:1","Elle est plus fréquente dans les pays à climat chaud proches de l'équateur","C'est la 2e cause d'invalidité neurologique chez les jeunes après les traumatismes"],
+a:2,e:"SEP = plus fréquente dans les pays FROIDS, LOIN de l'équateur (gradient latitudinal). Carence en vitamine D et race blanche sont des facteurs. Plus fréquente en Europe du Nord."},
+
+{l:"T.11",t:"direct",q:"La névrite optique rétrobulbaire dans la SEP se caractérise par :",
+o:["Une perte visuelle bilatérale symétrique et indolore","Une perte visuelle unilatérale subaiguë avec douleur lors des mouvements oculaires","Une perte visuelle permanente et totale dès la première poussée","Une atteinte exclusivement du champ visuel périphérique"],
+a:1,e:"Névrite optique SEP = perte visuelle UNILATÉRALE subaiguë + DOULEUR lors des mouvements oculaires + scotome central. Représente 36% des premières manifestations. Récupération partielle/totale en quelques semaines."},
+
+{l:"T.11",t:"vraie",q:"L'activité de la SEP est définie par :",
+o:["Uniquement par le score EDSS et la durée de la maladie","Par les poussées cliniques et l'activité observée à l'IRM","Par le nombre de plaques visibles uniquement à l'IRM T1","Par la vitesse de progression du handicap moteur"],
+a:1,e:"Depuis 2015, l'activité SEP = POUSSÉES + activité IRM (lésions prenant le contraste au gadolinium). Facteur déterminant pour les décisions thérapeutiques."},
+
+{l:"T.11",t:"fausse",q:"Concernant la physiopathologie de la SEP, laquelle est FAUSSE ?",
+o:["C'est une maladie auto-immune démyélinisante du SNC","Les lymphocytes T attaquent la myéline","La démyélinisation ralentit ou bloque la conduction nerveuse","La SEP atteint exclusivement le système nerveux périphérique"],
+a:3,e:"SEP = maladie AUTO-IMMUNE DÉMYÉLINISANTE du SYSTÈME NERVEUX CENTRAL uniquement. Le SNP N'est PAS atteint. Les nerfs périphériques = SGB, neuropathies périphériques."},
+
+{l:"T.11",t:"direct",q:"La forme progressive primaire de la SEP se caractérise par :",
+o:["Des poussées fréquentes avec récupération complète entre chaque épisode","Une progression continue du handicap dès le début sans poussées distinctes","Des poussées initiales suivies d'une progression secondaire","Une atteinte exclusive du nerf optique avec poussées répétées"],
+a:1,e:"SEP PROGRESSIVE PRIMAIRE (PP) = PROGRESSION CONTINUE du handicap DÈS LE DÉBUT, sans poussées distinctes. Plus fréquente chez les personnes >40 ans avec atteinte médullaire. Différent de la forme RR et SP."},
+
+// ===== T.16 — PCI I =====
+{l:"T.16",t:"direct",q:"Les facteurs PÉRINATAUX de la PCI incluent :",
+o:["Infections congénitales (toxoplasmose, CMV)","Méningite néonatale et traumatisme crânien postnatal","Hypoxie pendant l'accouchement, prématurité et traumatisme obstétrique","Malformations congénitales et troubles génétiques"],
+a:2,e:"PÉRINATAUX = autour de la naissance : hypoxie per-partum, prématurité, traumatisme obstétrique. PRÉNATAUX = avant : infections congénitales, malformations. POSTNATAUX = après : méningite, traumatisme crânien, AVC néonatal."},
+
+{l:"T.16",t:"vraie",q:"La forme ATAXIQUE de la PCI se caractérise par :",
+o:["Des mouvements involontaires interférant avec les gestes volontaires (tonus fluctuant)","Un déséquilibre, une démarche instable, une dysmétrie et des tremblements lors de mouvements fins","Une spasticité bilatérale touchant surtout les membres inférieurs","Une paralysie flasque unilatérale avec amyotrophie"],
+a:1,e:"PCI ataxique = lésion cérébelleuse : déséquilibre + démarche instable + DYSMÉTRIE + tremblements lors des mouvements fins. À distinguer de la forme dyskinétique (mouvements involontaires + tonus fluctuant)."},
+
+{l:"T.16",t:"direct",q:"La forme DYSKINÉTIQUE de la PCI se caractérise par :",
+o:["Une spasticité bilatérale avec hyperréflexie et Babinski positif","Des mouvements involontaires avec tonus fluctuant par atteinte des ganglions de la base","Une démarche ataxique et une dysmétrie par atteinte cérébelleuse","Une paralysie flasque par atteinte des voies périphériques"],
+a:1,e:"PCI DYSKINÉTIQUE = atteinte des GANGLIONS DE LA BASE → mouvements INVOLONTAIRES + tonus FLUCTUANT. Différent de la forme SPASTIQUE (hypertonie constante) et ATAXIQUE (déséquilibre + dysmétrie)."},
+
+{l:"T.16",t:"fausse",q:"Concernant la forme spastique de la PCI, laquelle est FAUSSE ?",
+o:["Elle est la forme la plus fréquente de PCI","Elle est due à une lésion du système pyramidal (1er motoneurone)","Elle se manifeste par une hypertonie et une hyperréflexie","Elle est caractérisée par un tonus musculaire fluctuant"],
+a:3,e:"Tonus FLUCTUANT + mouvements INVOLONTAIRES = forme DYSKINÉTIQUE (atteinte des ganglions de la base). La forme SPASTIQUE = hypertonie CONSTANTE + hyperréflexie + Babinski (lésion pyramidale). La spastique est la forme la plus fréquente."},
+
+{l:"T.16",t:"direct",q:"La diplégie spastique dans la PCI touche préférentiellement :",
+o:["Les membres supérieurs plus que les membres inférieurs","Les membres inférieurs principalement","Les quatre membres de façon égale","Uniquement les muscles faciaux et oculaires"],
+a:1,e:"Diplégie spastique = PCI spastique touchant PRINCIPALEMENT les MEMBRES INFÉRIEURS. Fréquente chez le PRÉMATURÉ par LEUCOMALACIE PÉRIVENTRICULAIRE (les fibres corticospinales pour les MI passent au niveau périventriculaire)."},
+
+// ===== CH.17 — PCI & PRÉMATURITÉ =====
+{l:"Ch.17",t:"vraie",q:"Parmi les complications neurologiques du prématuré grave, laquelle est la plus courante ?",
+o:["Les malformations cardiaques congénitales","Les hémorragies sévères et les lésions kystiques de la substance blanche","Les maladies auto-immunes du SNP","Les troubles métaboliques thyroïdiens néonataux"],
+a:1,e:"Prématuré grave : hémorragies sévères + lésions kystiques substance blanche (leucomalacie périventriculaire) + crises convulsives + encéphalopathie hypoxique-ischémique. Ces 4 complications affectent développement moteur, sensoriel, cognitif."},
+
+{l:"Ch.17",t:"fausse",q:"Concernant les complications neurologiques du prématuré, laquelle est FAUSSE ?",
+o:["Les hémorragies intraventriculaires sont fréquentes chez le grand prématuré","La leucomalacie périventriculaire est une lésion kystique de la substance blanche","Les lésions neurologiques du prématuré ne peuvent jamais influencer le développement moteur","L'encéphalopathie hypoxique-ischémique peut survenir même sans prématurité"],
+a:2,e:"Les lésions neurologiques du prématuré PEUVENT et AFFECTENT le développement moteur, sensoriel et cognitif. C'est précisément pourquoi la prise en charge kinésithérapique précoce est fondamentale."},
+
+{l:"Ch.17",t:"direct",q:"La leucomalacie périventriculaire chez le prématuré correspond à :",
+o:["Une hémorragie dans les ventricules cérébraux","Des lésions kystiques de la substance blanche périventriculaire par ischémie","Une malformation du corps calleux d'origine génétique","Une tumeur bénigne du plexus choroïde"],
+a:1,e:"Leucomalacie périventriculaire = LÉSIONS KYSTIQUES de la SUBSTANCE BLANCHE périventriculaire. Mécanisme : ISCHÉMIE des zones périventriculaires (vascularisation immature chez le prématuré). Conséquences : diplégie spastique, troubles cognitifs."},
+
+{l:"Ch.17",t:"fausse",q:"Concernant la prise en charge du prématuré, laquelle est FAUSSE ?",
+o:["La kinésithérapie précoce est justifiée par la plasticité maximale du SN aux stades précoces","Les soins de développement visent à reproduire un environnement proche du milieu intra-utérin","La stimulation multisensorielle est toujours bénéfique quelle que soit l'intensité","La surveillance régulière des complications neurologiques est essentielle"],
+a:2,e:"La stimulation multisensorielle EXCESSIVE ou mal adaptée peut être NUISIBLE chez le prématuré (sur-stimulation → stress, instabilité hémodynamique). Les soins de développement doivent être adaptés à la TOLÉRANCE de chaque enfant."},
+
+// ===== T.18 — TSA / TDAH / HANDICAP / DYS =====
+{l:"T.18",t:"fausse",q:"Laquelle des affirmations sur le TSA est FAUSSE ?",
+o:["Les enfants TSA peuvent présenter une hyper ou hyposensibilité aux stimuli","L'hypotonie et les difficultés motrices fines et globales sont fréquentes","La marche sur la pointe des pieds est classiquement associée au TSA","Le TSA est principalement causé par un déficit en dopamine comme Parkinson"],
+a:3,e:"Le TSA n'est PAS causé par un déficit dopaminergique. C'est un trouble NEURODÉVELOPPEMENTAL complexe multifactoriel (génétique + environnemental). Le lier au manque de dopamine est une confusion erronée."},
+
+{l:"T.18",t:"direct",q:"Le TDAH est un trouble neurobiologique caractérisé par la triade :",
+o:["Hypotonie, fasciculations et faiblesse musculaire progressive","Hyperactivité, impulsivité et difficultés d'attention","Dyslexie, dyscalculie et dysgraphie combinées","Spasticité, Babinski et hyperréflexie"],
+a:1,e:"TDAH = trouble NEUROBIOLOGIQUE et NEURODÉVELOPPEMENTAL : HYPERACTIVITÉ + IMPULSIVITÉ + DIFFICULTÉS D'ATTENTION. Diagnostiqué généralement pendant l'enfance mais peut persister à l'âge adulte."},
+
+{l:"T.18",t:"vraie",q:"La dyspraxie relève du kinésithérapeute car :",
+o:["Elle n'implique que des difficultés scolaires sans composante motrice","Elle touche la coordination motrice, la motricité fine, la planification et l'organisation du mouvement","Elle est uniquement diagnostiquée par un bilan orthophonique","Elle guérit spontanément à l'adolescence sans prise en charge"],
+a:1,e:"Dyspraxie = trouble de la COORDINATION MOTRICE + motricité fine + PLANIFICATION + ORGANISATION du geste. Trouble des compétences non verbales qui relève DIRECTEMENT du kiné pour la rééducation motrice."},
+
+{l:"T.18",t:"fausse",q:"Concernant les troubles DYS, laquelle est FAUSSE ?",
+o:["La dyslexie affecte principalement la lecture","La dyscalculie concerne les mathématiques","La dyspraxie touche la coordination motrice et la planification du geste","Les dys sont causés exclusivement par un manque de travail scolaire"],
+a:3,e:"Les DYS NE SONT PAS causés par un manque de travail. Ce sont des troubles NEUROBIOLOGIQUES spécifiques affectant des enfants à INTELLIGENCE NORMALE. Dyslexie = lecture, Dyscalculie = maths, Dyspraxie = coordination motrice."},
+
+{l:"T.18",t:"direct",q:"Le trouble du spectre autistique (TSA) implique des difficultés dans 2 domaines centraux :",
+o:["Motricité grossière et coordination fine uniquement","Communication + interaction sociale ET comportements répétitifs + intérêts restreints","Lecture, écriture et mathématiques exclusivement","Mémoire à court terme et vitesse de traitement uniquement"],
+a:1,e:"TSA = 2 domaines centraux (DSM-5) : 1. COMMUNICATION + INTERACTION SOCIALE 2. COMPORTEMENTS RÉPÉTITIFS + INTÉRÊTS RESTREINTS. S'y ajoutent souvent des PARTICULARITÉS SENSORIELLES et motrices."},
+
+{l:"T.18",t:"fausse",q:"Concernant les manifestations motrices du TSA, laquelle est FAUSSE ?",
+o:["La marche sur la pointe des pieds est liée à une hypersensibilité plantaire ou une raideur posturale","L'hypotonie est fréquente chez les enfants TSA","La raideur posturale peut être observée","L'hyperkinésie avec mouvements excessifs et rapides est le signe moteur principal du TSA"],
+a:3,e:"Dans le TSA, les signes moteurs classiques sont : hypotonie, raideur posturale, marche sur la pointe des pieds, difficultés motrices fines et globales, balancement. L'hyperkinésie excessive n'est PAS le signe moteur PRINCIPAL du TSA."},
+
+// ===== T.19 — NEUROMUSCULAIRE PÉDIATRIQUE =====
+{l:"T.19",t:"fausse",q:"Laquelle des affirmations sur l'AME est FAUSSE ?",
+o:["Elle est classée parmi les maladies neuromusculaires pédiatriques","Elle entraîne une faiblesse musculaire progressive par atteinte du 2e motoneurone","Elle peut toucher les muscles respiratoires","Elle affecte uniquement les muscles des membres supérieurs"],
+a:3,e:"L'AME entraîne une faiblesse DIFFUSE : membres, tronc ET muscles RESPIRATOIRES. L'atteinte respiratoire est souvent la complication la plus grave. Elle n'est pas limitée aux membres supérieurs."},
+
+{l:"T.19",t:"direct",q:"La myasthénie gravis auto-immune est causée par :",
+o:["Une mutation génétique de la dystrophine entraînant la dégénérescence musculaire","Des anticorps anti-récepteurs d'acétylcholine à la jonction neuromusculaire","Un déficit en dopamine au niveau des ganglions de la base","Une démyélinisation des fibres nerveuses périphériques"],
+a:1,e:"Myasthénie gravis auto-immune = anticorps ANTI-RÉCEPTEURS ACh à la JNM → blocage de la transmission neuromusculaire → faiblesse fluctuante. La forme congénitale est NON auto-immune."},
+
+{l:"T.19",t:"vraie",q:"La myopathie de Duchenne est caractérisée par :",
+o:["Une atteinte auto-immune de la jonction neuromusculaire","Une atteinte des neurones moteurs périphériques avec fasciculations","Une dystrophie musculaire progressive liée au chromosome X touchant principalement les garçons","Une polyneuropathie symétrique avec atteinte sensitive prédominante"],
+a:2,e:"Duchenne = DYSTROPHIE MUSCULAIRE liée au chromosome X (gène de la DYSTROPHINE), touche quasi-exclusivement les GARÇONS. Faiblesse progressive proximale, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire évolutive."},
 
 // ===================== QUESTIONS COURTES ======================
 ];
@@ -1134,7 +772,7 @@ function questionKey(item) {
 
 function sanitizeQuestionEntry(entry) {
   const source = entry || {};
-  const originalOptions = Array.isArray(source.opts) ? source.opts : [];
+  const originalOptions = Array.isArray(source.option) ? source.option : [];
   const parsedAnswerIndex = Number.isInteger(source.a) ? source.a : parseInt(source.a, 10);
   const safeAnswerIndex = Number.isFinite(parsedAnswerIndex) ? parsedAnswerIndex : 0;
   const correctText = originalOptions[safeAnswerIndex];
