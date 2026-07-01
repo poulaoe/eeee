@@ -512,7 +512,7 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
   };
 });
 window.BANK = window.PATHO_BANK;
-window.QC_BANK = window._QC_BANK.map(function(item) {
+const QC_BANK = window._QC_BANK.map(function(item) {
     return {
         q: item.q,
         r: item.r
