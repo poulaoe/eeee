@@ -1,21 +1,6 @@
-window.Patho_BANK=[
-// =============================================
-// BANQUE COMPLÈTE — PATHOLOGIE NEUROLOGIQUE
-// Format compact : {l, t, q, o, a, e}
-// l = label chapitre
-// t = type : "fausse" | "vraie" | "direct"
-// q = question
-// o = options [A,B,C,D]
-// a = index bonne réponse (0-3)
-// e = explication
-// =============================================
-// Mapping :
-// { ch:item.l, label:item.l, type:item.t, q:item.q, opts:item.o, a:item.a, e:item.e }
-// =============================================
+window.PATHO_BANK=[
 
 
-
-// ===== CH.3 — COGNITIF =====
 {l:"Ch.3",t:"fausse",q:"Laquelle des affirmations sur l'aphasie de Broca est FAUSSE ?",
 o:["L'émission est non fluide et laborieuse","La compréhension orale est généralement préservée","La répétition est perturbée","L'émission est fluide et paraphasique"],
 a:3,e:"Dans l'aphasie de Broca, l'émission est NON FLUIDE et laborieuse. L'émission fluide et paraphasique est caractéristique de WERNICKE. Broca = zone motrice du langage."},
@@ -515,7 +500,7 @@ r:"1. CENTROMÉDULLAIRE : le plus fréquent, hyperextension cervicale → MS > M
 
 
 // Mapping pour sandbox.js
-window.Patho_BANK = window.Patho_BANK.map(function(item) {
+window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
   return {
     ch: item.l,
     label: item.l,

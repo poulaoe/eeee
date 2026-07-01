@@ -211,12 +211,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e8e8f
 <script src="Patho-bank.js"></script>
 <script>
 window.SUBJECT_NAME = 'Patho';
-window.BANK = window.Patho_BANK || [];
+window.BANK = window.PATHO_BANK || [];
 window.SUBJECT_DESC = 'Banque Pathologie ';
-window.Patho_BANK = window.Patho_BANK || [];
+window.PATHO_BANK = window.PATHO_BANK || [];
 var QC_BANK = window._QC_BANK || [];
 
-if (!Array.isArray(window.Patho_BANK) || window.Patho_BANK.length === 1) {
+if (!Array.isArray(window.PATHO_BANK) || window.PATHO_BANK.length === 1) {
   const desc = document.getElementById('home-desc');
   const msg = document.getElementById('message-zone');
   if (desc) {
