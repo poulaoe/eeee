@@ -473,7 +473,7 @@ a:1,e:"Myasthénie gravis auto-immune = anticorps ANTI-RÉCEPTEURS ACh à la JNM
 o:["Une atteinte auto-immune de la jonction neuromusculaire","Une atteinte des neurones moteurs périphériques avec fasciculations","Une dystrophie musculaire progressive liée au chromosome X","Une polyneuropathie symétrique avec atteinte sensitive prédominante"],
 a:2,e:"Duchenne = DYSTROPHIE MUSCULAIRE liée au chromosome X (gène de la DYSTROPHINE), touche quasi-exclusivement les GARÇONS. Faiblesse progressive proximale, pseudohypertrophie des mollets, atteinte cardiaque et respiratoire évolutive."},
 ];
-const QC_PATHO_BANK = [
+const QC_BANK = [
   {q:"Décrivez les 3 signes moteurs cardinaux de la maladie de Parkinson et leurs mécanismes.",
    r:"1. TREMBLEMENT AU REPOS : involontaire, rythmique, disparaît au mouvement et au sommeil, asymétrique au début (distale, 'compter des pièces'), dû à l'absence de dopamine dans le striatum. 2. RIGIDITÉ EXTRAPIRAMDALE : signe de la roue dentée (résistance constante + saccades) ou du tuyau de plomb (résistance uniforme), persiste en flexion et extension passive. 3. BRADYKINÉSIE/HYPOKINÉSIE : lenteur des mouvements volontaires (écriture micrographique, petits pas) et réduction des mouvements involontaires (hypomimie = 'masque de poker', absence de clignement)."},
   {q:"Quels sont les 4 types du SGB et leurs caractéristiques principales ?",
@@ -512,7 +512,7 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
   };
 });
 window.BANK = window.PATHO_BANK;
-const QC_BANK = window._PATHO_QC_BANK.map(function(item) {
+const QC_BANK = window.QC_BANK.map(function(item) {
     return {
         q: item.q,
         r: item.r
