@@ -527,3 +527,5 @@ window.Patho_BANK = window.Patho_BANK.map(function(item) {
   };
 });
 window.BANK = window.Patho_BANK;
+var QC_BANK = window._QC_BANK || [];
+
