@@ -802,6 +802,8 @@ function getVariedBalancedDraw(pool, examSize, options){
     if(sig !== lastPartielSignature || candidatePool.length <= examSize){
       lastPartielSignature = sig;
       lastDrawQuestionKeys = draw.map(questionKey);
+      localStorage.setItem("douleur_last_sig", lastPartielSignature);
+      localStorage.setItem("douleur_last_keys", JSON.stringify(lastDrawQuestionKeys));
       return draw;
     }
   }
