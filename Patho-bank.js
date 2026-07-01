@@ -513,4 +513,4 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
 });
 window.BANK = window.PATHO_BANK;
 
-});
+
