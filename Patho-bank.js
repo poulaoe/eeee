@@ -517,4 +517,5 @@ const QC_BANK = window.QC_BANK.map(function(item) {
         q: item.q,
         r: item.r
     };
+     window.QC_BANK = window.QC_BANK
 });
