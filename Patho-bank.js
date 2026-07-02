@@ -833,11 +833,139 @@ r:"1. CENTROMÉDULLAIRE : le plus fréquent, hyperextension cervicale → MS > M
    r:"1. HÉMORRAGIES SÉVÈRES intraventriculaires : risque d'hydrocéphalie secondaire. 2. LÉSIONS KYSTIQUES SUBSTANCE BLANCHE (leucomalacie périventriculaire) : diplégie spastique et troubles cognitifs car les fibres corticospinales des MI sont périventriculaires. 3. CRISES CONVULSIVES NÉONATALES : risque d'épilepsie secondaire. 4. ENCÉPHALOPATHIE HYPOXIQUE-ISCHÉMIQUE : atteinte globale pouvant entraîner PCI et déficits sensoriels. Ces 4 complications justifient un suivi kinésithérapique précoce."},
   {q:"Expliquez les différences cliniques entre syndrome du 1er motoneurone et syndrome du 2e motoneurone en donnant 2 exemples de pathologies pour chacun.",
    r:"1er MN (central) : paralysie spasmodique + spasticité + réflexes exaltés + Babinski positif + amyotrophie légère + pas de fasciculations. Exemples : AVC, SEP. 2e MN (périphérique) : paralysie flasque + hypotonie + réflexes abolis + Babinski absent + amyotrophie marquée + fasciculations. Exemples : SGB, AME. SLA = atteinte des DEUX MN simultanément (signes mixtes)."},
-
+  {
+    q: "Ch.1 - Expliquez les règles de la dominance hémisphérique pour le langage et citez les 4 nerfs crâniens transportant le contingent parasympathique.",
+    r: "Dominance : Hémisphère gauche dominant chez 95 % des droitiers et 50 % des gauchers. Parasympathique : Transporté par les paires III (constriction pupillaire), VII (sécrétions lacrymales/salivaires), IX (salivation parotide) et X (viscères cardio-pneumo-entériques)."
+  },
+  {
+    q: "Ch.1 - Différenciez la composition et la fonction de la substance blanche et de la substance grise au sein du système nerveux central.",
+    r: "Substance grise : Regroupement des corps cellulaires neuronaux, dendrites et synapses ; lieu d'intégration et de traitement de l'information. Substance blanche : Faisceaux d'axones recouverts d'une gaine de myéline lipidique ; assure la conduction saltatoire et rapide des influx nerveux."
+  },
+  {
+    q: "Ch.2 - Expliquez la physiopathologie du syndrome de Brown-Séquard (hémisection médullaire droite) sur les sensibilités lemniscale et spinothalamique.",
+    r: "Voie lemniscale (proprioception/vibration) : Décusse haut dans le bulbe -> atteinte IPSILATÉRALE (droite) sous la lésion. Voie spinothalamique (thermoalgésie) : Décusse immédiatement à l'entrée médullaire -> atteinte CONTROLATÉRALE (gauche) sous la lésion."
+  },
+  {
+    q: "Ch.2 - Décrivez la cause vasculaire et la présentation clinique chronologique typique de l'hématome extradural aigu post-traumatique.",
+    r: "Cause : Rupture de l'artère méningée moyenne (souvent liée à une fracture temporale). Chronologie : Traumatisme crânien -> INTERVALLE LIBRE (conscience et examen normaux pendant quelques minutes/heures) -> compression cérébrale rapide -> coma et engagement."
+  },
+  {
+    q: "Ch.3 - Différenciez cliniquement l'apraxie idéomotrice de l'apraxie idéatoire au lit du malade.",
+    r: "Apraxie idéomotrice : Trouble des gestes simples/mimes sur commande, caractérisée par la DISSOCIATION AUTOMATICO-VOLONTAIRE (échec sur commande, réussite spontanée). Apraxie idéatoire : Trouble de la manipulation d'objets réels par panne de la SÉQUENCE LOGIQUE des actions."
+  },
+  {
+    q: "Ch.3 - Comparez les aphasies de Broca et de Wernicke sur les plans de la fluidité, de la structure du langage et de la compréhension.",
+    r: "Broca (frontal) : Non-fluide, réduction du débit, style télégraphique, expression laborieuse, compréhension PRÉSERVÉE. Wernicke (temporal) : Fluide, débit augmenté (logorrhée), discours incompréhensible truffé de néologismes (jargonaphasie), compréhension ABOLIE."
+  },
+  {
+    q: "Ch.3 - Citez les 4 signes cliniques cardinaux définissant le syndrome de Gerstmann et précisez sa localisation lésionnelle.",
+    r: "Signes : 1) Agnosie digitale, 2) Indistinction Droite/Gauche, 3) Acalculie, 4) Agraphie pure. Localisation : Lésion du gyrus angulaire de l'hémisphère dominant (pariétal gauche chez le droitier)."
+  },
+  {
+    q: "Ch.4 - Comparez la spasticité pyramidale et la rigidité extrapyramidale lors de la mobilisation passive d'un membre.",
+    r: "Spasticité (pyramidal) : Élastique, VITESSE-DÉPENDANTE, la résistance augmente avec la vitesse d'étirement puis cède brusquement (lame de canif). Rigidité (extrapyramidal) : Plastique, constante tout au long du mouvement (tuyau de plomb) ou cédant par saccades (roue dentée)."
+  },
+  {
+    q: "Ch.4 - Donnez les signes sémiologiques d'une atteinte du 2e motoneurone (syndrome neurogène périphérique) et différenciez-les du 1er motoneurone.",
+    r: "2e MN (périphérique) : Paralysie flasque (hypotonie), amyotrophie rapide/sévère, fasciculations au repos, abolition des ROT (aréflexie), Babinski absent. 1er MN (central) : Paralysie spasmodique, spasticité, ROT vifs/polycinétiques, Babinski présent."
+  },
+  {
+    q: "Ch.5 - Expliquez le mécanisme physiopathologique et la présentation clinique principale des dyskinésies tardives induites par les neuroleptiques.",
+    r: "Mécanisme : Blocage prolongé des récepteurs D2 entraînant une HYPERSENSIBILITÉ DE DÉNERVATISATION des récepteurs dopaminergiques post-synaptiques du striatum. Clinique : Mouvements involontaires stéréotypés bucco-linguo-faciaux (mâchonnement, protrusion linguale)."
+  },
+  {
+    q: "Ch.6 - Citez la triade sémiologique cardinale de la maladie de Parkinson et décrivez précisément son tremblement.",
+    r: "Triade : Akinésie/bradykinésie (obligatoire), rigidité plastique (roue dentée), tremblement de repos. Tremblement : Basse fréquence (4-6 Hz), typiquement ASYMÉTRIQUE au début, présent au repos et s'estompant/disparaissant lors du mouvement volontaire."
+  },
+  {
+    q: "Ch.7 - Décrivez le tableau sémiologique complet observé sous le niveau lésionnel lors d'un syndrome de Brown-Séquard droit.",
+    r: "Côté droit (ipsilatéral) : Syndrome pyramidal (déficit moteur, spasticité, Babinski) et syndrome lemniscal (perte du tact fin, de la pallesthésie et du sens de position). Côté gauche (controlatéral) : Syndrome spinothalamique (anesthésie thermoalgésique isolée)."
+  },
+  {
+    q: "Ch.8 - Décrivez la manœuvre de Mingazzini aux membres inférieurs et le comportement d'un signe de Romberg d'origine vestibulaire périphérique.",
+    r: "Mingazzini : Décubitus dorsal, cuisses à 90°, genoux à 90° parallèles au lit ; positive si déficit moteur avec chute progressive du membre. Romberg vestibulaire : Pieds joints, yeux fermés ; après latence, déviation axiale LENTE, RECTILIGNE toujours vers le côté lésé."
+  },
+  {
+    q: "Ch.9 - Différenciez cliniquement une paralysie faciale périphérique d'une paralysie faciale centrale d'un point de vue anatomique.",
+    r: "Périphérique (atteinte du noyau/nerf VII) : Paralysie HOMOGÈNE touchant identiquement le haut (front, œil) et le bas du visage ipsilatéral. Centrale (supranucléaire) : Touche UNIQUEMENT LE BAS du visage controlatéral (le haut est épargné par double innervation corticale)."
+  },
+  {
+    q: "Ch.9 - Quels sont les signes cliniques complets d'une atteinte isolée du nerf oculomoteur (III) combinant les contingents extrinsèque et intrinsèque ?",
+    r: "Extrinsèque : Strabisme divergent horizontal, ptosis complet (chute paupière) et impossibilité de bouger l'œil en dedans, haut et bas. Intrinsèque (ophtalmoplégie interne) : MYDRIASE complète fixe unilatérale par abolition du réflexe photomoteur."
+  },
+  {
+    q: "Ch.10 - Citez la triade clinique d'alarme d'un syndrome d'hypertension intracrânienne (HTIC) d'origine tumorale chez l'adulte.",
+    r: "1) Céphalées intenses (prédominant le matin au réveil, aggravées par l'effort/toux), 2) Vomissements en jet brutaux (soulageant temporairement la céphalée), 3) Troubles progressifs de la vigilance (somnolence, léthargie)."
+  },
+  {
+    q: "Ch.10 - Citez les 5 cancers primitifs les plus pourvoyeurs de métastases cérébrales et précisez leur zone de blocage préférentielle.",
+    r: "Cancers : Poumon, Sein, Mélanome (hautement hémorragique), Colorectal, Rein. Zone : Localisation préférentielle à la JONCTION SUBSTANCE GRISE - SUBSTANCE BLANCHE (rétrécissement du calibre vasculaire bloquant les cellules tumorales)."
+  },
+  {
+    q: "Ch.10 - Définissez un syndrome paranéoplasique neurologique (SPN) et décrivez le mécanisme moléculaire du syndrome de Lambert-Eaton.",
+    r: "Définition : Atteinte neurologique à distance induite par une tumeur sans envahissement tumoral direct, médiée par des anticorps onconeuronaux. Lambert-Eaton : Les anticorps attaquent les CANAUX CALCIQUES voltage-dépendants pré-synaptiques (la force s'améliore à l'effort bref)."
+  },
+  {
+    q: "Ch.10 - Différenciez chronologiquement la toxicité aiguë, précoce-tardive et tardive de la radiothérapie cérébrale.",
+    r: "Aiguë (pendant) : Œdème cérébral réversible sous corticoïdes. Précoce-tardive (semaines à 3 mois) : Démyélinisation transitoire avec syndrome de somnolence. Tardive (>6 mois) : IRRÉVERSIBLE par radionécrose et artériolite, entraînant démence sous-cortico-frontale."
+  },
+  {
+    q: "Ch.10 - Quels sont les 3 signes cardinaux d'une compression médullaire tumorale et quel est le risque fonctionnel majeur en l'absence de chirurgie ?",
+    r: "Signes : 1) Douleur rachidienne fixe à recrudescence nocturne, 2) Déficit moteur progressif des membres inférieurs, 3) Troubles sphinctériens (rétention). Risque : Installation d'une paraplégie flasque puis spastique définitive avec dépendance au fauteuil."
+  },
+  {
+    q: "Ch.11 - Définissez la Sclérose en Plaques (SEP) sur les plans immunitaire, histologique et anatomique au sein du système nerveux.",
+    r: "SEP : Maladie inflammatoire chronique auto-immune caractérisée par une DÉMYÉLINISATION SÉLECTIVE, FOCALE et DISSÉMINÉE dans le temps et l'espace, ciblant exclusivement la gaine de myéline des axones du Système Nerveux Central (SNC)."
+  },
+  {
+    q: "Ch.12 - Décrivez la présentation clinique et le profil biologique du liquide cérébrospinal (LCS) dans le syndrome de Guillain-Barré (SGB).",
+    r: "Clinique : Paralysie flasque, bilatérale, symétrique et ASCENDANTE avec aréflexie ostéotendineuse précoce (ROT abolis). LCS : DISSOCIATION ALBUMINO-CYTOLOGIQUE (hyperprotéinorachie isolée avec taux de cellules blanches/leucocytes normal)."
+  },
+  {
+    q: "Ch.13 - Définissez le syndrome de désadaptation motrice chez le sujet âgé et décrivez sa présentation posturale caractéristique.",
+    r: "Définition : Faillite aiguë des fonctions de régulation posturale et d'équilibre après une chute ou un alitement. Posture : RÉTROPULSION massive en station debout (poids rejeté vers l'arrière, flexion des orteils), sidération et phobie invalidante de la chute."
+  },
+  {
+    q: "Ch.14 - Décrivez la double signature histopathologique cérébrale obligatoire permettant de confirmer le diagnostic de maladie d'Alzheimer.",
+    r: "1) Les plaques amyloïdes (ou séniles) : Dépôts EXTRACELLULAIRES formés par l'accumulation du peptide bêta-amyloïde. 2) La dégénérescence neurofibrillaire (DNF) : Accumulation INTRACELLULAIRE de filaments de protéine Tau anormalement phosphorylée."
+  },
+  {
+    q: "Ch.15 - Expliquez le mécanisme neurophysiologique qui régit la disparition des réflexes archaïques et l'impact de leur persistance après 6 mois.",
+    r: "Mécanisme : La maturation et la myélinisation du cortex cérébral lui permettent d'exercer une action inhibitrice descendante sur les structures sous-corticales primitives. Persistance (>6 mois) : Signe un DÉFAUT D'INHIBITION CORTICALE lié à une souffrance cérébrale."
+  },
+  {
+    q: "Ch.16 - Donnez la définition conceptuelle de la Paralysie Cérébrale Infantile (PCI) en précisant l'évolution de la lésion et des symptômes.",
+    r: "PCI : Troubles du mouvement et de la posture causant une limitation d'activité, dus à une lésion cérébrale FIXE et NON PROGRESSIVE survenue sur un cerveau immature. Les symptômes cliniques peuvent se modifier avec la croissance, mais la lésion n'évolue jamais."
+  },
+  {
+    q: "Ch.17 - Quelle est la physiopathologie de la diplégie spastique (maladie de Little) chez le grand prématuré ?",
+    r: "Lésion : LEUCOMALACIE PÉRIVENTRICULAIRE (LMPV), qui est une nécrose ischémique bilatérale de la substance blanche entourant les ventricules. Elle détruit sélectivement les fibres motrices pyramidales destinées aux membres inférieurs qui cheminent à cet endroit."
+  },
+  {
+    q: "Ch.18 - Définissez la dyade autistique caractérisant le Trouble du Spectre de l'Autisme (TSA) selon les critères du DSM-5.",
+    r: "1) Déficits persistants de la communication et des interactions sociales (réciprocité sociale, non-verbal absent). 2) Caractère restreint, répétitif et stéréotypé des comportements, intérêts ou activités (stéréotypies, intolérance au changement, profils sensoriels atypiques)."
+  },
+  {
+    q: "Ch.19 - Décrivez le signe de Gowers (manœuvre du tabouret) observé dans la myopathie de Duchenne (DMD) et la déficience musculaire sous-jacente.",
+    r: "Description : L'enfant se lève du sol en se mettant à quatre pattes, monte ses fesses puis utilise ses mains pour 'GRIMPER' LE LONG DE SES PROPRES JAMBES pour redresser son tronc. Déficience : Faiblesse sévère proximale de la ceinture pelvienne."
+  },
+  {
+    q: "Ch.20 - Définissez le myéloméningocèle et décrivez ses conséquences anatomiques et neurologiques initiales.",
+    r: "Définition : Dysraphisme spinal ouvert (Spina Bifida aperta) par défaut de fermeture postérieure du tube neural. Anatomie : Protrusion externe d'un sac contenant méninges, LCS et moelle/racines. Neurologie : Paralysie flasque et anesthésie totale sous-lésionnelle."
+  },
+  {
+    q: "Ch.21 - En pharmacovigilance, différenciez un effet indésirable médicamenteux de Type A d'un effet indésirable de Type B.",
+    r: "Type A (Augmented) : PRÉVISIBLE, directement lié aux propriétés pharmacologiques de la molécule, DOSE-DÉPENDANT. Type B (Bizarre) : IMPRÉVISIBLE, indépendant de la dose, souvent d'origine immuno-allergique ou génétique (idiosyncrasie), impose l'arrêt définitif."
+  },
+  {
+    q: "Ch.22 - Définissez la biodisponibilité (F) et expliquez le mécanisme qui diminue la valeur de F lors d'une administration par voie orale (PO).",
+    r: "Définition : Fraction de la dose qui atteint la circulation systémique sous forme inchangée. Baisse en PO : Due à l'absorption intestinale incomplète et à l'EFFET DE PREMIER PASSAGE HÉPATIQUE (le foie métabolise/détruit une partie du produit via le système porte avant le cœur)."
+  }
 ];
 
 
-window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
+
+window.PATHO_BANK = window.PATHO_BANK.map(function(item) {  
   return {
     ch: item.ch,
     label: item.label,
@@ -846,6 +974,7 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
     opts: item.opts,
     a: item.a,
     e: item.e
+};
 });
 window.QCPATHO_BANK = QCPATHO_BANK.map(function(item) {
   return {

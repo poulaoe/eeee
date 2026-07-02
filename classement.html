@@ -109,6 +109,7 @@ function normalizeSubjectName(value) {
   if (subject === 'anat' || subject === 'anatomie') return 'Anat';
   if (subject === 'douleur') return 'Douleur';
   if (subject === 'proced' || subject === 'procédure' || subject === 'procedure') return 'Procédure';
+  if (subject === 'valo' || subject === 'valorisation') return 'Valorisation';
   if (subject === 'general' || subject === 'général') return 'Général';
   return String(value || 'Inconnu');
 }
