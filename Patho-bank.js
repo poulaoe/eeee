@@ -843,21 +843,19 @@ r:"1. CENTROMÉDULLAIRE : le plus fréquent, hyperextension cervicale → MS > M
 ];
 
 
-
-
-// Mapping pour sandbox.js
 window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
   return {
-    ch: item.l,
-    label: item.l,
-    type: 'direct',
+    ch: item.ch,
+    label: item.label,
+    type: item.type || 'direct',
     q: item.q,
-    opts: item.o,
+    opts: item.opts,
     a: item.a,
     e: item.e
   };
 });
-const QCPATHO_BANK = window.QCPATHO_BANK.map(function(item) {
+
+window.QCPATHO_BANK = window.QCPATHO_BANK.map(function(item) {
   return {
     q: item.q,
     r: item.r
@@ -866,6 +864,3 @@ const QCPATHO_BANK = window.QCPATHO_BANK.map(function(item) {
 
 window.BANK = window.PATHO_BANK;
 window.QCBANK = window.QCPATHO_BANK;
-
-
-
