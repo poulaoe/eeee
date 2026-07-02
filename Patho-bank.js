@@ -848,7 +848,6 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
     e: item.e
   };
 });
-
 window.QCPATHO_BANK = QCPATHO_BANK.map(function(item) {
   return {
     q: item.q,

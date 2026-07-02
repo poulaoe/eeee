@@ -835,15 +835,45 @@ function getBalancedDraw(pool, totalCount) {
   const wanted = Math.min(totalCount, pool.length);
   if (wanted <= 0) return [];
   if (wanted >= pool.length) return shuffle(pool).slice(0, wanted);
+
   const byChapter = new Map();
-  pool.forEach(q => { const chapter = q.ch || 'Sans chapitre'; if (!byChapter.has(chapter)) byChapter.set(chapter, []); byChapter.get(chapter).push(q); });
-  const chapters = shuffle(Array.from(byChapter.keys())).map(ch => ({ chapter: ch, questions: shuffle(byChapter.get(ch)) }));
-  const picked = [];
+
+  pool.forEach(q => {
+    const chapter = q.ch || 'Sans chapitre';
+    if (!byChapter.has(chapter)) byChapter.set(chapter, []);
+    byChapter.get(chapter).push(q);
+  });
+
+  const chapters = Array.from(byChapter.entries()).map(([chapter, questions]) => ({
+    chapter,
+    questions: shuffle(questions),
+    total: questions.length,
+    quota: Math.floor((questions.length / pool.length) * wanted),
+    remainder: ((questions.length / pool.length) * wanted) % 1
+  }));
+
+  let picked = [];
+
+  chapters.forEach(bucket => {
+    const take = Math.min(bucket.quota, bucket.questions.length);
+    picked = picked.concat(bucket.questions.splice(0, take));
+  });
+
+  chapters
+    .sort((a, b) => b.remainder - a.remainder)
+    .forEach(bucket => {
+      if (picked.length < wanted && bucket.questions.length > 0) {
+        picked.push(bucket.questions.shift());
+      }
+    });
+
   while (picked.length < wanted) {
-    let added = false;
-    for (const bucket of chapters) { if (picked.length >= wanted) break; if (bucket.questions.length > 0) { picked.push(bucket.questions.pop()); added = true; } }
-    if (!added) break;
+    const available = chapters.filter(bucket => bucket.questions.length > 0);
+    if (!available.length) break;
+    const bucket = available[Math.floor(Math.random() * available.length)];
+    picked.push(bucket.questions.shift());
   }
+
   return shuffle(picked).slice(0, wanted);
 }
 
@@ -976,9 +1006,9 @@ function startExam(options) {
   } else if (config.forceDifferent) {
     setMessageZone('Nouveau tirage généré avec une préférence pour des questions différentes.');
   } else { setMessageZone(''); }
-
-  const shuffledQC = shuffle([...Array(QC_BANK.length).keys()]);
-  currentQC = shuffledQC.slice(0, 4).map(i => QC_BANK[i]);
+const qcSource = window.QCBANK || window.QC_BANK || QC_BANK || [];
+const shuffledQC = shuffle([...Array(qcSource.length).keys()]);
+currentQC = shuffledQC.slice(0, 4).map(i => qcSource[i]);
 
   answers = new Array(currentSession.length).fill(null);
   shuffledOpts = []; shuffledCorrects = [];
