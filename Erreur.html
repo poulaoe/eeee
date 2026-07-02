@@ -81,6 +81,8 @@ function getMatiere(ch) {
   if (c.match(/Chap\.|Thème/i)) return 'Anatomie';
   if (c.match(/Patho|Pathologie/i)) return 'Pathologie';
   if (c.match(/Proced/i)) return 'Procédure';
+  if (c.match(/Valo/i)) return 'Valorisation';
+  
   return 'Autre';
 }
 
