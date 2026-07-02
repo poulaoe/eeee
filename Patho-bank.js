@@ -691,7 +691,7 @@ a:1,e:"CHALEUR → vasodilatation → augmentation de la circulation locale → 
 // =============================================
 // BANQUE DE QUESTIONS COURTES
 // =============================================
-const QC_BANK = [
+const QCPATHO_BANK = [
   {q:"Décrivez les 3 signes moteurs cardinaux de la maladie de Parkinson et leurs mécanismes.",
    r:"1. TREMBLEMENT AU REPOS : involontaire, rythmique, disparaît au mouvement et au sommeil, asymétrique au début, distal (compter des pièces), dû à l'absence de dopamine dans le striatum. 2. RIGIDITÉ EXTRAPYRAMIDALE : signe de la roue dentée (résistance constante + saccades) ou du tuyau de plomb (résistance uniforme), vitesse-INDÉPENDANTE. 3. BRADYKINÉSIE/HYPOKINÉSIE : lenteur des mouvements volontaires (écriture micrographique, petits pas) et réduction des mouvements involontaires (hypomimie, masque de poker)."},
   {q:"Quels sont les 4 types du SGB et leurs caractéristiques principales ?",
