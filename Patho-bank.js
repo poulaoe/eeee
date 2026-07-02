@@ -819,7 +819,7 @@ a:1,e:"Le TROPISME tumoral (théorie sol et semences de Paget) = certaines tumeu
 
 
 ];
-const QC_BANK = [
+const QCPATHO_BANK = [
   {q:"Décrivez les 3 signes moteurs cardinaux de la maladie de Parkinson et leurs mécanismes.",
    r:"1. TREMBLEMENT AU REPOS : involontaire, rythmique, disparaît au mouvement et au sommeil, asymétrique au début (distale, 'compter des pièces'), dû à l'absence de dopamine dans le striatum. 2. RIGIDITÉ EXTRAPIRAMDALE : signe de la roue dentée (résistance constante + saccades) ou du tuyau de plomb (résistance uniforme), persiste en flexion et extension passive. 3. BRADYKINÉSIE/HYPOKINÉSIE : lenteur des mouvements volontaires (écriture micrographique, petits pas) et réduction des mouvements involontaires (hypomimie = 'masque de poker', absence de clignement)."},
   {q:"Quels sont les 4 types du SGB et leurs caractéristiques principales ?",
@@ -856,8 +856,17 @@ window.PATHO_BANK = window.PATHO_BANK.map(function(item) {
     a: item.a,
     e: item.e
   };
-  
+});
+const QCPATHO_BANK = window.QCPATHO_BANK.map(function(item) {
+  return {
+    q: item.q,
+    r: item.r
+  };
+});
+
 });
 window.BANK = window.PATHO_BANK;
+window.QCBANK = window.QCPATHO_BANK;
+
 
 
