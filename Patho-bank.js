@@ -864,7 +864,6 @@ const QCPATHO_BANK = window.QCPATHO_BANK.map(function(item) {
   };
 });
 
-});
 window.BANK = window.PATHO_BANK;
 window.QCBANK = window.QCPATHO_BANK;
 
