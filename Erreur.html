@@ -73,47 +73,64 @@ var quizAnswers = [];
 var quizShuffled = [];
 var quizCorrects = [];
 
-// Détecte la matière depuis le ch
-function getMatiere(ch) {
-  if (!ch) return 'Autre';
-  var c = String(ch);
-  if (c.match(/Neurophysiologie|Classification|Facteurs|Approche|Douleur/i)) return 'Douleur';
-  if (c.match(/Chap\.|Thème/i)) return 'Anatomie';
-  if (c.match(/Patho|Pathologie/i)) return 'Pathologie';
-  if (c.match(/Proced/i)) return 'Procédure';
-  if (c.match(/Valo/i)) return 'Valorisation';
-  
+function escapeHtml(v) {
+  return String(v || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function getOpts(q) {
+  if (!q) return [];
+  if (Array.isArray(q.opts)) return q.opts;
+  if (Array.isArray(q.o)) return q.o;
+  return [];
+}
+
+function getMatiere(item) {
+  var ch = String(item?.ch || '');
+  var label = String(item?.label || '');
+  var subject = String(item?.subject || item?.matiere || '');
+  var all = (ch + ' ' + label + ' ' + subject).toLowerCase();
+
+  if (all.match(/patho|pathologie|guillain|parkinson|sclérose|sep|gériatrique|démence|alzheimer|médullaire|oncologique|pharmaco|ladme|biodisponibilité|ch\.?\s*(3|4|5|6|7|9|10|12|13|14|15|22)|t\.?\s*(8|11)/i)) return 'Pathologie';
+  if (all.match(/douleur|neurophysiologie|classification|facteurs|approche/i)) return 'Douleur';
+  if (all.match(/anat|anatomie|chap\.|thème/i)) return 'Anatomie';
+  if (all.match(/proced|procéd|procedure|procédure/i)) return 'Procédure';
+  if (all.match(/valo|valorisation/i)) return 'Valorisation';
+
   return 'Autre';
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
 }
 
 function loadErrors() {
   try {
     errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
-  } catch(e) { errors = []; }
+  } catch(e) {
+    errors = [];
+  }
 }
 
 function saveErrors() {
   localStorage.setItem('qcm_erreurs', JSON.stringify(errors));
 }
 
-function escapeHtml(v) {
-  return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function shuffle(arr) {
-  var a = arr.slice();
-  for (var i = a.length-1; i > 0; i--) {
-    var j = Math.floor(Math.random()*(i+1));
-    var t = a[i]; a[i] = a[j]; a[j] = t;
-  }
-  return a;
-}
-
 function getFiltered() {
   var mat = document.getElementById('filter-matiere').value;
   var ch = document.getElementById('filter-ch').value;
+
   return errors.filter(function(e) {
-    var matOk = mat === 'all' || getMatiere(e.ch) === mat;
+    var matOk = mat === 'all' || getMatiere(e) === mat;
     var chOk = ch === 'all' || e.ch === ch;
     return matOk && chOk;
   });
@@ -124,54 +141,66 @@ function render() {
   var filtered = getFiltered();
 
   document.getElementById('total-errors').textContent = errors.length;
-  var totalSeen = errors.reduce(function(s,e){return s+(e.count||1);},0);
-  document.getElementById('total-seen').textContent = totalSeen;
+  document.getElementById('total-seen').textContent =
+    errors.reduce(function(s,e){ return s + (e.count || 1); }, 0);
 
-  // Filtre matière
-  var matieres = Array.from(new Set(errors.map(function(e){return getMatiere(e.ch);}))).sort();
+  var matieres = Array.from(new Set(errors.map(function(e){ return getMatiere(e); }))).sort();
   var selMat = document.getElementById('filter-matiere');
   var curMat = selMat.value;
+
   selMat.innerHTML = '<option value="all">Toutes les matières</option>';
-  matieres.forEach(function(m){
+  matieres.forEach(function(m) {
     var opt = document.createElement('option');
-    opt.value = m; opt.textContent = m;
+    opt.value = m;
+    opt.textContent = m;
     if (m === curMat) opt.selected = true;
     selMat.appendChild(opt);
   });
 
-  // Filtre chapitre (selon matière sélectionnée)
   var mat = selMat.value;
-  var errForMat = mat === 'all' ? errors : errors.filter(function(e){return getMatiere(e.ch)===mat;});
-  var chs = Array.from(new Set(errForMat.map(function(e){return e.ch;}))).sort();
+  var errForMat = mat === 'all' ? errors : errors.filter(function(e){ return getMatiere(e) === mat; });
+  var chs = Array.from(new Set(errForMat.map(function(e){ return e.ch || 'Sans chapitre'; }))).sort();
+
   var sel = document.getElementById('filter-ch');
   var curCh = sel.value;
   sel.innerHTML = '<option value="all">Tous les chapitres</option>';
-  chs.forEach(function(c){
+
+  chs.forEach(function(c) {
     var opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
+    opt.value = c;
+    opt.textContent = c;
     if (c === curCh) opt.selected = true;
     sel.appendChild(opt);
   });
 
   var list = document.getElementById('error-list');
-  if (filtered.length === 0) {
+
+  if (!filtered.length) {
     list.innerHTML = '<div class="empty">🎉 Aucune erreur pour cette sélection !</div>';
     return;
   }
 
   list.innerHTML = filtered.map(function(err) {
-    var opts = Array.isArray(err.o) ? err.o : [];
-    var optsHtml = opts.map(function(o, oi){
-      var cls = oi === err.a ? 'opt-btn correct' : 'opt-btn';
-      return '<button class="'+cls+'" disabled>'+String.fromCharCode(65+oi)+'. '+escapeHtml(o)+'</button>';
-    }).join('');
-    return '<div class="error-card">'+
-      '<div class="error-ch">'+escapeHtml(getMatiere(err.ch))+' — '+escapeHtml(err.ch)+'</div>'+
-      '<div class="error-q">'+escapeHtml(err.q)+'</div>'+
-      '<div class="error-opts">'+optsHtml+'</div>'+
-      '<button class="show-expl-btn" onclick="toggleExpl(this)">💡 Voir l\'explication</button>'+
-      '<div class="error-expl">'+escapeHtml(err.e)+'</div>'+
-      '<div class="error-count">Raté '+(err.count||1)+' fois</div>'+
+    var opts = getOpts(err);
+    var answerIndex = Number.isInteger(err.a) ? err.a : parseInt(err.a, 10);
+    if (!Number.isFinite(answerIndex)) answerIndex = 0;
+
+    var optsHtml = opts.length
+      ? opts.map(function(o, oi) {
+          var cls = oi === answerIndex ? 'opt-btn correct' : 'opt-btn';
+          return '<button class="' + cls + '" disabled>' +
+            String.fromCharCode(65 + oi) + '. ' + escapeHtml(o) +
+            '</button>';
+        }).join('')
+      : '<div style="color:#aaa;font-size:.82rem">Options non disponibles pour cette question.</div>';
+
+    return '<div class="error-card">' +
+      '<div class="error-ch">' + escapeHtml(getMatiere(err)) + ' — ' + escapeHtml(err.ch || 'Sans chapitre') + '</div>' +
+      '<div class="error-q">' + escapeHtml(err.q) + '</div>' +
+      '<div class="error-opts">' + optsHtml + '</div>' +
+      '<button class="show-expl-btn" onclick="toggleExpl(this)">💡 Voir l\\\'explication</button>' +
+      '<div class="error-expl">' + escapeHtml(err.e || err.explication || 'Pas d’explication enregistrée.') + '</div>' +
+      '<div class="error-count">Raté ' + (err.count || 1) + ' fois</div>' +
       '</div>';
   }).join('');
 }
@@ -180,13 +209,17 @@ function toggleExpl(btn) {
   var expl = btn.nextElementSibling;
   var hidden = expl.style.display === 'none' || expl.style.display === '';
   expl.style.display = hidden ? 'block' : 'none';
-  btn.textContent = hidden ? '💡 Masquer' : '💡 Voir l\'explication';
+  btn.textContent = hidden ? '💡 Masquer' : '💡 Voir l\\\'explication';
 }
 
 function startQuiz() {
   loadErrors();
   var pool = getFiltered();
-  if (!pool.length) { alert('Aucune erreur à réviser !'); return; }
+
+  if (!pool.length) {
+    alert('Aucune erreur à réviser !');
+    return;
+  }
 
   quizSession = shuffle(pool).slice(0, Math.min(20, pool.length));
   quizIdx = 0;
@@ -195,9 +228,13 @@ function startQuiz() {
   quizCorrects = [];
 
   quizSession.forEach(function(q) {
-    var opts = Array.isArray(q.o) ? q.o : [];
-    var correct = opts[q.a];
+    var opts = getOpts(q);
+    var answerIndex = Number.isInteger(q.a) ? q.a : parseInt(q.a, 10);
+    if (!Number.isFinite(answerIndex)) answerIndex = 0;
+
+    var correct = opts[answerIndex];
     var sh = shuffle(opts);
+
     quizShuffled.push(sh);
     quizCorrects.push(sh.indexOf(correct));
   });
@@ -206,47 +243,58 @@ function startQuiz() {
   document.querySelector('.controls').style.display = 'none';
   document.querySelector('.stats').style.display = 'none';
   document.getElementById('quiz-zone').style.display = 'block';
+
   renderQuizQuestion();
 }
 
 function renderQuizQuestion() {
   var q = quizSession[quizIdx];
-  var opts = quizShuffled[quizIdx];
+  var opts = quizShuffled[quizIdx] || [];
   var zone = document.getElementById('quiz-zone');
-  zone.innerHTML = '<div class="quiz-card">'+
-    '<div style="font-size:.75rem;color:#9ca3af;margin-bottom:8px">Question '+(quizIdx+1)+'/'+quizSession.length+' • '+escapeHtml(q.ch)+'</div>'+
-    '<div class="error-q">'+escapeHtml(q.q)+'</div>'+
-    '<div class="error-opts" id="quiz-opts">'+
-      opts.map(function(o,oi){
-        return '<button class="opt-btn" onclick="quizSelect('+oi+')">'+String.fromCharCode(65+oi)+'. '+escapeHtml(o)+'</button>';
-      }).join('')+
-    '</div>'+
-    '<div id="quiz-feedback" style="min-height:20px;margin-top:8px;font-size:.85rem"></div>'+
-    '<div class="quiz-nav">'+
-      '<button class="btn btn-secondary" onclick="endQuiz()">Terminer</button>'+
-      (quizIdx < quizSession.length-1 ?
-        '<button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none">Suivant →</button>' :
-        '<button class="btn btn-green" id="next-btn" onclick="showQuizResults()" style="display:none">Voir les résultats</button>')+
-    '</div>'+
+
+  zone.innerHTML = '<div class="quiz-card">' +
+    '<div style="font-size:.75rem;color:#9ca3af;margin-bottom:8px">Question ' + (quizIdx + 1) + '/' + quizSession.length + ' • ' + escapeHtml(getMatiere(q)) + ' • ' + escapeHtml(q.ch || '') + '</div>' +
+    '<div class="error-q">' + escapeHtml(q.q) + '</div>' +
+    '<div class="error-opts" id="quiz-opts">' +
+      opts.map(function(o, oi) {
+        return '<button class="opt-btn" onclick="quizSelect(' + oi + ')">' +
+          String.fromCharCode(65 + oi) + '. ' + escapeHtml(o) +
+          '</button>';
+      }).join('') +
+    '</div>' +
+    '<div id="quiz-feedback" style="min-height:20px;margin-top:8px;font-size:.85rem"></div>' +
+    '<div class="quiz-nav">' +
+      '<button class="btn btn-secondary" onclick="endQuiz()">Terminer</button>' +
+      (quizIdx < quizSession.length - 1
+        ? '<button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none">Suivant →</button>'
+        : '<button class="btn btn-green" id="next-btn" onclick="showQuizResults()" style="display:none">Voir les résultats</button>') +
+    '</div>' +
   '</div>';
 }
 
 function quizSelect(oi) {
   if (quizAnswers[quizIdx] !== null) return;
+
   quizAnswers[quizIdx] = oi;
   var ca = quizCorrects[quizIdx];
+
   var btns = document.querySelectorAll('#quiz-opts .opt-btn');
-  btns.forEach(function(b,i){
+  btns.forEach(function(b, i) {
     b.disabled = true;
     if (i === ca) b.classList.add('correct');
     else if (i === oi && oi !== ca) b.classList.add('wrong');
   });
+
   var fb = document.getElementById('quiz-feedback');
+
   if (oi === ca) {
     fb.innerHTML = '<span style="color:#86efac">✅ Correct !</span>';
   } else {
-    fb.innerHTML = '<span style="color:#fca5a5">❌ Raté</span> — <em style="color:#9fb0c8">'+escapeHtml(quizSession[quizIdx].e)+'</em>';
+    fb.innerHTML = '<span style="color:#fca5a5">❌ Raté</span> — <em style="color:#9fb0c8">' +
+      escapeHtml(quizSession[quizIdx].e || quizSession[quizIdx].explication || '') +
+      '</em>';
   }
+
   document.getElementById('next-btn').style.display = 'inline-block';
 }
 
@@ -256,16 +304,20 @@ function nextQuestion() {
 }
 
 function showQuizResults() {
-  var correct = quizAnswers.filter(function(a,i){return a===quizCorrects[i];}).length;
+  var correct = quizAnswers.filter(function(a, i) {
+    return a === quizCorrects[i];
+  }).length;
+
   var zone = document.getElementById('quiz-zone');
-  zone.innerHTML = '<div class="score-card">'+
-    '<div style="font-size:2rem;margin-bottom:8px">'+(correct>=quizSession.length*0.7?'🏆':'💪')+'</div>'+
-    '<div class="score-num">'+correct+'/'+quizSession.length+'</div>'+
-    '<div style="color:#aaa;margin-top:8px">'+Math.round(correct/quizSession.length*100)+'% de bonnes réponses</div>'+
-    '</div>'+
-    '<div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
-    '<button class="btn btn-green" onclick="startQuiz()">🔄 Recommencer</button>'+
-    '<button class="btn btn-secondary" onclick="endQuiz()">← Retour</button>'+
+
+  zone.innerHTML = '<div class="score-card">' +
+    '<div style="font-size:2rem;margin-bottom:8px">' + (correct >= quizSession.length * 0.7 ? '🏆' : '💪') + '</div>' +
+    '<div class="score-num">' + correct + '/' + quizSession.length + '</div>' +
+    '<div style="color:#aaa;margin-top:8px">' + Math.round(correct / quizSession.length * 100) + '% de bonnes réponses</div>' +
+    '</div>' +
+    '<div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+      '<button class="btn btn-green" onclick="startQuiz()">🔄 Recommencer</button>' +
+      '<button class="btn btn-secondary" onclick="endQuiz()">← Retour</button>' +
     '</div>';
 }
 
@@ -284,12 +336,13 @@ function clearErrors() {
   render();
 }
 
-document.getElementById('filter-matiere').addEventListener('change', function(){
-  // Reset chapitre quand matière change
+document.getElementById('filter-matiere').addEventListener('change', function() {
   document.getElementById('filter-ch').value = 'all';
   render();
 });
+
 document.getElementById('filter-ch').addEventListener('change', render);
+
 render();
 </script>
 </body>
