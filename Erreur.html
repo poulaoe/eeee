@@ -113,17 +113,126 @@ function shuffle(arr) {
   return a;
 }
 
+var memoryStorageFallback = {};
+var windowNameStoragePrefix = 'QCM_STATE::';
+
+function readWindowNameStorage() {
+  if (typeof window.name !== 'string' || !window.name.startsWith(windowNameStoragePrefix)) return {};
+  try {
+    var parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch(e) {
+    return {};
+  }
+}
+
+function writeWindowNameStorage(store) {
+  try {
+    window.name = windowNameStoragePrefix + JSON.stringify(store);
+  } catch(e) {}
+}
+
+function safeGetItem(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch(e) {
+    var persisted = readWindowNameStorage();
+    if (Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
+    return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+  }
+}
+
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+    memoryStorageFallback[key] = String(value);
+    var persisted = readWindowNameStorage();
+    persisted[key] = String(value);
+    writeWindowNameStorage(persisted);
+  }
+}
+
+function safeRemoveItem(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch(e) {
+    delete memoryStorageFallback[key];
+    var persisted = readWindowNameStorage();
+    delete persisted[key];
+    writeWindowNameStorage(persisted);
+  }var memoryStorageFallback = {};
+var windowNameStoragePrefix = 'QCM_STATE::';
+
+function readWindowNameStorage() {
+  if (typeof window.name !== 'string' || !window.name.startsWith(windowNameStoragePrefix)) return {};
+  try {
+    var parsed = JSON.parse(window.name.slice(windowNameStoragePrefix.length));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch(e) {
+    return {};
+  }
+}
+
+function writeWindowNameStorage(store) {
+  try {
+    window.name = windowNameStoragePrefix + JSON.stringify(store);
+  } catch(e) {}
+}
+
+function safeGetItem(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch(e) {
+    var persisted = readWindowNameStorage();
+    if (Object.prototype.hasOwnProperty.call(persisted, key)) return persisted[key];
+    return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+  }
+}
+
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+    memoryStorageFallback[key] = String(value);
+    var persisted = readWindowNameStorage();
+    persisted[key] = String(value);
+    writeWindowNameStorage(persisted);
+  }
+}
+
+function safeRemoveItem(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch(e) {
+    delete memoryStorageFallback[key];
+    var persisted = readWindowNameStorage();
+    delete persisted[key];
+    writeWindowNameStorage(persisted);
+  }
+}
+
 function loadErrors() {
   try {
-    errors = JSON.parse(localStorage.getItem('qcm_erreurs') || '[]');
+    errors = JSON.parse(safeGetItem('qcm_erreurs') || '[]');
   } catch(e) {
     errors = [];
   }
 }
 
 function saveErrors() {
-  localStorage.setItem('qcm_erreurs', JSON.stringify(errors));
+  safeSetItem('qcm_erreurs', JSON.stringify(errors));
 }
+
+function clearErrors() {
+  if (!confirm('Effacer toutes les erreurs ?')) return;
+  safeRemoveItem('qcm_erreurs');
+  errors = [];
+  render();
+}
+  
+
+
 
 function getFiltered() {
   var mat = document.getElementById('filter-matiere').value;
