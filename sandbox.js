@@ -1098,15 +1098,23 @@ function goTo(idx) {
   document.getElementById('pill-' + idx).classList.add('current');
   window.scrollTo(0, 0);
 }
-
 function updateProgress() {
   const done = answers.filter(a => a !== null).length;
   const total = currentSession.length || 0;
-  document.getElementById('answered-count').textContent = done;
-  document.getElementById('submit-zone').querySelector('p').textContent = `Répondues : ${done}/${total} — Questions non répondues = 0 point`;
-  document.getElementById('progress-fill').style.width = total ? (done / total * 100) + '%' : '0%';
-}
 
+  const answeredCount = document.getElementById('answered-count');
+  if (answeredCount) answeredCount.textContent = done;
+
+  const submitText = document.getElementById('submit-text');
+  if (submitText) {
+    submitText.innerHTML = `Répondues : <span id="answered-count">${done}</span>/${total} — Questions non répondues = 0 point`;
+  }
+
+  const progressFill = document.getElementById('progress-fill');
+  if (progressFill) {
+    progressFill.style.width = total ? (done / total * 100) + '%' : '0%';
+  }
+}
 function submitExam() {
   if (examFinished) return;
   examFinished = true;
