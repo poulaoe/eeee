@@ -678,7 +678,7 @@ a:1,e:"PHARMACODYNAMIQUE = ce que le MÉDICAMENT fait au CORPS : mécanismes d'a
 
 {ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"fausse",
 q:"Un médicament agoniste partiel se distingue d'un agoniste complet car :",
-opts:["L'agoniste complet produit l'effet maximal sur un récepteur","L'agoniste partiel peut produire un effet plus élevé que l'agoniste complet sur le même récepteur","L'agoniste complet a un Kd plus élevé que l'agoniste partiel","L'agoniste partiel n'a aucun effet sur les récepteurs pharmacologiques"],
+opts:["L'agoniste complet produit l'effet maximal sur un récepteur","L'agoniste partiel ne peut pas  produire un effet plus élevé que l'agoniste complet sur le même récepteur","L'agoniste complet a un Kd plus élevé que l'agoniste partiel","L'agoniste partiel n'a aucun effet sur les récepteurs pharmacologiques"],
 a:1,e:"L'agoniste PARTIEL ne peut PAS produire un effet plus élevé que l'agoniste COMPLET. L'agoniste partiel produit un effet maximal INFÉRIEUR, même à concentrations saturantes. Kd faible = affinité élevée."},
 
 {ch:"T.22",label:"Pharmacocinétique & Pharmacodynamique",type:"vraie",
